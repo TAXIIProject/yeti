@@ -4,7 +4,7 @@ YETI
 YETI is an implementation of the Trusted Automated eXchange of Indicator Information (TAXII).
 
 ## Overview
-YETI is an implementation of TAXII over HTTP. YETI was written in Python 2.7 and utilizes the 
+YETI is an implementation of TAXII. YETI was written in Python 2.7 and utilizes the 
 Django 1.5 web application framework.
 
 ## Versioning
