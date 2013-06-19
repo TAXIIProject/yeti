@@ -13,8 +13,8 @@ Releases of YETI will be given 'major.minor.revision' version numbers, where 'ma
 indicate new versions of YETI.
 
 ## Feedback 
-You are encouraged to provide feedback by commenting on open issues or signing up for the TAXII discussion list and posting your questions 
-(http://taxii.mitre.org/community/registration.html).
+You are encouraged to provide feedback by commenting on open issues or signing up for the TAXII
+discussion list and posting your questions (http://taxii.mitre.org/community/registration.html).
 
 ## LICENSE
 For license information, see the LICENSE.txt file.

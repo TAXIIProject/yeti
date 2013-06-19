@@ -25,10 +25,25 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+
+
+
+# REMOVE COMMENTS
+#DATABASES = {
+#    'default': {
+#        'ENGINE':   'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME':     'yeti',                      # Or path to database file if using sqlite3.
+#        'USER':     'yeti_user',
+#        'PASSWORD': 'yeti_password',
+#        'HOST':     'localhost',                 # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+#        'PORT':     '3306',                      # Set to empty string for default.
+#    }
+#}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
+        'ENGINE':   'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME':     'C:\\dev\\git_yeti\\sqlite.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -36,6 +51,7 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default.
     }
 }
+
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -112,11 +128,17 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #'django.contrib.auth.middleware.RemoteUserMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+#AUTHENTICATION_BACKENDS = (
+#    'django.contrib.auth.backends.RemoteUserBackend',
+#)
+
 
 ROOT_URLCONF = 'yeti.urls'
 
@@ -140,6 +162,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'yeti',
     'taxii_services',
 )
 
