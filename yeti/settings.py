@@ -178,6 +178,14 @@ LOG_DIRECTORY = os.path.join(SITE_ROOT, "log")
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'normal': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
