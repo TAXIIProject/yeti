@@ -15,6 +15,7 @@ from django.db.models.signals import post_save, post_delete
 import datetime
 from dateutil.tz import tzutc
 import validators
+import settings
 
 class user_profile(models.Model):
 	user = models.OneToOneField(User)
