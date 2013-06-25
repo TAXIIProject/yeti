@@ -17,7 +17,8 @@ APPEND_SLASH = True
 TEMP_DIR = os.path.join(SITE_ROOT, "tmp")
 
 
-
+### YETI Specific Configs ###
+CERT_EXPORT_LOCATION = '/data/yeti/yeti/client_certs/all_certs.cer'#The file Apache uses to validate users
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -42,11 +43,11 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE':   'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME':     'C:\\dev\\git_yeti\\sqlite.db',                      # Or path to database file if using sqlite3.
+        'ENGINE':   'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME':     'yeti_db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
+        'USER': 'yeti',
+        'PASSWORD': 'DevPw!123',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
@@ -97,7 +98,7 @@ STATIC_ROOT = os.path.join(SITE_ROOT, 'extras/static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = '/yeti/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -201,7 +202,8 @@ LOGGING = {
             'level': LOG_LEVEL,
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': os.path.join(LOG_DIRECTORY, 'yeti.log'),
+			#TODO: I'm not sure where this goes
+            'filename': '/var/log/yeti.log',#os.path.join(LOG_DIRECTORY, 'yeti.log'),
         },
         
     },
