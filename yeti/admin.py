@@ -19,7 +19,7 @@ class CertificateAdmin(admin.ModelAdmin):
 	def cert(self, obj):
 		return '<pre>%s</pre>' % obj.pem_certificate
 	
-	cert.allow_tage = True
+	cert.allow_tags = True
 	
 	pass
 
