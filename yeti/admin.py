@@ -23,9 +23,4 @@ class CertificateAdmin(admin.ModelAdmin):
 	
 	pass
 
-class UserProfileAdmin(admin.ModelAdmin):
-	list_displau = ['user','admin','taxii_client']
-	pass
-
 admin.site.register(certificate, CertificateAdmin)
-admin.site.register(user_profile, UserProfileAdmin)
