@@ -23,4 +23,4 @@ class CertificateAdmin(admin.ModelAdmin):
 	
 	pass
 
-admin.site.register(certificate, CertificateAdmin)
+admin.site.register(Certificate, CertificateAdmin)
