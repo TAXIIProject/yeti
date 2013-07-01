@@ -18,7 +18,7 @@ TEMP_DIR = os.path.join(SITE_ROOT, "tmp")
 
 
 ### YETI Specific Configs ###
-CERT_EXPORT_LOCATION = '/data/yeti/yeti/client_certs/all_certs.cer'#The file Apache uses to validate users
+CERT_EXPORT_LOCATION = '/data/yeti/yeti/client_certs/all_certs.cer' # The file Apache uses to validate users
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -215,3 +215,11 @@ LOGGING = {
         },
     }
 }
+
+
+try:
+    from settings_local import * # overwrite with local settings if settings_local.py exists
+except ImportError:
+    pass
+
+
