@@ -11,7 +11,7 @@
 
 from django.contrib import admin
 
-from yeti.models import certificate, user_profile
+from yeti.models import Certificate
 
 class CertificateAdmin(admin.ModelAdmin):
 	list_display = ['id','title','subject','issuer','description', 'cert']
