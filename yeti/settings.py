@@ -203,7 +203,7 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
 			#TODO: I'm not sure where this goes
-            'filename': '/var/log/yeti.log',#os.path.join(LOG_DIRECTORY, 'yeti.log'),
+            'filename': os.path.join(LOG_DIRECTORY, 'yeti.log'),
         },
         
     },
