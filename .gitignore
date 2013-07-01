@@ -6,3 +6,8 @@ dist/
 .project
 .pydevproject
 .settings
+
+# local dev files
+yeti/settings_local.py
+yeti/db.sql
+
