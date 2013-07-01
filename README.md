@@ -7,6 +7,12 @@ YETI is an implementation of the Trusted Automated eXchange of Indicator Informa
 YETI is an implementation of TAXII. YETI was written in Python 2.7 and utilizes the 
 Django 1.5 web application framework.
 
+
+## Dependencies
+* [libtaxii](https://pypi.python.org/pypi/libtaxii/)
+* [python-dateutil](https://pypi.python.org/pypi/python-dateutil)
+* [pyOpenSSL](https://pypi.python.org/pypi/pyOpenSSL)
+
 ## Versioning
 Releases of YETI will be given 'major.minor.revision' version numbers, where 'major' and
 'minor' correspond to the TAXII version being supported. The 'revision' number is used to 
