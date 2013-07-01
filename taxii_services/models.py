@@ -51,9 +51,10 @@ class DataFeedSubscriptionMethod(models.Model):
         ordering = ['address']
     
 class DataFeed(models.Model):    
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128) # this will be used in the URL to access this feed
     description = models.TextField()
     users = models.ManyToManyField(User) # users allowed to access this data feed.
+    unauthenticated = models.BooleanField(default=True) # allow unauthenticated access to this data feed
     
     supported_content_bindings = models.ManyToManyField(ContentBindingId)
     push_methods = models.ManyToManyField(DataFeedPushMethods)
@@ -76,6 +77,7 @@ class ContentBlock(models.Model):
     data_feed = models.ManyToManyField(DataFeed)
     timestamp_label = models.DateTimeField(default=lambda:datetime.datetime.now(tzutc()))
     submitted_by = models.ForeignKey(User)#Not sure this is needed, but we track it anyway
+    message_id = models.CharField(max_length=128, null=True) # associated message id if present. is there always a 1-to-1 for message ids and content blocks
     
     #TAXII Properties of a content block
     content_binding = models.ForeignKey(ContentBindingId)
@@ -105,3 +107,5 @@ class DataFeedSubscription(models.Model):
     def __unicode__(self):
         return u'%s' % (self.name)
 
+    class Meta:
+        ordering = ['subscription_id']
