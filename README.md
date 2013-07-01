@@ -1,14 +1,17 @@
 YETI
 --------
 
-YETI is an implementation of the Trusted Automated eXchange of Indicator Information (TAXII).
+YETI is an implementation of the [Trusted Automated eXchange of Indicator Information](http://taxii.mitre.org) (TAXII).
 
 ## Overview
 YETI is an implementation of TAXII. YETI was written in Python 2.7 and utilizes the 
-Django 1.5 web application framework.
+Django 1.5 web application framework. There are currently no releases of YETI and as such,
+the YETI project is under heavy, active development. Future releases of YETI will be [tagged](http://learn.github.com/p/tagging.html)
+and can be found here: https://github.com/TAXIIProject/yeti/tags.
 
 
 ## Dependencies
+* [Django](https://www.djangoproject.com/)
 * [libtaxii](https://pypi.python.org/pypi/libtaxii/)
 * [python-dateutil](https://pypi.python.org/pypi/python-dateutil)
 * [pyOpenSSL](https://pypi.python.org/pypi/pyOpenSSL)
