@@ -3,6 +3,7 @@
       "model": "taxii_services.ProtocolBindingId",
       "pk": 1,
       "fields": {
+      	"name" : "TAXII HTTP Protocol Binding v1.0",
         "binding_id": "urn:taxii.mitre.org:protocol:http:1.0",
         "date_created": "2013-07-02T08:22:00-05:00",
         "date_updated": "2013-07-02T08:22:00-05:00"
@@ -12,6 +13,7 @@
       "model": "taxii_services.ProtocolBindingId",
       "pk": 2,
       "fields": {
+      	"name" : "TAXII HTTPS Protocol Binding v1.0",
         "binding_id": "urn:taxii.mitre.org:protocol:https:1.0",
         "date_created": "2013-07-02T08:22:00-05:00",
         "date_updated": "2013-07-02T08:22:00-05:00"
@@ -21,7 +23,40 @@
         "model": "taxii_services.MessageBindingId",
         "pk": 1,
         "fields": {
+        	"name" : "TAXII XML Message Binding v1.0",
             "binding_id": "urn:taxii.mitre.org:message:xml:1.0",
+            "date_created": "2013-07-02T08:22:00-05:00",
+            "date_updated": "2013-07-02T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services.ContentBindingId",
+        "pk": 1,
+        "fields": {
+        	"name" : "STIX v1.0 XML Content",
+            "binding_id": "urn:stix.mitre.org:content:xml:1.0",
+            "date_created": "2013-07-02T08:22:00-05:00",
+            "date_updated": "2013-07-02T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services.DataFeedPushMethod",
+        "pk": 1,
+        "fields": {
+        	"name" : "TAXII XML over HTTP",
+            "protocol_binding" : 1, 
+            "message_binding" : 1,
+            "date_created": "2013-07-02T08:22:00-05:00",
+            "date_updated": "2013-07-02T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services.DataFeedPushMethod",
+        "pk": 2,
+        "fields": {
+            "name" : "TAXII XML over HTTPS",
+            "protocol_binding" : 2, 
+            "message_binding" : 1,
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
