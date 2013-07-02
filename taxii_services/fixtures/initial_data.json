@@ -1,0 +1,29 @@
+[
+    {
+      "model": "taxii_services.ProtocolBindingId",
+      "pk": 1,
+      "fields": {
+        "binding_id": "urn:taxii.mitre.org:protocol:http:1.0",
+        "date_created": "2013-07-02T08:22:00-05:00",
+        "date_updated": "2013-07-02T08:22:00-05:00"
+      }
+    },
+    {
+      "model": "taxii_services.ProtocolBindingId",
+      "pk": 2,
+      "fields": {
+        "binding_id": "urn:taxii.mitre.org:protocol:https:1.0",
+        "date_created": "2013-07-02T08:22:00-05:00",
+        "date_updated": "2013-07-02T08:22:00-05:00"
+      }
+    },
+    {
+        "model": "taxii_services.MessageBindingId",
+        "pk": 1,
+        "fields": {
+            "binding_id": "urn:taxii.mitre.org:message:xml:1.0",
+            "date_created": "2013-07-02T08:22:00-05:00",
+            "date_updated": "2013-07-02T08:22:00-05:00"
+        }
+    }
+]
