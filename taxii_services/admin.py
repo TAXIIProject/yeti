@@ -9,13 +9,13 @@ class DataFeedAdmin(admin.ModelAdmin):
 	list_display = ['id', 'name', 'description']
 	
 class ProtocolBindingIdAdmin(admin.ModelAdmin):
-	list_display = ['name', 'description', 'id', 'binding_id', 'date_created', 'date_updated']
+	list_display = ['title', 'description', 'id', 'binding_id', 'date_created', 'date_updated']
 
 class MessageBindingIdAdmin(admin.ModelAdmin):
-	list_display = ['name', 'description', 'id', 'binding_id', 'date_created', 'date_updated']
+	list_display = ['title', 'description', 'id', 'binding_id', 'date_created', 'date_updated']
 	
 class ContentBindingIdAdmin(admin.ModelAdmin):
-	list_display = ['name', 'description', 'id', 'binding_id', 'date_created', 'date_updated']
+	list_display = ['title', 'description', 'id', 'binding_id', 'date_created', 'date_updated']
 	
 class DataFeedPushMethodAdmin(admin.ModelAdmin):
 	pass
