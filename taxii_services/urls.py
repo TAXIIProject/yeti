@@ -19,5 +19,5 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
     
     url(r'^inbox/$', 'taxii_services.inbox_service'),
-    url(r'^inbox/(?P<feed_name>\s+)/$', 'taxii_services.inbox_service'),
+    url(r'^inbox/(?P<dest_feed_name>\s+)/$', 'taxii_services.inbox_service'),
 )
