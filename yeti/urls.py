@@ -1,3 +1,6 @@
+# Copyright (C) 2013 - The MITRE Corporation
+# For license information, see the LICENSE.txt file
+
 from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
@@ -7,7 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'yeti.views.home', name='home'),
-    url(r'^home/', 'views.home'),
+    # url(r'^home/', 'views.home'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

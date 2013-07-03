@@ -10,46 +10,46 @@ MAX_ID_LEN      = 128
 MAX_NAME_LEN    = 128
 
 class ProtocolBindingId(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
+    title = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     
     def __unicode__(self):
-        if self.name:
-            return u'%s' % (self.name)
+        if self.title:
+            return u'%s' % (self.title)
         else:
             return u'%s' % (self.binding_id)
 
 class ContentBindingId(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
+    title = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        if self.name:
-            return u'%s' % (self.name)
+        if self.title:
+            return u'%s' % (self.title)
         else:
             return u'%s' % (self.binding_id)
 
 class MessageBindingId(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
+    title = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        if self.name:
-            return u'%s' % (self.name)
+        if self.title:
+            return u'%s' % (self.title)
         else:
             return u'%s' % (self.binding_id)
 
 class DataFeedPushMethod(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
+    title = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     protocol_binding = models.ForeignKey(ProtocolBindingId)
     message_binding = models.ForeignKey(MessageBindingId)
@@ -58,13 +58,13 @@ class DataFeedPushMethod(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     
     def __unicode__(self):
-        if self.name:
-            return u'%s' % (self.name)
+        if self.title:
+            return u'%s' % (self.title)
         else:
             return u'%s | %s' % (self.protocol_binding, self.message_binding)
     
 class DataFeedPollInformation(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
+    title = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     address = models.URLField()
     protocol_binding = models.ForeignKey(ProtocolBindingId)
@@ -74,8 +74,8 @@ class DataFeedPollInformation(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     
     def __unicode__(self):
-        if self.name:
-            return u'%s' % (self.name)
+        if self.title:
+            return u'%s' % (self.title)
         else:
             return u'%s | %s' % (self.protocol_binding, self.message_binding)
     
@@ -83,7 +83,7 @@ class DataFeedPollInformation(models.Model):
         ordering = ['address']
     
 class DataFeedSubscriptionMethod(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
+    title = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     address = models.URLField()
     protocol_binding = models.ForeignKey(ProtocolBindingId)
@@ -93,8 +93,8 @@ class DataFeedSubscriptionMethod(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     
     def __unicode__(self):
-        if self.name:
-            return u'%s' % (self.name)
+        if self.title:
+            return u'%s' % (self.title)
         else:
             return u'%s | %s' % (self.protocol_binding, self.message_binding)
     
@@ -105,7 +105,7 @@ class DataFeed(models.Model):
     name = models.CharField(max_length=MAX_NAME_LEN) # this will be used in the URL to access this feed
     description = models.TextField(null=True, blank=True)
     users = models.ManyToManyField(User) # users allowed to access this data feed.
-    unauthenticated = models.BooleanField(default=True) # allow unauthenticated access to this data feed
+    #authentication_required = models.BooleanField(default=True) # not sure if this is possible
     
     supported_content_bindings = models.ManyToManyField(ContentBindingId)
     push_methods = models.ManyToManyField(DataFeedPushMethod)
@@ -116,14 +116,14 @@ class DataFeed(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s' % (self.title)
 
     class Meta:
         ordering = ['name']
 
 class ContentBlock(models.Model):
-    # QUESTIONS:
-    # + Do we want to record message ids associated with content blocks?
+    title = models.CharField(max_length=MAX_NAME_LEN, null=True, blank=True) # not required by TAXII
+    description = models.TextField(null=True, blank=True) # not required by TAXII
     
     data_feed = models.ManyToManyField(DataFeed)
     timestamp_label = models.DateTimeField(default=lambda:datetime.datetime.now(tzutc()))
@@ -156,7 +156,7 @@ class DataFeedSubscription(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s' % (self.title)
 
     class Meta:
         ordering = ['subscription_id']

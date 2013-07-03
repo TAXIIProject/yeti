@@ -1,3 +1,6 @@
+# Copyright (C) 2013 - The MITRE Corporation
+# For license information, see the LICENSE.txt file
+
 from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
@@ -14,4 +17,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    
+    url(r'^inbox/$', 'taxii_services.inbox_service'),
+    url(r'^inbox/(?P<feed_name>\s+)/$', 'taxii_services.inbox_service'),
 )
