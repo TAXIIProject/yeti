@@ -1,3 +1,5 @@
+# Copyright (C) 2013 - The MITRE Corporation
+# For license information, see the LICENSE.txt file
 # Django settings for yeti project.
 
 import os
@@ -7,9 +9,6 @@ import django
 sys.path.insert(0, os.path.dirname(__file__))
 
 # calculated paths for django and the site
-# Copyright (C) 2013 - The MITRE Corporation
-# For license information, see the LICENSE.txt file
-
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
