@@ -18,6 +18,6 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
     
-    url(r'^inbox/$', 'taxii_services.inbox_service'),
-    url(r'^inbox/(?P<dest_feed_name>\s+)/$', 'taxii_services.inbox_service'),
+    #url(r'^(inbox)/$', 'taxii_services.inbox_service'),
+    #url(r'^(inbox)/(?P<dest_feed_name>\s+)/$', 'taxi_services.inbox_service'),
 )
