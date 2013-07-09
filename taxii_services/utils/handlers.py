@@ -71,9 +71,9 @@ def validate_taxii_headers(request, request_message_id):
         msg = "Required headers not present: [%s]" % (', '.join([DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers])) 
         m = tm.StatusMessage(tm.generate_message_id(), 
                              request_message_id, 
-                             status_type = tm.ST_FAILURE, 
-                             message = msg)
-        return create_taxii_response(m, HTTP_STATUS_OK)
+                             status_type=tm.ST_FAILURE, 
+                             message=msg)
+        return create_taxii_response(m)
 
     #For headers that exist, make sure the values are supported
     for header in DICT_TAXII_HTTP_HEADER_VALUES:
@@ -90,9 +90,9 @@ def validate_taxii_headers(request, request_message_id):
             
             m = tm.StatusMessage(tm.generate_message_id(),
                                  request_message_id,
-                                 status_type = tm.ST_FAILURE,
-                                 message = msg)
-            return create_taxii_response(m, HTTP_STATUS_OK)
+                                 status_type=tm.ST_FAILURE,
+                                 message=msg)
+            return create_taxii_response(m)
             
         # At this point, the header values are known to be good.
         return None
@@ -109,11 +109,11 @@ def validate_taxii_request(request):
     
     if request.method != 'POST':
         logger.info('Request from ip: %s was not POST. Returning error.', source_ip)
-        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type = tm.ST_FAILURE, message = 'Request must be POST')
+        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='Request must be POST')
         return create_taxii_response(m)
     
     if len(request.body) == 0:
-        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type = tm.ST_FAILURE, message = 'No POST data')
+        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='No POST data')
         logger.info('Request from ip: %s had a body length of 0. Returning error.', source_ip)
         return create_taxii_response(m)
     
