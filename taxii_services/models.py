@@ -126,7 +126,7 @@ class ContentBlock(models.Model):
     description = models.TextField(blank=True) # not required by TAXII
     
     data_feeds = models.ManyToManyField(DataFeed)
-    timestamp_label = models.DateTimeField(default=lambda:datetime.datetime.now(tzutc()))
+    timestamp_label = models.DateTimeField(default=lambda:datetime.datetime.now(tzutc())) # need to ensure uniqueness of this field
     submitted_by = models.ForeignKey(User)#Not sure this is needed, but we track it anyway
     message_id = models.CharField(max_length=MAX_ID_LEN, blank=True) # associated message id if present. is there always a 1-to-1 for message ids and content blocks
     
