@@ -103,14 +103,14 @@ def validate_taxii_request(request):
     source_ip = get_source_ip(request)
     logger.info('entering service dispatcher for ip %s' % (source_ip))
     
-    resp = validate_taxii_headers(request, '0') # TODO: What to use for request message id?
-    if resp is not None: # If response is not None an validation of the TAXII headers failed
-        return resp
-    
     if request.method != 'POST':
         logger.info('Request from ip: %s was not POST. Returning error.', source_ip)
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='Request must be POST')
         return create_taxii_response(m)
+    
+    header_validation_resp = validate_taxii_headers(request, '0') # TODO: What to use for request message id?
+    if header_validation_resp: # If response is not None an validation of the TAXII headers failed
+        return header_validation_resp
     
     if len(request.body) == 0:
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='No POST data')
