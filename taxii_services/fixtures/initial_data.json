@@ -60,5 +60,32 @@
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
+    },
+    {
+        "model": "taxii_services.DataFeedPollInformation",
+        "pk": 1,
+        "fields": {
+            "title" : "Default TAXII Data Feed Poll Information",
+            "description" : "",
+            "protocol_binding" : 1,
+            "message_bindings" : [1],
+            "address" : "http://localhost/services/poll",
+            "date_created": "2013-07-02T08:22:00-05:00",
+            "date_updated": "2013-07-02T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services.DataFeed",
+        "pk": 1,
+        "fields": {
+            "name" : "default",
+            "description" : "Default TAXII Data Feed",
+            "users" : [1],
+            "supported_content_bindings" : [1],
+            "push_methods" : [1],
+            "poll_service_instances" : [1], 
+            "date_created": "2013-07-02T08:22:00-05:00",
+            "date_updated": "2013-07-02T08:22:00-05:00"
+        }
     }
 ]
