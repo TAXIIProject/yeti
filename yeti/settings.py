@@ -189,15 +189,20 @@ LOGGING = {
             'level': LOG_LEVEL,
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-			#TODO: I'm not sure where this goes
+            #TODO: I'm not sure where this goes
             'filename': os.path.join(LOG_DIRECTORY, 'yeti.log'),
+        },
+        'stdout': {
+            'level': LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
         
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+        'yeti': {
+            'handlers': ['normal','stdout'],
+            'level': LOG_LEVEL,
             'propagate': True,
         },
     }
