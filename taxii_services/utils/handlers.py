@@ -25,7 +25,7 @@ DICT_REQUIRED_TAXII_HTTP_HEADERS = (DJANGO_HTTP_HEADER_CONTENT_TYPE,
 DICT_TAXII_HTTP_HEADER_VALUES = {DJANGO_HTTP_HEADER_ACCEPT: ['application/xml'],
                                  DJANGO_HTTP_HEADER_CONTENT_TYPE: ['application/xml'],
                                  DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE: [t.VID_TAXII_XML_10],
-                                 DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: [t.VID_TAXII_HTTPS_10, t.VID_TAXI_HTTP_10]}
+                                 DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: [t.VID_TAXII_HTTPS_10, t.VID_TAXII_HTTP_10]}
 
 # A set of headers that are utilized by TAXII. These are formatted using HTTP header conventions
 HTTP_HEADER_CONTENT_TYPE            = 'Content-Type'
@@ -67,7 +67,7 @@ def validate_taxii_headers(request, request_message_id):
     '''
     # Make sure the required headers are present
     missing_required_headers = set(DICT_REQUIRED_TAXII_HTTP_HEADERS).difference(set(request.META))
-    if missing_required_headers:
+    if len(missing_required_headers) > 0:
         msg = "Required headers not present: [%s]" % (', '.join([DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers])) 
         m = tm.StatusMessage(tm.generate_message_id(), 
                              request_message_id, 
@@ -93,9 +93,28 @@ def validate_taxii_headers(request, request_message_id):
                                  status_type=tm.ST_FAILURE,
                                  message=msg)
             return create_taxii_response(m)
+    
+    #Check to make sure the specified protocol matches the protocol used
+    if request.META[DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL] == t.VID_TAXII_HTTPS_10:
+        header_proto = 'HTTPS'
+    elif request.META[DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL] == t.VID_TAXII_HTTP_10:
+        header_proto = 'HTTP'
+    else:
+        header_proto = 'unknown'
+    
+    actual_proto = 'HTTPS' if request.is_secure() else 'HTTP'
+    
+    if header_proto != actual_proto:
+        msg = 'Protocol value incorrect. You specified %s and used %s' % (header_proto, actual_proto)
             
-        # At this point, the header values are known to be good.
-        return None
+        m = tm.StatusMessage(tm.generate_message_id(),
+                             request_message_id,
+                             status_type=tm.ST_FAILURE,
+                             message=msg)
+        return create_taxii_response(m)
+    
+    # At this point, the header values are known to be good.
+    return None
 
 def validate_taxii_request(request):
     '''Validates the broader request parameters and request type for a TAXII exchange'''
