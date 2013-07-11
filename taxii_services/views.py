@@ -53,7 +53,8 @@ def inbox_service(request, dest_feed_name):
         else:
             c = ContentBlock()
             c.message_id = taxii_message.message_id
-            c.submitted_by = request.user
+            if request.user.is_authenticated():
+                c.submitted_by = request.user
             c.data_feeds.add(dest_data_feed)
             c.content_binding = content_binding_id
             c.content = inbox_block.content
