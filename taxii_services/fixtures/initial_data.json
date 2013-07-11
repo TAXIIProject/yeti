@@ -34,7 +34,7 @@
         "pk": 1,
         "fields": {
         	"title" : "STIX v1.0 XML Content",
-            "binding_id": "urn:stix.mitre.org:content:xml:1.0",
+            "binding_id": "urn:stix.mitre.org:xml:1.0",
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
