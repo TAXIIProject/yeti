@@ -126,7 +126,7 @@ def poll_service(request):
                                             inclusive_end_timestamp_label=query_params['timestamp_label__lte'])
     
     for block in content_blocks:
-        cb = tm.ContentBlock(block.content_binding, block.content, block.timestamp_label)
+        cb = tm.ContentBlock(block.content_binding.binding_id, block.content, block.timestamp_label)
         
         if block.padding:
             cb.padding = block.padding
