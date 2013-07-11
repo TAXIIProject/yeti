@@ -55,11 +55,11 @@ def inbox_service(request, dest_feed_name):
             c.message_id = taxii_message.message_id
             if request.user.is_authenticated():
                 c.submitted_by = request.user
-            c.data_feeds.add(dest_data_feed)
-            c.content_binding = content_binding_id
+            c.content_binding = content_binding_id[0]
             c.content = inbox_block.content
             if inbox_block.padding: c.padding = inbox_block.padding
             c.save()
+            c.data_feeds.add(dest_data_feed[0])
     
     m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type = tm.ST_SUCCESS)
     return handlers.create_taxii_response(m, use_https=request.is_secure())
