@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
-AUTH_REQUIRED = True # possible location for global configuration flag
+AUTH_REQUIRED = False # possible location for global configuration flag
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
@@ -189,15 +189,20 @@ LOGGING = {
             'level': LOG_LEVEL,
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-			#TODO: I'm not sure where this goes
+            #TODO: I'm not sure where this goes
             'filename': os.path.join(LOG_DIRECTORY, 'yeti.log'),
+        },
+        'stdout': {
+            'level': LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
         
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+        'yeti': {
+            'handlers': ['normal','stdout'],
+            'level': LOG_LEVEL,
             'propagate': True,
         },
     }

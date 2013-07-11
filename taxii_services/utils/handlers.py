@@ -25,7 +25,7 @@ DICT_REQUIRED_TAXII_HTTP_HEADERS = (DJANGO_HTTP_HEADER_CONTENT_TYPE,
 DICT_TAXII_HTTP_HEADER_VALUES = {DJANGO_HTTP_HEADER_ACCEPT: ['application/xml'],
                                  DJANGO_HTTP_HEADER_CONTENT_TYPE: ['application/xml'],
                                  DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE: [t.VID_TAXII_XML_10],
-                                 DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: [t.VID_TAXII_HTTPS_10]}
+                                 DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: [t.VID_TAXII_HTTPS_10, t.VID_TAXII_HTTP_10]}
 
 # A set of headers that are utilized by TAXII. These are formatted using HTTP header conventions
 HTTP_HEADER_CONTENT_TYPE            = 'Content-Type'
@@ -44,19 +44,20 @@ DICT_REVERSE_DJANGO_NORMALIZATION = {DJANGO_HTTP_HEADER_CONTENT_TYPE: HTTP_HEADE
 # HTTP status codes
 HTTP_STATUS_OK = 200
 
-def create_taxii_response(message, status_code=HTTP_STATUS_OK):
+def create_taxii_response(message, status_code=HTTP_STATUS_OK, use_https=True):
     '''Creates a TAXII HTTP Response for a given message and status code'''
     resp = HttpResponse()
     resp.content = message.to_xml()
-    set_taxii_headers_response(resp)
+    set_taxii_headers_response(resp, use_https)
     resp.status_code = status_code
     return resp
 
-def set_taxii_headers_response(response):
+def set_taxii_headers_response(response, use_https):
     '''Sets the TAXII HTTP Headers for a given HTTP response'''
     response[HTTP_HEADER_CONTENT_TYPE] = 'application/xml'
     response[HTTP_HEADER_X_TAXII_CONTENT_TYPE] = t.VID_TAXII_XML_10
-    response[HTTP_HEADER_X_TAXII_PROTOCOL] = t.VID_TAXII_HTTPS_10
+    protocol = t.VID_TAXII_HTTPS_10 if use_https else t.VID_TAXII_HTTP_10
+    response[HTTP_HEADER_X_TAXII_PROTOCOL] = protocol
     return response
 
 def validate_taxii_headers(request, request_message_id):
@@ -73,7 +74,7 @@ def validate_taxii_headers(request, request_message_id):
                              request_message_id, 
                              status_type=tm.ST_FAILURE, 
                              message=msg)
-        return create_taxii_response(m)
+        return create_taxii_response(m, use_https=request.is_secure())
 
     #For headers that exist, make sure the values are supported
     for header in DICT_TAXII_HTTP_HEADER_VALUES:
@@ -92,10 +93,29 @@ def validate_taxii_headers(request, request_message_id):
                                  request_message_id,
                                  status_type=tm.ST_FAILURE,
                                  message=msg)
-            return create_taxii_response(m)
+            return create_taxii_response(m, use_https=request.is_secure())
+    
+    #Check to make sure the specified protocol matches the protocol used
+    if request.META[DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL] == t.VID_TAXII_HTTPS_10:
+        header_proto = 'HTTPS'
+    elif request.META[DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL] == t.VID_TAXII_HTTP_10:
+        header_proto = 'HTTP'
+    else:
+        header_proto = 'unknown'
+    
+    actual_proto = 'HTTPS' if request.is_secure() else 'HTTP'
+    
+    if header_proto != actual_proto:
+        msg = 'Protocol value incorrect. You specified %s and used %s' % (header_proto, actual_proto)
             
-        # At this point, the header values are known to be good.
-        return None
+        m = tm.StatusMessage(tm.generate_message_id(),
+                             request_message_id,
+                             status_type=tm.ST_FAILURE,
+                             message=msg)
+        return create_taxii_response(m, use_https=request.is_secure())
+    
+    # At this point, the header values are known to be good.
+    return None
 
 def validate_taxii_request(request):
     '''Validates the broader request parameters and request type for a TAXII exchange'''
@@ -105,7 +125,7 @@ def validate_taxii_request(request):
     if request.method != 'POST':
         logger.info('request was not POST - returning error')
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='Request must be POST')
-        return create_taxii_response(m)
+        return create_taxii_response(m, use_https=request.is_secure())
     
     header_validation_resp = validate_taxii_headers(request, '0') # TODO: What to use for request message id?
     if header_validation_resp: # If response is not None an validation of the TAXII headers failed
@@ -113,8 +133,8 @@ def validate_taxii_request(request):
     
     if len(request.body) == 0:
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='No POST data')
-        logger.debug('request had a body length of 0 - returning error')
-        return create_taxii_response(m)
+        logger.info('Request had a body length of 0. Returning error.')
+        return create_taxii_response(m, use_https=request.is_secure())
     
     return None
 
