@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
-AUTH_REQUIRED = True # possible location for global configuration flag
+AUTH_REQUIRED = False # possible location for global configuration flag
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
