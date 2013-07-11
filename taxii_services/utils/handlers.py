@@ -25,7 +25,7 @@ DICT_REQUIRED_TAXII_HTTP_HEADERS = (DJANGO_HTTP_HEADER_CONTENT_TYPE,
 DICT_TAXII_HTTP_HEADER_VALUES = {DJANGO_HTTP_HEADER_ACCEPT: ['application/xml'],
                                  DJANGO_HTTP_HEADER_CONTENT_TYPE: ['application/xml'],
                                  DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE: [t.VID_TAXII_XML_10],
-                                 DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: [t.VID_TAXII_HTTPS_10]}
+                                 DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: [t.VID_TAXII_HTTPS_10, t.VID_TAXI_HTTP_10]}
 
 # A set of headers that are utilized by TAXII. These are formatted using HTTP header conventions
 HTTP_HEADER_CONTENT_TYPE            = 'Content-Type'
