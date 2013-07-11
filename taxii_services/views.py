@@ -4,14 +4,16 @@
 import logging
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from decorators import yeti_auth_check
 from taxii_services.models import DataFeed, ContentBlock, ContentBindingId
 import taxii_services.utils.handlers as handlers
 import libtaxii.messages as tm
+import yeti.settings
 
 
 @csrf_exempt
-#@login_required
+@yeti_auth_check
 def inbox_service(request, dest_feed_name):
     """Handles TAXII Inbox Service requests."""
     logger = logging.getLogger('yeti.taxii_services.views.inbox_service')
@@ -25,18 +27,18 @@ def inbox_service(request, dest_feed_name):
         logger.debug('received taxii_message [%s]' % (taxii_message.message_id))
     except Exception as ex:
         logger.debug('unable to parse inbound message: %s' % (ex.message))
-        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, taxii_message='Message received could not be parsed')
+        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m)
     
     if taxii_message.message_type != tm.MSG_INBOX_MESSAGE:
         logger.info('taxii taxii_message [%s] was not inbox type [%s]' % (taxii_message.message_id, taxii_message.message_type))
-        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_FAILURE, taxii_message='Message sent to inbox service did not have an inbox taxii_message type')
+        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_FAILURE, message='Message sent to inbox service did not have an inbox taxii_message type')
         return handlers.create_taxii_response(m)
     
     dest_data_feed = DataFeed.objects.filter(name=dest_feed_name)
     if not dest_data_feed:
         logger.debug('attempting to assign content to unknown data feed [%s]' % (dest_feed_name))
-        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, taxii_message='Destination feed does not exist [%s]' % (dest_feed_name))
+        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Destination feed does not exist [%s]' % (dest_feed_name))
         return handlers.create_taxii_response(m)
     
     logger.debug('taxii message [%s] contains [%d] content blocks' %(taxii_message.message_id, len(taxii_message.content_blocks)))
@@ -59,7 +61,7 @@ def inbox_service(request, dest_feed_name):
     return handlers.create_taxii_response(m)
 
 @csrf_exempt
-#@login_required
+@yeti_auth_check
 def poll_service(request):
     """Handles TAXII Poll Service requests."""
     logger = logging.getLogger("yeti.taxii_services.views.poll_service")
@@ -73,18 +75,18 @@ def poll_service(request):
         logger.debug('received taxii message [%s]' % (taxii_message.message_id))
     except Exception as ex:
         logger.debug('unable to parse inbound message: %s' % (ex.message))
-        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, taxii_message='Message received could not be parsed')
+        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m)
     
     if taxii_message.message_type != tm.MSG_POLL_REQUEST:
         logger.info('Message [%s] was not poll request [%s]' % (taxii_message.message_id,taxii_message.message_type))
-        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_FAILURE, taxii_message='Message sent to poll service did not have a poll request message type')
+        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_FAILURE, message='Message sent to poll service did not have a poll request message type')
         return handlers.create_taxii_response(m)    
     
     data_feed = DataFeed.objects.filter(name=taxii_message.feed_name)
     if not data_feed:
         logger.debug('attempting to poll unknown data feed [%s]' % (taxii_message.feed_name))
-        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, taxii_message='Data feed does not exist [%s]' % (taxii_message.feed_name))
+        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Data feed does not exist [%s]' % (taxii_message.feed_name))
         return handlers.create_taxii_response(m)
     
     # build query for poll results
