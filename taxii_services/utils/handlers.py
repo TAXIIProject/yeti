@@ -100,11 +100,10 @@ def validate_taxii_headers(request, request_message_id):
 def validate_taxii_request(request):
     '''Validates the broader request parameters and request type for a TAXII exchange'''
     logger = logging.getLogger("taxii_services.utils.handlers.validate_taxii_request")
-    source_ip = get_source_ip(request)
-    logger.info('entering service dispatcher for ip %s' % (source_ip))
+    logger.debug('attempting to validate request')
     
     if request.method != 'POST':
-        logger.info('Request from ip: %s was not POST. Returning error.', source_ip)
+        logger.info('request was not POST - returning error')
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='Request must be POST')
         return create_taxii_response(m)
     
@@ -114,7 +113,7 @@ def validate_taxii_request(request):
     
     if len(request.body) == 0:
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='No POST data')
-        logger.info('Request from ip: %s had a body length of 0. Returning error.', source_ip)
+        logger.debug('request had a body length of 0 - returning error')
         return create_taxii_response(m)
     
     return None
