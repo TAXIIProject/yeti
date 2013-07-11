@@ -10,6 +10,7 @@ from taxii_services.models import DataFeed, ContentBlock, ContentBindingId
 import taxii_services.utils.handlers as handlers
 import libtaxii.messages as tm
 import yeti.settings
+from dateutil.tz import tzutc
 
 
 @csrf_exempt
@@ -43,6 +44,8 @@ def inbox_service(request, dest_feed_name):
     
     logger.debug('taxii message [%s] contains [%d] content blocks' %(taxii_message.message_id, len(taxii_message.content_blocks)))
     for inbox_block in taxii_message.content_blocks:
+        #TODO: Supported ContentBinding IDs is currently a per-YETI-instance setting
+        #      It should eventually be a per-Inbox Service setting
         content_binding_id = ContentBindingId.objects.filter(binding_id=inbox_block.content_binding)
         
         if not content_binding_id:
@@ -95,7 +98,7 @@ def poll_service(request):
     if taxii_message.exclusive_begin_timestamp_label:
         query_params['timestamp_label__gt'] = taxii_message.exclusive_begin_timestamp_label
     
-    current_datetime = datetime.datetime.utcnow()
+    current_datetime = datetime.now(tzutc())
     if taxii_message.inclusive_end_timestamp_label and (taxii_message.inclusive_end_timestamp_label < current_datetime):
         query_params['timestamp_label__lte'] = taxii_message.exclusive_end_timestamp_label
     else:
@@ -117,7 +120,7 @@ def poll_service(request):
     
     poll_response_message = tm.PollResponse(tm.generate_message_id(), 
                                             taxii_message.message_id, 
-                                            feed_name=data_feed.name, 
+                                            feed_name=data_feed[0].name, 
                                             inclusive_begin_timestamp_label=inclusive_begin_ts, 
                                             inclusive_end_timestamp_label=query_params['timestamp_label__lte'])
     
