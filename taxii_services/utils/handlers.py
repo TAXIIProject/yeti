@@ -2,7 +2,10 @@
 # For license information, see the LICENSE.txt file
 
 import logging
+from datetime import datetime
+from dateutil.tz import tzutc
 from django.http import HttpResponse
+from taxii_services.models import Inbox, DataFeed, ContentBlock, ContentBindingId
 import libtaxii as t
 import libtaxii.messages as tm
 
@@ -42,7 +45,9 @@ DICT_REVERSE_DJANGO_NORMALIZATION = {DJANGO_HTTP_HEADER_CONTENT_TYPE: HTTP_HEADE
                                      DJANGO_HTTP_HEADER_ACCEPT: HTTP_HEADER_ACCEPT}
 
 # HTTP status codes
-HTTP_STATUS_OK = 200
+HTTP_STATUS_OK              = 200
+HTTP_STATUS_SERVER_ERROR    = 500
+HTTP_STATUS_NOT_FOUND       = 400
 
 def create_taxii_response(message, status_code=HTTP_STATUS_OK, use_https=True):
     '''Creates a TAXII HTTP Response for a given message and status code'''
@@ -70,10 +75,7 @@ def validate_taxii_headers(request, request_message_id):
     missing_required_headers = set(DICT_REQUIRED_TAXII_HTTP_HEADERS).difference(set(request.META))
     if missing_required_headers:
         msg = "Required headers not present: [%s]" % (', '.join([DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers])) 
-        m = tm.StatusMessage(tm.generate_message_id(), 
-                             request_message_id, 
-                             status_type=tm.ST_FAILURE, 
-                             message=msg)
+        m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
         return create_taxii_response(m, use_https=request.is_secure())
 
     #For headers that exist, make sure the values are supported
@@ -85,17 +87,11 @@ def validate_taxii_headers(request, request_message_id):
         supported_values = DICT_TAXII_HTTP_HEADER_VALUES[header]
         
         if header_value not in supported_values:
-            msg = 'The value of %s is not supported. The value was %s. Supported values are %s' % (DICT_REVERSE_DJANGO_NORMALIZATION[header], 
-                                                                                                   header_value, 
-                                                                                                   supported_values)
-            
-            m = tm.StatusMessage(tm.generate_message_id(),
-                                 request_message_id,
-                                 status_type=tm.ST_FAILURE,
-                                 message=msg)
+            msg = 'The value of %s is not supported. The value was %s. Supported values are %s' % (DICT_REVERSE_DJANGO_NORMALIZATION[header], header_value, supported_values)
+            m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
             return create_taxii_response(m, use_https=request.is_secure())
     
-    #Check to make sure the specified protocol matches the protocol used
+    # Check to make sure the specified protocol matches the protocol used
     if request.META[DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL] == t.VID_TAXII_HTTPS_10:
         header_proto = 'HTTPS'
     elif request.META[DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL] == t.VID_TAXII_HTTP_10:
@@ -103,15 +99,11 @@ def validate_taxii_headers(request, request_message_id):
     else:
         header_proto = 'unknown'
     
-    actual_proto = 'HTTPS' if request.is_secure() else 'HTTP'
+    request_proto = 'HTTPS' if request.is_secure() else 'HTTP' # Did the request come over HTTP or HTTPS?
     
-    if header_proto != actual_proto:
-        msg = 'Protocol value incorrect. You specified %s and used %s' % (header_proto, actual_proto)
-            
-        m = tm.StatusMessage(tm.generate_message_id(),
-                             request_message_id,
-                             status_type=tm.ST_FAILURE,
-                             message=msg)
+    if header_proto != request_proto:
+        msg = 'Protocol value incorrect. TAXII header specified %s but was sent over %s' % (header_proto, request_proto)
+        m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
         return create_taxii_response(m, use_https=request.is_secure())
     
     # At this point, the header values are known to be good.
@@ -135,18 +127,107 @@ def validate_taxii_request(request):
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='No POST data')
         logger.info('Request had a body length of 0. Returning error.')
         return create_taxii_response(m, use_https=request.is_secure())
-    
     return None
 
+def inbox_add_content(request, inbox_name, taxii_message):
+    '''Adds content to inbox and associated data feeds'''
+    logger = logging.getLogger('taxii_services.utils.handlers.inbox_add_content')
+    logger.debug('adding content to inbox [%s]' % (inbox_name))
 
+    try:
+        inbox = Inbox.objects.get(name=inbox_name)
+    except:
+        logger.debug('push content to unknown inbox [%s]' % (inbox_name))
+        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Inbox does not exist [%s]' % (inbox_name))
+        return create_taxii_response(m, use_https=request.is_secure())
+    
+    logger.debug('taxii message [%s] contains [%d] content blocks' %(taxii_message.message_id, len(taxii_message.content_blocks)))
+    for content_block in taxii_message.content_blocks:
+        try:
+            content_binding_id = ContentBindingId.objects.get(binding_id=content_block.content_binding)
+        except:
+            logger.debug('taxii message [%s] contained unrecognized content binding [%s]' % (taxii_message.message_id, content_block.content_binding))
+        
+        if content_binding_id not in inbox.supported_content_bindings.all():
+            logger.info('inbox [%s] does not accept content [%s]' % content_block.content_binding)
+        else:
+            c = ContentBlock()
+            c.message_id = taxii_message.message_id
+            c.content_binding = content_binding_id
+            c.content = content_block.content
+            
+            if content_block.padding: 
+                c.padding = content_block.padding
+            
+            if request.user.is_authenticated():
+                c.submitted_by = request.user
+            
+            c.save()
+            inbox.content_blocks.add(c) # add content block to inbox
+            
+            for data_feed in inbox.data_feeds.all():
+                if content_binding_id in data_feed.supported_content_bindings.all():
+                    data_feed.content_blocks.add(c)
+                    data_feed.save()
+                else:
+                    logger.debug('inbox [%s] received data using content binding [%s] - associated data feed [%s] does not support this binding. ')
+    
+    inbox.save()
+    m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type = tm.ST_SUCCESS)
+    return create_taxii_response(m, use_https=request.is_secure())
 
-def get_source_ip(request):
-    '''Given a request object, returns the source IP used to make the request.'''
-    if request is None: 
-        return None
+def poll_get_content(request, taxii_message):
+    '''Returns a Poll response for a given Poll Request Message'''
+    logger = logging.getLogger('taxii_services.utils.handlers.poll_get_content')
+    logger.debug('polling data from data feed [%s]' % taxii_message.feed_name)
     
-    x_header = request.META.get('HTTP_X_FORWARDED_FOR')
-    ip = x_header.split(',')[0] if x_header else request.META.get('REMOTE_ADDR')
+    try:
+        data_feed = DataFeed.objects.get(name=taxii_message.feed_name)
+    except:
+        logger.debug('attempting to poll unknown data feed [%s]' % (taxii_message.feed_name))
+        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Data feed does not exist [%s]' % (taxii_message.feed_name))
+        return create_taxii_response(m, use_https=request.is_secure())
     
-    return ip
+    # build query for poll results
+    query_params = {}
+    if taxii_message.exclusive_begin_timestamp_label:
+        query_params['timestamp_label__gt'] = taxii_message.exclusive_begin_timestamp_label
+    
+    current_datetime = datetime.now(tzutc())
+    if taxii_message.inclusive_end_timestamp_label and (taxii_message.inclusive_end_timestamp_label < current_datetime):
+        query_params['timestamp_label__lte'] = taxii_message.exclusive_end_timestamp_label
+    else:
+        query_params['timestamp_label__lte'] = current_datetime
+    
+    if taxii_message.content_bindings:
+        query_params['content_binding__in'] = taxii_message.content_bindings
+    
+    logger.debug('query params %s' % (query_params))
+    content_blocks = data_feed.content_blocks.filter(**query_params).order_by('timestamp_label')
+    logger.debug('returned %d content blocks from data feed' % (len(content_blocks)))
+    # TAXII Poll Requests have exclusive begin timestamp label fields, while Poll Responses
+    # have *inclusive* begin timestamp label fields. To satisfy this, we add one millisecond
+    # to the Poll Request's begin timestamp label. 
+    #
+    # This will be addressed in future versions of TAXII
+    inclusive_begin_ts = None
+    if taxii_message.exclusive_begin_timestamp_label:
+        inclusive_begin_ts = taxii_message.exclusive_begin_timestamp_label + datetime.timedelta(milliseconds=1)
+    
+    # build poll response
+    poll_response_message = tm.PollResponse(tm.generate_message_id(), 
+                                            taxii_message.message_id, 
+                                            feed_name=data_feed.name, 
+                                            inclusive_begin_timestamp_label=inclusive_begin_ts, 
+                                            inclusive_end_timestamp_label=query_params['timestamp_label__lte'])
+    
+    for content_block in content_blocks:
+        cb = tm.ContentBlock(content_block.content_binding.binding_id, content_block.content, content_block.timestamp_label)
+        
+        if content_block.padding:
+            cb.padding = content_block.padding
+        
+        poll_response_message.content_blocks.append(cb)
+    
+    return create_taxii_response(poll_response_message, use_https=request.is_secure())
 

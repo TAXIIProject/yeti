@@ -99,35 +99,14 @@ class DataFeedSubscriptionMethod(models.Model):
             return u'%s | %s' % (self.protocol_binding, self.message_binding)
     
     class Meta:
-        ordering = ['address']
-    
-class DataFeed(models.Model):    
-    name = models.CharField(max_length=MAX_NAME_LEN) # this will be used in the URL to access this feed
-    description = models.TextField(blank=True)
-    users = models.ManyToManyField(User) # users allowed to access this data feed.
-    #authentication_required = models.BooleanField(default=True)
-    
-    supported_content_bindings = models.ManyToManyField(ContentBindingId)
-    push_methods = models.ManyToManyField(DataFeedPushMethod)
-    poll_service_instances = models.ManyToManyField(DataFeedPollInformation)
-    subscription_methods = models.ManyToManyField(DataFeedSubscriptionMethod)
-    
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
-    
-    def __unicode__(self):
-        return u'%s' % (self.title)
-
-    class Meta:
-        ordering = ['name']
+        ordering = ['address']  
 
 class ContentBlock(models.Model):
     title = models.CharField(max_length=MAX_NAME_LEN, blank=True) # not required by TAXII
     description = models.TextField(blank=True) # not required by TAXII
     
-    data_feeds = models.ManyToManyField(DataFeed)
     timestamp_label = models.DateTimeField(default=lambda:datetime.datetime.now(tzutc())) # need to ensure uniqueness of this field
-    submitted_by = models.ForeignKey(User, blank=True, null=True)#Not sure this is needed, but we track it anyway
+    submitted_by = models.ForeignKey(User, blank=True, null=True) # Not sure this is needed, but we track it anyway
     message_id = models.CharField(max_length=MAX_ID_LEN, blank=True) # associated message id if present. is there always a 1-to-1 for message ids and content blocks
     
     #TAXII Properties of a content block
@@ -142,10 +121,30 @@ class ContentBlock(models.Model):
         return u'%s' % (self.id)
 
     class Meta:
-        ordering = ['timestamp_label']
+        ordering = ['timestamp_label']  
+    
+class DataFeed(models.Model):    
+    name = models.CharField(max_length=MAX_NAME_LEN) # this will be used to access this data feed
+    description = models.TextField(blank=True)
+    users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this data feed.
+    #authentication_required = models.BooleanField(default=True)
+    supported_content_bindings = models.ManyToManyField(ContentBindingId)
+    push_methods = models.ManyToManyField(DataFeedPushMethod)
+    poll_service_instances = models.ManyToManyField(DataFeedPollInformation)
+    subscription_methods = models.ManyToManyField(DataFeedSubscriptionMethod)
+    content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True)
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+    
+    def __unicode__(self):
+        return u'%s' % (self.name)
+
+    class Meta:
+        ordering = ['name']
 
 class DataFeedSubscription(models.Model):
-    subscription_id = models.CharField(max_length=128, unique=True) # uri formatted subscription id
+    subscription_id = models.CharField(max_length=MAX_ID_LEN, unique=True) # uri formatted subscription id
     user = models.ForeignKey(User)
     data_feed = models.ForeignKey(DataFeed)
     data_feed_method = models.ForeignKey(DataFeedSubscriptionMethod)
@@ -159,4 +158,24 @@ class DataFeedSubscription(models.Model):
         return u'%s' % (self.title)
 
     class Meta:
-        ordering = ['subscription_id']
+        ordering = ['subscription_id']   
+        
+class Inbox(models.Model):
+    '''Characterizes a TAXII inbox'''
+    name = models.CharField(max_length=MAX_NAME_LEN, unique=True) # this will become part of the URL where it can be accessed at
+    description = models.TextField(blank=True)
+    supported_content_bindings = models.ManyToManyField(ContentBindingId)
+    supported_protocol_bindings = models.ManyToManyField(ProtocolBindingId)
+    supported_message_bindings = models.ManyToManyField(MessageBindingId)
+    content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True) # content blocks associated with this inbox
+    data_feeds = models.ManyToManyField(DataFeed, blank=True, null=True) # data received at an inbox will automatically be made available on these data feeds
+    users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this inbox
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+    
+    def __unicode__(self):
+        return u'%s' % self.name
+    
+    class Meta:
+        ordering = ['name']

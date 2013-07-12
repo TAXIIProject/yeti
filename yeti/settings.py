@@ -5,6 +5,7 @@
 import os
 import sys
 import django
+import taxii_services.settings
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -159,7 +160,7 @@ INSTALLED_APPS = (
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOG_LEVEL = "INFO"
+LOG_LEVEL = "DEBUG"
 
 LOG_DIRECTORY = os.path.join(SITE_ROOT, "log")
 
@@ -205,6 +206,11 @@ LOGGING = {
             'level': LOG_LEVEL,
             'propagate': True,
         },
+        'taxii_services': {
+            'handlers': ['normal','stdout'],
+            'level': LOG_LEVEL,
+            'propagate': True,
+        },
     }
 }
 
@@ -214,4 +220,9 @@ try:
 except ImportError:
     pass
 
+# Set the taxii_services authentication required flag to AUTH_REQUIRED
+# This is done after the settings_local import in case local settings
+# override the AUTH_FLAG declared above. We do this to keep the 
+# taxii_services app as untethered from yeti as possible
+taxii_services.settings.AUTH_REQUIRED = AUTH_REQUIRED
 
