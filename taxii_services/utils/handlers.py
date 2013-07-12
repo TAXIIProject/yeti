@@ -202,9 +202,9 @@ def poll_get_content(request, taxii_message):
     if taxii_message.content_bindings:
         query_params['content_binding__in'] = taxii_message.content_bindings
     
-    logger.debug('query params %s' % (query_params))
     content_blocks = data_feed.content_blocks.filter(**query_params).order_by('timestamp_label')
     logger.debug('returned %d content blocks from data feed' % (len(content_blocks)))
+    
     # TAXII Poll Requests have exclusive begin timestamp label fields, while Poll Responses
     # have *inclusive* begin timestamp label fields. To satisfy this, we add one millisecond
     # to the Poll Request's begin timestamp label. 
