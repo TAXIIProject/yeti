@@ -2,12 +2,32 @@
 # For license information, see the LICENSE.txt file
 
 import logging
+from django.http import HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
 from taxii_services.utils.decorators import taxii_auth_check
 import taxii_services.utils.handlers as handlers
 import libtaxii.messages as tm
 
 
+def server_error(request):
+    '''
+    This overrides the django.views.defaults.server_error view.
+    If the request path points to a taxii service, we return a TAXII
+    FAILURE message. If the request pointed to something outside of
+    the TAXII services, we return a normal HTTP 500 response
+    '''
+    
+    logger = logging.getLogger('yeti.taxii_services.views.server_error')
+    logger.debug('server error occured - returning ST_FAILURE message')
+    
+    if request.path.startswith('/services'):
+        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='An internal server error occurred')
+        return handlers.create_taxii_response(m, handlers.HTTP_STATUS_OK, use_https=request.is_secure()) # should the http status be 500?
+    
+    resp = HttpResponseServerError()
+    resp.body = 'A server error occurred'
+    return resp
+    
 @csrf_exempt
 @taxii_auth_check
 def inbox_service(request, inbox_name):
