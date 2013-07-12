@@ -137,7 +137,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
     try:
         inbox = Inbox.objects.get(name=inbox_name)
     except:
-        logger.debug('push content to unknown inbox [%s]' % (inbox_name))
+        logger.debug('attempting to push content to unknown inbox [%s]' % (inbox_name))
         m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Inbox does not exist [%s]' % (inbox_name))
         return create_taxii_response(m, use_https=request.is_secure())
     
