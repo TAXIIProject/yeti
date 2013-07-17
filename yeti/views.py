@@ -1,8 +1,9 @@
 # Copyright (C) 2013 - The MITRE Corporation
 # For license information, see the LICENSE.txt file
 
+from django.http import HttpResponse, HttpResponseNotFound
 
-from django.http import HttpResponse
 
-def home(request):
-	return HttpResponse()
+def index(request):
+	return HttpResponseNotFound("404 - NOT FOUND")
+

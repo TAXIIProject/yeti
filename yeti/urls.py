@@ -9,6 +9,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^$', 'yeti.views.index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^services/', include('taxii_services.urls')),
     #url(r'^test/', 'taxii_services.views.test')
