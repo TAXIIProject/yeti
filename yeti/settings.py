@@ -5,7 +5,7 @@
 import os
 import sys
 import django
-import taxii_services.settings
+
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -44,7 +44,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -224,5 +224,6 @@ except ImportError:
 # This is done after the settings_local import in case local settings
 # override the AUTH_FLAG declared above. We do this to keep the 
 # taxii_services app as untethered from yeti as possible
+import taxii_services.settings
 taxii_services.settings.AUTH_REQUIRED = AUTH_REQUIRED
 
