@@ -20,15 +20,18 @@ import os
 import sys
 import django.core.handlers.wsgi
 
+
+wsgi_script_dir = os.path.dirname(os.path.realpath(__file__)) # this should be the yeti django app/package directory
+yeti_path = os.path.dirname(wsgi_script_dir) # this is the parent directory, containing the yeti app and taxii_services_app
+if yeti_path not in sys.path:
+    sys.path.append(yeti_path)
+
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
 # if running multiple sites in the same mod_wsgi process. To fix this, use
 # mod_wsgi daemon mode with each site in its own daemon process, or use
 # os.environ["DJANGO_SETTINGS_MODULE"] = "yeti.settings"
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "yeti.settings")
 
-yeti_path = '/data/yeti'
-if yeti_path not in sys.path:
-    sys.path.append(yeti_path)
+os.environ["DJANGO_SETTINGS_MODULE"] = "yeti.settings"
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
