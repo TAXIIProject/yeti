@@ -30,15 +30,19 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DB_PATH = os.path.join(os.path.dirname(SITE_ROOT), 'sqlite3.db') # one directory up from the SITE_ROOT
+
+# YETI is configured to use SQLLite by default. To change
+# the database used by YETI, see the Django documentation on 
+# databases: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE':   'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME':     DB_PATH,                      # Or path to database file if using sqlite3.
+        'ENGINE':   'django.db.backends.sqlite3',
+        'NAME':     DB_PATH,
         # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+        #'USER': '',
+        #'PASSWORD': '',
+        #'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        #'PORT': '',                      # Set to empty string for default.
     }
 }
 
