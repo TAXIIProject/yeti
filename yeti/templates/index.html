@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>YETI</title>
+        <style type="text/css">
+            body {
+                font: 14px Helvetica, arial, freesans, clean, sans-serif;
+                line-height: 1.4;
+            }
+            a {
+                color: #4183c4;
+				text-decoration: none;
+		    }
+            span {
+                white-space: nowrap;
+            }
+            
+            #content {
+                width: 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main">
+            <div id="content">
+                <h1>YETI</h1>
+                <p>
+                    YETI is an implementation of the <a href="http://taxii.mitre.org">Trusted Automated eXchange of Indicator Information (TAXII)</a>.
+                </p>
+                <h1>Overview</h1>
+                <p>
+                    YETI is an implementation of TAXII. YETI was written in Python 2.7 and utilizes the Django 1.5 web application framework. YETI
+                    implements TAXII Services as defined by the <a href="http://taxii.mitre.org/specifications/version1.0/TAXII_Services_Specification.pdf">TAXII Services Specification</a>
+                    and the <a href="http://taxii.mitre.org/specifications/version1.0/http1.0/TAXII_HTTPProtocolBinding_Specification.pdf">TAXII HTTP Binding Specification</a>.
+                </p>
+                <h1>Services</h1>
+                <p>
+                    The following services are implemented by YETI. The services listed below are defined by the <a href="http://taxii.mitre.org/specifications/version1.0/TAXII_Services_Specification.pdf">TAXII Services Specification</a>.
+                </p>
+                <h2>Inbox</h2>
+                <p>
+                    The Inbox service is the mechanism by which a TAXII consumer accepts messages from a TAXII producer in producer-initiated exchanges (i.e., push messaging).
+                    The Inbox service can be accessed by transmitting an Inbox message to the <span>/services/inbox/&lt;inbox_name&gt;</span> location of this YETI installation. 
+                    For example, sending data to the default inbox established by a quickstart YETI instance would require sending an Inbox message to <span>http://localhost/services/inbox/default</span>.
+                    YETI comes bundled with a inbox_client.py script to serve as a demonstration of the Inbox service. This script is located in the scripts directory of your YETI installation.
+                </p>
+                <h2>Poll</h2>
+                <p>
+                    The Poll service is the mechanism by which a TAXII consumers can pull data from a TAXII Data Feed. The Poll service can be accessed by transmitting a Poll request to the
+                    <span>/services/poll/</span> location of this YETI installation. The name of the TAXII Data Feed for the Poll request is contained within the TAXII message itself and
+                    not specified within the URL. To Poll data from the default Data Feed established by a quickstart YETI instance, a TAXII client would transmit a Poll request to
+                    <span>http://localhost/services/poll</span>. YETI comes bundled with a poll_client.py script to serve as a demonstration of the Poll service. This script is located
+                    in the scripts directory of your YETI installation.
+                </p>
+            </div>
+        </div>
+    </body>
+</html>
