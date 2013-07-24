@@ -1,0 +1,45 @@
+YETI INSTALLATION NOTES
+-----------------------
+
+YETI is a Django web application that can be installed and run via several different methods.
+The recommended way to easily stand up and use YETI is via the quickstart script located in
+the scripts directory.
+
+Quickstart
+----------
+To install and run YETI, users can take advantage of the quickstart script found within the
+scripts directory of your YETI base directory. The quickstart.sh script is intended to be run
+within Linux or OSX environments, while the quickstart.bat script can be run within a Windows
+environemnt. To start YETI, follow these steps:
+
+1) In a shell, navigate to the your YETI base directory
+2) Run the quickstart script (quickstart.sh in Linux/OSX or quickstart.bat in Windows)
+   
+   ./scripts/quickstart.sh # on Linux/OSX
+   scripts\quickstart.bat # on Windows
+   
+3) Type "yes" and press Enter when prompted to create a superuser account
+4) Enter a username when prompted
+5) Enter an email address when prompted
+6) Enter a password when prompted
+7) Enter password again when prompted
+8) Open a web browser and enter 127.0.0.1 in the URL bar
+
+You should be presented with a YETI welcome page that details the available services of your
+YETI installation. Once YETI is running, you can interact with it via the inbox_client.py
+and poll_client.py scripts found within the scripts directory.
+
+
+WSGI
+----
+Django web applications can be run as a WSGI app from within an HTTP server implementation
+such as Apache HTTP Server v2.2. Documentation on how to accomplish this can be found on
+the Django documentation website (https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/)
+or on the YETI wiki page (https://github.com/TAXIIProject/yeti/wiki/Apache-2.2-Deployment).
+
+
+Administration
+--------------
+Administration of YETI (e.g., adding user accounts, seeing/modifying stored data, etc.) can
+be accomplished via the admin interface, located at 127.0.0.1/admin. You will be asked to
+enter the superuser credentials entered previously when starting YETI for the first time.
