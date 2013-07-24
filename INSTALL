@@ -24,6 +24,7 @@ YETI is a Django web application that can be installed and run via several diffe
 The recommended way to easily stand up and use YETI is via the quickstart script located in
 the scripts directory.
 
+
 Quickstart
 ----------
 To install and run YETI, users can take advantage of the quickstart script found within the
