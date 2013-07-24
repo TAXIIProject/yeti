@@ -7,8 +7,8 @@ dist/
 .pydevproject
 .settings
 *.db
+*.DS_Store
 
 # local dev files
 yeti/settings_local.py
-yeti/db.sql
 
