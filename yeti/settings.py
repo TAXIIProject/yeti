@@ -14,7 +14,7 @@ DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
 AUTH_REQUIRED = False # possible location for global configuration flag
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
 TEMP_DIR = os.path.join(SITE_ROOT, "tmp")
