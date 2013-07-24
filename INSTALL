@@ -34,8 +34,13 @@ environemnt. To start YETI, follow these steps:
 1) In a shell, navigate to the your YETI base directory
 2) Run the quickstart script (quickstart.sh in Linux/OSX or quickstart.bat in Windows)
    
-   ./scripts/quickstart.sh # on Linux/OSX
-   scripts\quickstart.bat # on Windows
+   $ sh ./scripts/quickstart.sh # on Linux/OSX
+   > scripts\quickstart.bat # on Windows
+   
+   NOTE: This will attempt to launch YETI on port 80, so you may need to run quickstart as a
+   superuser/administrator if you are not one already:
+   
+   $ sudo sh ./scripts/quickstart.sh # run quickstart as root on Linux/OSX
    
 3) Type "yes" and press Enter when prompted to create a superuser account
 4) Enter a username when prompted
