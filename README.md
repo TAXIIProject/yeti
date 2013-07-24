@@ -21,6 +21,10 @@ Releases of YETI will be given 'major.minor.revision' version numbers, where 'ma
 'minor' correspond to the TAXII version being supported. The 'revision' number is used to 
 indicate new versions of YETI.
 
+## Getting Started
+To start using YETI, please refer to the bundled [INSTALL](https://github.com/TAXIIProject/yeti/blob/master/INSTALL)
+file or the [Deployment](https://github.com/TAXIIProject/yeti/wiki/Deployment) section of the YETI wiki.
+
 ## Feedback 
 You are encouraged to provide feedback by commenting on open issues or signing up for the TAXII
 discussion list and posting your questions (http://taxii.mitre.org/community/registration.html).
