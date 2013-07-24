@@ -164,8 +164,7 @@ class ContentBlock(models.Model):
         ordering = ['timestamp_label']  
     
 class DataFeed(models.Model):
-    '''Represents a TAXII Data Feed'''
-      
+    '''Represents a TAXII Data Feed'''   
     name = models.CharField(max_length=MAX_TITLE_LEN) # this will be used to access this data feed
     description = models.TextField(blank=True)
     users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this data feed.
@@ -187,7 +186,6 @@ class DataFeed(models.Model):
 
 class DataFeedSubscription(models.Model):
     '''Represents a Data Feed Subscription. This is not used by YETI at the moment.'''
-    
     subscription_id = models.CharField(max_length=MAX_ID_LEN, unique=True) # uri formatted subscription id
     user = models.ForeignKey(User)
     data_feed = models.ForeignKey(DataFeed)
@@ -205,7 +203,12 @@ class DataFeedSubscription(models.Model):
         ordering = ['subscription_id']   
         
 class Inbox(models.Model):
-    '''Characterizes a TAXII inbox'''
+    '''
+    Characterizes a TAXII Inbox. Inboxes are the mechanism by which TAXII consumers
+    receive data from TAXII publishers. This Inbox implementation allows an Inbox
+    to be "bound" to zero or more Data Feeds, meaning that data received by an Inbox
+    can populate Data Feeds if a user configures it as such.
+    '''
     name = models.CharField(max_length=MAX_TITLE_LEN, unique=True) # this will become part of the URL where it can be accessed at
     description = models.TextField(blank=True)
     supported_content_bindings = models.ManyToManyField(ContentBindingId)
