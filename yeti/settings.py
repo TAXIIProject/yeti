@@ -14,7 +14,7 @@ DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
 AUTH_REQUIRED = False # possible location for global configuration flag
-DEBUG = False
+DEBUG = False # If set to True, YETI will not return TAXII Messages for errors.
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
 TEMP_DIR = os.path.join(SITE_ROOT, "tmp")
