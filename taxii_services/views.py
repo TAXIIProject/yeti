@@ -16,7 +16,6 @@ def server_error(request):
     FAILURE message. If the request pointed to something outside of
     the TAXII services, we return a normal HTTP 500 response
     '''
-    
     logger = logging.getLogger('yeti.taxii_services.views.server_error')
     logger.debug('server error occured - returning ST_FAILURE message')
     
