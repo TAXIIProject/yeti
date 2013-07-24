@@ -7,7 +7,7 @@ from dateutil.tz import tzutc
 import datetime
 
 MAX_ID_LEN      = 128 
-MAX_NAME_LEN    = 128
+MAX_TITLE_LEN   = 128
 
 class ProtocolBindingId(models.Model):
     '''
@@ -18,7 +18,7 @@ class ProtocolBindingId(models.Model):
     HTTP protocol binding id : "urn:taxii.mitre.org:protocol:http:1.0"
     HTTPS protocol binding id : "urn:taxii.mitre.org:protocol:https:1.0"
     '''
-    title = models.CharField(max_length=MAX_NAME_LEN, blank=True)
+    title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -38,7 +38,7 @@ class ContentBindingId(models.Model):
     Ex:
     STIX v1.0 content binding id : "urn:stix.mitre.org:xml:1.0"
     '''
-    title = models.CharField(max_length=MAX_NAME_LEN, blank=True)
+    title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -58,7 +58,7 @@ class MessageBindingId(models.Model):
     Ex:
     XML message binding id : "urn:taxii.mitre.org:message:xml:1.0"
     '''
-    title = models.CharField(max_length=MAX_NAME_LEN, blank=True)
+    title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -76,7 +76,7 @@ class DataFeedPushMethod(models.Model):
     a subscription. This appears in a Feed Information Response message,
     as defined by the TAXII Services Specification.
     '''
-    title = models.CharField(max_length=MAX_NAME_LEN, blank=True)
+    title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     protocol_binding = models.ForeignKey(ProtocolBindingId)
     message_binding = models.ForeignKey(MessageBindingId)
@@ -96,7 +96,7 @@ class DataFeedPollInformation(models.Model):
     This appears in a Feed Information Response message, as defined by the
     TAXII Services Specification.
     '''
-    title = models.CharField(max_length=MAX_NAME_LEN, blank=True)
+    title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     address = models.URLField()
     protocol_binding = models.ForeignKey(ProtocolBindingId)
@@ -121,7 +121,7 @@ class DataFeedSubscriptionMethod(models.Model):
     Data Feed. This appears in a Feed Information Response message, as defined
     by the TAXII Services Specification.
     '''
-    title = models.CharField(max_length=MAX_NAME_LEN, blank=True)
+    title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     address = models.URLField()
     protocol_binding = models.ForeignKey(ProtocolBindingId)
@@ -142,7 +142,7 @@ class DataFeedSubscriptionMethod(models.Model):
 class ContentBlock(models.Model):
     '''Represents the content block of a TAXII Poll Response or Inbox message.'''
     
-    title = models.CharField(max_length=MAX_NAME_LEN, blank=True) # not required by TAXII
+    title = models.CharField(max_length=MAX_TITLE_LEN, blank=True) # not required by TAXII
     description = models.TextField(blank=True) # not required by TAXII
     
     timestamp_label = models.DateTimeField(default=lambda:datetime.datetime.now(tzutc())) # need to ensure uniqueness of this field
@@ -166,7 +166,7 @@ class ContentBlock(models.Model):
 class DataFeed(models.Model):
     '''Represents a TAXII Data Feed'''
       
-    name = models.CharField(max_length=MAX_NAME_LEN) # this will be used to access this data feed
+    name = models.CharField(max_length=MAX_TITLE_LEN) # this will be used to access this data feed
     description = models.TextField(blank=True)
     users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this data feed.
     #authentication_required = models.BooleanField(default=True)
@@ -206,7 +206,7 @@ class DataFeedSubscription(models.Model):
         
 class Inbox(models.Model):
     '''Characterizes a TAXII inbox'''
-    name = models.CharField(max_length=MAX_NAME_LEN, unique=True) # this will become part of the URL where it can be accessed at
+    name = models.CharField(max_length=MAX_TITLE_LEN, unique=True) # this will become part of the URL where it can be accessed at
     description = models.TextField(blank=True)
     supported_content_bindings = models.ManyToManyField(ContentBindingId)
     supported_protocol_bindings = models.ManyToManyField(ProtocolBindingId)
