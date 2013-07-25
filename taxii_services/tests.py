@@ -1,6 +1,5 @@
 # Copyright (C) 2013 - The MITRE Corporation
 # For license information, see the LICENSE.txt file
-
 """
 This file demonstrates writing tests using the unittest module. These will pass
 when you run "manage.py test".

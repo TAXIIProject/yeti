@@ -10,8 +10,7 @@ import validators
 import settings
 
 class Certificate(models.Model):
-	'''Manages SSL/TLS Certificates for YETI/Apache authentication'''
-	
+	"""Manages SSL/TLS Certificates for YETI/Apache authentication"""
 	title = models.CharField(max_length=64)
 	description = models.TextField(blank=True)
 	subject = models.CharField(max_length=255, unique=True, editable=False, default='Unassigned')
@@ -33,12 +32,12 @@ class Certificate(models.Model):
 		self.issuer = str(x509issuer)[18:-2]
 
 def do_export_certs(sender, **kwargs):
-	'''
+	"""
 	Overwrites the client certificate file with all the stored
 	Certificate objects. To modify the location of the client
 	certificate file, edit the settings.CERT_EXPORT_LOCATION 
 	configuration option.
-	'''
+	"""
 	export_location = settings.CERT_EXPORT_LOCATION
 	export_file = open(export_location, 'w')
 	all_certs = Certificate.objects.all()

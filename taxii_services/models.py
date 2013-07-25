@@ -10,14 +10,14 @@ MAX_ID_LEN      = 128
 MAX_TITLE_LEN   = 128
 
 class ProtocolBindingId(models.Model):
-    '''
+    """
     Represents a protocol binding id, used to establish the exchange protocol
     supported by a TAXII implementation.
     
     Ex: 
     HTTP protocol binding id : "urn:taxii.mitre.org:protocol:http:1.0"
     HTTPS protocol binding id : "urn:taxii.mitre.org:protocol:https:1.0"
-    '''
+    """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
@@ -31,13 +31,13 @@ class ProtocolBindingId(models.Model):
             return u'%s' % (self.binding_id)
 
 class ContentBindingId(models.Model):
-    '''
+    """
     Represents a content binding id, used to establish the supported content
     types for a given TAXII exchange (e.g., Poll, Inbox, etc.).
     
     Ex:
     STIX v1.0 content binding id : "urn:stix.mitre.org:xml:1.0"
-    '''
+    """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
@@ -51,13 +51,13 @@ class ContentBindingId(models.Model):
             return u'%s' % (self.binding_id)
 
 class MessageBindingId(models.Model):
-    '''
+    """
     Represents a message binding id, used to establish the supported syntax
     for a given TAXII exchange, "e.g., XML".
     
     Ex:
     XML message binding id : "urn:taxii.mitre.org:message:xml:1.0"
-    '''
+    """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     binding_id = models.CharField(max_length=MAX_ID_LEN)
@@ -71,11 +71,11 @@ class MessageBindingId(models.Model):
             return u'%s' % (self.binding_id)
 
 class DataFeedPushMethod(models.Model):
-    '''
+    """
     Used to establish the protocols that can be used to push content via
     a subscription. This appears in a Feed Information Response message,
     as defined by the TAXII Services Specification.
-    '''
+    """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     protocol_binding = models.ForeignKey(ProtocolBindingId)
@@ -91,11 +91,11 @@ class DataFeedPushMethod(models.Model):
             return u'%s | %s' % (self.protocol_binding, self.message_binding)
     
 class DataFeedPollInformation(models.Model):
-    '''
+    """
     Used to establish the supported protocols and address of a Data Feed.
     This appears in a Feed Information Response message, as defined by the
     TAXII Services Specification.
-    '''
+    """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     address = models.URLField()
@@ -115,12 +115,12 @@ class DataFeedPollInformation(models.Model):
         ordering = ['address']
     
 class DataFeedSubscriptionMethod(models.Model):
-    '''
+    """
     Used to identify the protocol and address of the TAXII daemon hosting
     the Feed Management Service that can process subscriptions for a TAXII
     Data Feed. This appears in a Feed Information Response message, as defined
     by the TAXII Services Specification.
-    '''
+    """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
     address = models.URLField()
@@ -140,7 +140,7 @@ class DataFeedSubscriptionMethod(models.Model):
         ordering = ['address']  
 
 class ContentBlock(models.Model):
-    '''Represents the content block of a TAXII Poll Response or Inbox message.'''
+    """Represents the content block of a TAXII Poll Response or Inbox message."""
     
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True) # not required by TAXII
     description = models.TextField(blank=True) # not required by TAXII
@@ -164,7 +164,7 @@ class ContentBlock(models.Model):
         ordering = ['timestamp_label']  
     
 class DataFeed(models.Model):
-    '''Represents a TAXII Data Feed'''   
+    """Represents a TAXII Data Feed"""   
     name = models.CharField(max_length=MAX_TITLE_LEN) # this will be used to access this data feed
     description = models.TextField(blank=True)
     users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this data feed.
@@ -185,7 +185,7 @@ class DataFeed(models.Model):
         ordering = ['name']
 
 class DataFeedSubscription(models.Model):
-    '''Represents a Data Feed Subscription. This is not used by YETI at the moment.'''
+    """Represents a Data Feed Subscription. This is not used by YETI at the moment."""
     subscription_id = models.CharField(max_length=MAX_ID_LEN, unique=True) # uri formatted subscription id
     user = models.ForeignKey(User)
     data_feed = models.ForeignKey(DataFeed)
@@ -203,12 +203,12 @@ class DataFeedSubscription(models.Model):
         ordering = ['subscription_id']   
         
 class Inbox(models.Model):
-    '''
+    """
     Characterizes a TAXII Inbox. Inboxes are the mechanism by which TAXII consumers
     receive data from TAXII publishers. This Inbox implementation allows an Inbox
     to be "bound" to zero or more Data Feeds, meaning that data received by an Inbox
     can populate Data Feeds if a user configures it as such.
-    '''
+    """
     name = models.CharField(max_length=MAX_TITLE_LEN, unique=True) # this will become part of the URL where it can be accessed at
     description = models.TextField(blank=True)
     supported_content_bindings = models.ManyToManyField(ContentBindingId)

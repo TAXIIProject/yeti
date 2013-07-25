@@ -10,12 +10,12 @@ import libtaxii.messages as tm
 
 
 def server_error(request):
-    '''
+    """
     This overrides the django.views.defaults.server_error view.
     If the request path points to a taxii service, we return a TAXII
     FAILURE message. If the request pointed to something outside of
     the TAXII services, we return a normal HTTP 500 response
-    '''
+    """
     logger = logging.getLogger('yeti.taxii_services.views.server_error')
     logger.debug('server error occured - returning ST_FAILURE message')
     

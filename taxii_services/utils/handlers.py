@@ -50,7 +50,7 @@ HTTP_STATUS_SERVER_ERROR    = 500
 HTTP_STATUS_NOT_FOUND       = 400
 
 def create_taxii_response(message, status_code=HTTP_STATUS_OK, use_https=True):
-    '''Creates a TAXII HTTP Response for a given message and status code'''
+    """Creates a TAXII HTTP Response for a given message and status code"""
     resp = HttpResponse()
     resp.content = message.to_xml()
     set_taxii_headers_response(resp, use_https)
@@ -58,7 +58,7 @@ def create_taxii_response(message, status_code=HTTP_STATUS_OK, use_https=True):
     return resp
 
 def set_taxii_headers_response(response, use_https):
-    '''Sets the TAXII HTTP Headers for a given HTTP response'''
+    """Sets the TAXII HTTP Headers for a given HTTP response"""
     response[HTTP_HEADER_CONTENT_TYPE] = 'application/xml'
     response[HTTP_HEADER_X_TAXII_CONTENT_TYPE] = t.VID_TAXII_XML_10
     protocol = t.VID_TAXII_HTTPS_10 if use_https else t.VID_TAXII_HTTP_10
@@ -66,11 +66,11 @@ def set_taxii_headers_response(response, use_https):
     return response
 
 def validate_taxii_headers(request, request_message_id):
-    '''
+    """
     Validates TAXII headers. It returns a response containing a TAXII
     status message if the headers were not valid. It returns None if 
     the headers are valid.
-    '''
+    """
     # Make sure the required headers are present
     missing_required_headers = set(DICT_REQUIRED_TAXII_HTTP_HEADERS).difference(set(request.META))
     if missing_required_headers:
@@ -110,7 +110,7 @@ def validate_taxii_headers(request, request_message_id):
     return None
 
 def validate_taxii_request(request):
-    '''Validates the broader request parameters and request type for a TAXII exchange'''
+    """Validates the broader request parameters and request type for a TAXII exchange"""
     logger = logging.getLogger("taxii_services.utils.handlers.validate_taxii_request")
     logger.debug('attempting to validate request')
     
@@ -130,7 +130,7 @@ def validate_taxii_request(request):
     return None
 
 def inbox_add_content(request, inbox_name, taxii_message):
-    '''Adds content to inbox and associated data feeds'''
+    """Adds content to inbox and associated data feeds"""
     logger = logging.getLogger('taxii_services.utils.handlers.inbox_add_content')
     logger.debug('adding content to inbox [%s]' % (inbox_name))
 
@@ -177,7 +177,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
     return create_taxii_response(m, use_https=request.is_secure())
 
 def poll_get_content(request, taxii_message):
-    '''Returns a Poll response for a given Poll Request Message'''
+    """Returns a Poll response for a given Poll Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.poll_get_content')
     logger.debug('polling data from data feed [%s]' % taxii_message.feed_name)
     

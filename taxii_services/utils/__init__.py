@@ -1,6 +1,8 @@
+# Copyright (C) 2013 - The MITRE Corporation
+# For license information, see the LICENSE.txt file
 
 def get_source_ip(request):
-    '''Given a request object, returns the source IP used to make the request.'''
+    """Given a request object, returns the source IP used to make the request."""
     if request is None: 
         return None
     
