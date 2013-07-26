@@ -65,27 +65,30 @@ stix_watchlist = '''<!--
     </stix:Indicators>
 </stix:STIX_Package>'''
 
-parser = OptionParser()
-parser.add_option("--host", dest="host", default="localhost", help="Host where the Inbox Service is hosted. Defaults to localhost.")
-parser.add_option("--port", dest="port", default="8080", help="Port where the Inbox Service is hosted. Defaults to 8080.")
-parser.add_option("--path", dest="path", default="/services/inbox/default/", help="Path where the Inbox Service is hosted. Defaults to /services/inbox/default/.")
-parser.add_option("--content_binding", dest="content_binding", default=t.CB_STIX_XML_10, help="Content binding of the Content Block to send. Defaults to %s" % t.CB_STIX_XML_10 )
-parser.add_option("--content", dest="content", default=stix_watchlist, help="Content of the Content Block to send. Defaults to a STIX watchlist.")
+def main():
+    parser = OptionParser()
+    parser.add_option("--host", dest="host", default="localhost", help="Host where the Inbox Service is hosted. Defaults to localhost.")
+    parser.add_option("--port", dest="port", default="8080", help="Port where the Inbox Service is hosted. Defaults to 8080.")
+    parser.add_option("--path", dest="path", default="/services/inbox/default/", help="Path where the Inbox Service is hosted. Defaults to /services/inbox/default/.")
+    parser.add_option("--content_binding", dest="content_binding", default=t.CB_STIX_XML_10, help="Content binding of the Content Block to send. Defaults to %s" % t.CB_STIX_XML_10 )
+    parser.add_option("--content", dest="content", default=stix_watchlist, help="Content of the Content Block to send. Defaults to a STIX watchlist.")
 
-(options, args) = parser.parse_args()
+    (options, args) = parser.parse_args()
 
-cb = tm.ContentBlock(options.content_binding, options.content)
+    cb = tm.ContentBlock(options.content_binding, options.content)
 
-inbox_message = tm.InboxMessage(message_id = tm.generate_message_id(), content_blocks=[cb])
-inbox_xml = inbox_message.to_xml()
+    inbox_message = tm.InboxMessage(message_id = tm.generate_message_id(), content_blocks=[cb])
+    inbox_xml = inbox_message.to_xml()
 
-print "Inbox Message: \r\n", inbox_xml
-client = tc.HttpClient()
-client.setProxy('noproxy')
-resp = client.callTaxiiService2(options.host, options.path, t.VID_TAXII_XML_10, inbox_xml, options.port)
-response_message = t.get_message_from_http_response(resp, '0')
-print "Response Message: \r\n", response_message.to_xml()
+    print "Inbox Message: \r\n", inbox_xml
+    client = tc.HttpClient()
+    client.setProxy('noproxy')
+    resp = client.callTaxiiService2(options.host, options.path, t.VID_TAXII_XML_10, inbox_xml, options.port)
+    response_message = t.get_message_from_http_response(resp, '0')
+    print "Response Message: \r\n", response_message.to_xml()
 
+if __name__ == "__main__":
+    main()
 
 
 
