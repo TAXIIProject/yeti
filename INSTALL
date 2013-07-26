@@ -9,13 +9,18 @@ YETI leverages the following external libraries:
 + Django v1.5.x (http://www.djangoproject.com)
 + pyOpenSSL (http://pypi.python.org/pypi/pyOpenSSL)
 + libtaxii (http://pypi.python.org/pypi/libtaxii)
-+ python-dateutil (http://pypi.python.org/pypi/python-dateutil) (included in libtaxii)
+  - lxml (http://lxml.de/index.html#download)
+  - libxml2 2.9.0 or higher (http://www.xmlsoft.org/downloads.html)
+  - python-dateutil 1.5 or later (http://labix.org/python-dateutil)
 
 To install these dependencies, we recommend using the pip utility (http://pypi.python.org/pypi/pip),
 which will download and install these libraries along with any of their dependencies:
 
 $ pip install django libtaxii pyOpenSSL
 
+NOTE: Windows users may not be able to install some dependencies (e.g., libxml2, pyOpenSSL, etc.)
+via pip due to compilation issues. Please refer to the dependency websites (linked above) for 
+Windows executable installer options should pip fail.
 
 Deployment
 ----------

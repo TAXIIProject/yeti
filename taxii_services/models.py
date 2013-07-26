@@ -141,7 +141,6 @@ class DataFeedSubscriptionMethod(models.Model):
 
 class ContentBlock(models.Model):
     """Represents the content block of a TAXII Poll Response or Inbox message."""
-    
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True) # not required by TAXII
     description = models.TextField(blank=True) # not required by TAXII
     

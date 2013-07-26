@@ -1,4 +1,4 @@
 #!/bin/sh 
 
 python manage.py syncdb
-python manage.py runserver 80
+python manage.py runserver localhost:8080
