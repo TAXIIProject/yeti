@@ -16,6 +16,9 @@ which will download and install these libraries along with any of their dependen
 
 $ pip install django libtaxii pyOpenSSL
 
+NOTE: Windows users may not be able to install some dependencies (e.g., libxml2, pyOpenSSL, etc.)
+via pip due to compilation issues. Please refer to the dependency websites (linked above) for 
+Windows executable installer options should pip fail.
 
 Deployment
 ----------
