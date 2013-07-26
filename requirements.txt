@@ -1,0 +1,6 @@
+Django==1.5.1
+libtaxii==1.0.105
+lxml==3.2.1
+pyOpenSSL==0.13
+python-dateutil==2.1
+six==1.3.0
