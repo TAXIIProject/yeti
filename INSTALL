@@ -39,20 +39,15 @@ environemnt. To start YETI, follow these steps:
 1) In a shell, navigate to the your YETI base directory
 2) Run the quickstart script (quickstart.sh in Linux/OSX or quickstart.bat in Windows)
    
-   $ sh ./scripts/quickstart.sh # on Linux/OSX
-   > scripts\quickstart.bat # on Windows
-   
-   NOTE: This will attempt to launch YETI on port 80, so you may need to run quickstart as a
-   superuser/administrator if you are not one already:
-   
-   $ sudo sh ./scripts/quickstart.sh # run quickstart as root on Linux/OSX
+   $ ./scripts/quickstart.sh # on Linux/OSX
+   > scripts\quickstart.bat  # on Windows
    
 3) Type "yes" and press Enter when prompted to create a superuser account
 4) Enter a username when prompted
 5) Enter an email address when prompted
 6) Enter a password when prompted
 7) Enter password again when prompted
-8) Open a web browser and enter 127.0.0.1 in the URL bar
+8) Open a web browser and enter http://127.0.0.1:8080 in the URL bar
 
 You should be presented with a YETI welcome page that details the available services of your
 YETI installation. Once YETI is running, you can interact with it via the inbox_client.py
@@ -70,5 +65,5 @@ or on the YETI wiki page (https://github.com/TAXIIProject/yeti/wiki/Apache-2.2-D
 Administration
 --------------
 Administration of YETI (e.g., adding user accounts, seeing/modifying stored data, etc.) can
-be accomplished via the admin interface, located at 127.0.0.1/admin. You will be asked to
+be accomplished via the admin interface, located at 127.0.0.1:8080/admin. You will be asked to
 enter the superuser credentials entered previously when starting YETI for the first time.
