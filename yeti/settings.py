@@ -91,13 +91,14 @@ STATIC_ROOT = os.path.join(SITE_ROOT, 'extras/static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/yeti/static/'
+STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(SITE_ROOT, 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -221,7 +222,7 @@ LOGGING = {
 
 
 try:
-    from settings_local import * # overwrite with local settings if settings_local.py exists
+    from yeti.settings_local import * # overwrite with local settings if settings_local.py exists
 except ImportError:
     pass
 
