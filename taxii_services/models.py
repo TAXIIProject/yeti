@@ -30,6 +30,9 @@ class ProtocolBindingId(models.Model):
         else:
             return u'%s' % (self.binding_id)
 
+    class Meta:
+        verbose_name = "Protocol Binding Id"
+
 class ContentBindingId(models.Model):
     """
     Represents a content binding id, used to establish the supported content
@@ -49,6 +52,9 @@ class ContentBindingId(models.Model):
             return u'%s' % (self.title)
         else:
             return u'%s' % (self.binding_id)
+        
+    class Meta:
+        verbose_name = "Content Binding Id"
 
 class MessageBindingId(models.Model):
     """
@@ -70,6 +76,9 @@ class MessageBindingId(models.Model):
         else:
             return u'%s' % (self.binding_id)
 
+    class Meta:
+        verbose_name = "Message Binding Id"
+
 class DataFeedPushMethod(models.Model):
     """
     Used to establish the protocols that can be used to push content via
@@ -89,6 +98,9 @@ class DataFeedPushMethod(models.Model):
             return u'%s' % (self.title)
         else:
             return u'%s | %s' % (self.protocol_binding, self.message_binding)
+    
+    class Meta:
+        verbose_name = "Data Feed Push Method"
     
 class DataFeedPollInformation(models.Model):
     """
@@ -113,6 +125,8 @@ class DataFeedPollInformation(models.Model):
     
     class Meta:
         ordering = ['address']
+        verbose_name = "Data Feed Poll Information"
+        verbose_name_plural = "Data Feed Poll Information"
     
 class DataFeedSubscriptionMethod(models.Model):
     """
@@ -138,6 +152,7 @@ class DataFeedSubscriptionMethod(models.Model):
     
     class Meta:
         ordering = ['address']  
+        verbose_name = "Data Feed Subscription Method"
 
 class ContentBlock(models.Model):
     """Represents the content block of a TAXII Poll Response or Inbox message."""
@@ -160,7 +175,8 @@ class ContentBlock(models.Model):
         return u'%s' % (self.id)
 
     class Meta:
-        ordering = ['timestamp_label']  
+        ordering = ['timestamp_label']
+        verbose_name = "Content Block"
     
 class DataFeed(models.Model):
     """Represents a TAXII Data Feed"""   
@@ -182,6 +198,7 @@ class DataFeed(models.Model):
 
     class Meta:
         ordering = ['name']
+        verbose_name = "Data Feed"
 
 class DataFeedSubscription(models.Model):
     """Represents a Data Feed Subscription. This is not used by YETI at the moment."""
@@ -199,7 +216,8 @@ class DataFeedSubscription(models.Model):
         return u'%s' % (self.title)
 
     class Meta:
-        ordering = ['subscription_id']   
+        ordering = ['subscription_id']
+        verbose_name = "Data Feed Subscription"
         
 class Inbox(models.Model):
     """
@@ -225,3 +243,7 @@ class Inbox(models.Model):
     
     class Meta:
         ordering = ['name']
+        verbose_name = "Inbox"
+        verbose_name_plural = "Inboxes"
+        
+        
