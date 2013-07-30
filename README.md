@@ -6,9 +6,8 @@ YETI is an implementation of the [Trusted Automated eXchange of Indicator Inform
 ## Overview
 YETI is an implementation of TAXII that supports the Inbox and Poll services defined by the 
 [TAXII Services Specification](http://taxii.mitre.org/specifications/version1.0/TAXII_Services_Specification.pdf). 
-YETI was written in Python 2.7 and utilizes the  Django 1.5 web application framework. There are currently no 
-releases of YETI and as such,the YETI project is under heavy, active development. Future releases of YETI will 
-be [tagged](http://learn.github.com/p/tagging.html) and can be found [HERE](https://github.com/TAXIIProject/yeti/tags).
+YETI was written in Python 2.7 and utilizes the  Django 1.5 web application framework. Releases of YETI will be 
+[tagged](http://learn.github.com/p/tagging.html) and can be found [HERE](https://github.com/TAXIIProject/yeti/tags).
 
 Once [deployed](https://github.com/TAXIIProject/yeti/wiki/Deployment), users can interact with YETI via the inbox
 and poll client scripts bundled with YETI and found within the scripts directory.
