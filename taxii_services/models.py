@@ -187,7 +187,7 @@ class DataFeed(models.Model):
     supported_content_bindings = models.ManyToManyField(ContentBindingId)
     push_methods = models.ManyToManyField(DataFeedPushMethod)
     poll_service_instances = models.ManyToManyField(DataFeedPollInformation)
-    subscription_methods = models.ManyToManyField(DataFeedSubscriptionMethod)
+    subscription_methods = models.ManyToManyField(DataFeedSubscriptionMethod, blank=True, null=True)
     content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True)
     
     date_created = models.DateTimeField(auto_now_add=True)
