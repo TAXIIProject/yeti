@@ -2,7 +2,7 @@
 # For license information, see the LICENSE.txt file
 
 import logging
-from datetime import datetime
+import datetime
 from dateutil.tz import tzutc
 from django.http import HttpResponse
 from taxii_services.models import Inbox, DataFeed, ContentBlock, ContentBindingId
@@ -180,6 +180,7 @@ def poll_get_content(request, taxii_message):
     """Returns a Poll response for a given Poll Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.poll_get_content')
     logger.debug('polling data from data feed [%s]' % taxii_message.feed_name)
+    logger.debug('begin_ts: %s, end_ts: %s' % (taxii_message.exclusive_begin_timestamp_label, taxii_message.inclusive_end_timestamp_label))
     
     try:
         data_feed = DataFeed.objects.get(name=taxii_message.feed_name)
@@ -193,9 +194,9 @@ def poll_get_content(request, taxii_message):
     if taxii_message.exclusive_begin_timestamp_label:
         query_params['timestamp_label__gt'] = taxii_message.exclusive_begin_timestamp_label
     
-    current_datetime = datetime.now(tzutc())
+    current_datetime = datetime.datetime.now(tzutc())
     if taxii_message.inclusive_end_timestamp_label and (taxii_message.inclusive_end_timestamp_label < current_datetime):
-        query_params['timestamp_label__lte'] = taxii_message.exclusive_end_timestamp_label
+        query_params['timestamp_label__lte'] = taxii_message.inclusive_end_timestamp_label
     else:
         query_params['timestamp_label__lte'] = current_datetime
     
