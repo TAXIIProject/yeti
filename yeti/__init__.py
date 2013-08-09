@@ -1,4 +1,4 @@
 # Copyright (C) 2013 - The MITRE Corporation
 # For license information, see the LICENSE.txt file
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
