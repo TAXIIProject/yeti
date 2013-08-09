@@ -23,8 +23,12 @@ def main():
 
     (options, args) = parser.parse_args()
     
-    begin_ts    = dateutil.parser.parse(options.begin_ts) if options.begin_ts else None
-    end_ts      = dateutil.parser.parse(options.end_ts) if options.begin_ts else None
+    try:
+        begin_ts    = dateutil.parser.parse(options.begin_ts) if options.begin_ts else None
+        end_ts      = dateutil.parser.parse(options.end_ts) if options.end_ts else None
+    except ValueError as e:
+        print "Unable to parse timestamp value. The format should be YYYY-MM-DDTHH:MM:SS.ssssss+/-hh:mm. Aborting poll."
+        sys.exit()
     
     poll_req    = tm.PollRequest(message_id = tm.generate_message_id(),
                                  feed_name = options.feed,
