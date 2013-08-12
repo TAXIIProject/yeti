@@ -294,9 +294,9 @@ def discovery_get_services(request, taxii_message):
                                                             available=True)
     all_services.append(service_instance)
     
+    # Build response
     discovery_response_message = tm.DiscoveryResponse(message_id=tm.generate_message_id(), 
                                                       in_response_to=taxii_message.message_id,
                                                       service_instances=all_services)
-    
     
     return create_taxii_response(discovery_response_message, use_https=request.is_secure())

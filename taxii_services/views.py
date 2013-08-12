@@ -2,10 +2,9 @@
 # For license information, see the LICENSE.txt file
 
 import logging
-from django.http import HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
-from taxii_services.utils.decorators import taxii_auth_check
-import taxii_services.utils.handlers as handlers
+from taxii_services.decorators import taxii_auth_check
+import taxii_services.handlers as handlers
 import libtaxii.messages as tm
 
     

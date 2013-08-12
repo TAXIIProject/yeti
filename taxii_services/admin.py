@@ -1,7 +1,6 @@
 # Copyright (C) 2013 - The MITRE Corporation
 # For license information, see the LICENSE.txt file
 
-import re
 from django.contrib import admin
 from taxii_services.models import Inbox, DataFeed, MessageBindingId, ContentBindingId, ContentBlock, ProtocolBindingId, DataFeedPushMethod, DataFeedPollInformation, DataFeedSubscriptionMethod
 from taxii_services.forms import DataFeedModelForm, InboxModelForm

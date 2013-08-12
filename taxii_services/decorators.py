@@ -2,7 +2,7 @@
 # For license information, see the LICENSE.txt file
 
 import taxii_services.settings
-import taxii_services.utils.handlers as handlers
+import taxii_services.handlers as handlers
 import libtaxii.messages as tm
 
 def taxii_auth_check(func):

@@ -5,7 +5,7 @@ import logging
 from django.http import HttpResponseServerError
 
 import libtaxii.messages as tm
-import taxii_services.utils.handlers as handlers
+import taxii_services.handlers as handlers
 
 class ProcessExceptionMiddleware(object):
     def process_exception(self, request, exception):
