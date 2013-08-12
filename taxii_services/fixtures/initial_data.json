@@ -96,7 +96,7 @@
             "description" : "Default TAXII Data Feed",
             "users" : [1],
             "supported_content_bindings" : [1],
-            "supported_protocol_bindings" : [1],
+            "supported_protocol_binding" : 1,
             "supported_message_bindings" : [1],
             "data_feeds" : [1],
             "date_created": "2013-07-02T08:22:00-05:00",

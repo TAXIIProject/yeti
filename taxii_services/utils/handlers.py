@@ -44,6 +44,16 @@ DICT_REVERSE_DJANGO_NORMALIZATION = {DJANGO_HTTP_HEADER_CONTENT_TYPE: HTTP_HEADE
                                      DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: HTTP_HEADER_X_TAXII_PROTOCOL,
                                      DJANGO_HTTP_HEADER_ACCEPT: HTTP_HEADER_ACCEPT}
 
+# TAXII Services Version ID
+TAXII_SERVICES_VERSION_ID = "urn:taxii.mitre.org:services:1.0"
+
+# TAXII Protocol IDs
+TAXII_PROTO_HTTP_BINDING_ID     = "urn:taxii.mitre.org:protocol:http:1.0"
+TAXII_PROTO_HTTPS_BINDING_ID    = "urn:taxii.mitre.org:protocol:https:1.0"
+
+# TAXII Message Binding IDs
+TAXII_MESSAGE_XML_BINDING_ID    = "urn:taxii.mitre.org:message:xml:1.0"
+
 # HTTP status codes
 HTTP_STATUS_OK              = 200
 HTTP_STATUS_SERVER_ERROR    = 500
@@ -231,3 +241,65 @@ def poll_get_content(request, taxii_message):
     
     return create_taxii_response(poll_response_message, use_https=request.is_secure())
 
+def discovery_get_services(request, taxii_message):
+    """Returns a Discovery response for a given Discovery Request Message"""
+    logger = logging.getLogger('taxii_services.utils.handlers.discovery_get_services')
+    all_services = []
+    
+    # Inbox Services
+    if len(Inbox.objects.all()) > 0:
+        for inbox in Inbox.objects.all():
+            service_type = tm.SVC_INBOX
+            inbox_name  = inbox.name
+            service_addr   = "http://127.0.0.1/services/inbox/%s" % (inbox_name) # this should reflect the address that django is bound to
+            proto_binding = TAXII_PROTO_HTTP_BINDING_ID
+            message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
+            content_bindings = [x.binding_id for x in inbox.supported_content_bindings.all()]
+            available = True # TODO: this should reflect whether or not the authenticated user has access to this inbox
+            message = inbox.description
+             
+            service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=service_type,
+                                                                    services_version=TAXII_SERVICES_VERSION_ID,
+                                                                    protocol_binding=proto_binding, 
+                                                                    service_address=service_addr, 
+                                                                    message_bindings=message_bindings,
+                                                                    inbox_service_accepted_content=content_bindings, 
+                                                                    available=available, 
+                                                                    message=message)
+            all_services.append(service_instance)
+    
+    # Poll Services
+    if len(DataFeed.objects.all()) > 0:
+        all_data_feed_msg_bindings = set()
+        for data_feed in DataFeed.objects.all():
+            poll_svc_instances = data_feed.poll_service_instances.all()
+            
+            for poll_svc_instance in poll_svc_instances:
+                message_bindings = [x.binding_id for x in poll_svc_instance.message_bindings.all()]
+                all_data_feed_msg_bindings.update(message_bindings)
+            
+        
+        service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=tm.SVC_POLL, 
+                                                                services_version=TAXII_SERVICES_VERSION_ID, 
+                                                                protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
+                                                                service_address="http://127.0.0.1/services/poll", 
+                                                                message_bindings=all_data_feed_msg_bindings,
+                                                                available=True)
+        all_services.append(service_instance)
+
+
+    # Discovery Service
+    service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=tm.SVC_DISCOVERY, 
+                                                            services_version=TAXII_SERVICES_VERSION_ID, 
+                                                            protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
+                                                            service_address="http://127.0.0.1/services/discovery",
+                                                            message_bindings=[TAXII_MESSAGE_XML_BINDING_ID],
+                                                            available=True)
+    all_services.append(service_instance)
+    
+    discovery_response_message = tm.DiscoveryResponse(message_id=tm.generate_message_id(), 
+                                                      in_response_to=taxii_message.message_id,
+                                                      service_instances=all_services)
+    
+    
+    return create_taxii_response(discovery_response_message, use_https=request.is_secure())
