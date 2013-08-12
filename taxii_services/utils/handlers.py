@@ -245,27 +245,24 @@ def discovery_get_services(request, taxii_message):
     """Returns a Discovery response for a given Discovery Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.discovery_get_services')
     all_services = []
-    
     # Inbox Services
     if len(Inbox.objects.all()) > 0:
         for inbox in Inbox.objects.all():
             service_type = tm.SVC_INBOX
             inbox_name  = inbox.name
-            service_addr   = "http://127.0.0.1/services/inbox/%s" % (inbox_name) # this should reflect the address that django is bound to
+            service_addr   = "http://%s/services/inbox/%s" % (request.get_host(), inbox_name)
             proto_binding = TAXII_PROTO_HTTP_BINDING_ID
             message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
             content_bindings = [x.binding_id for x in inbox.supported_content_bindings.all()]
             available = True # TODO: this should reflect whether or not the authenticated user has access to this inbox
-            message = inbox.description
-             
+           
             service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=service_type,
                                                                     services_version=TAXII_SERVICES_VERSION_ID,
                                                                     protocol_binding=proto_binding, 
                                                                     service_address=service_addr, 
                                                                     message_bindings=message_bindings,
                                                                     inbox_service_accepted_content=content_bindings, 
-                                                                    available=available, 
-                                                                    message=message)
+                                                                    available=available)
             all_services.append(service_instance)
     
     # Poll Services
@@ -282,7 +279,7 @@ def discovery_get_services(request, taxii_message):
         service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=tm.SVC_POLL, 
                                                                 services_version=TAXII_SERVICES_VERSION_ID, 
                                                                 protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
-                                                                service_address="http://127.0.0.1/services/poll", 
+                                                                service_address="http://%s/services/poll" % (request.get_host()), 
                                                                 message_bindings=all_data_feed_msg_bindings,
                                                                 available=True)
         all_services.append(service_instance)
@@ -292,7 +289,7 @@ def discovery_get_services(request, taxii_message):
     service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=tm.SVC_DISCOVERY, 
                                                             services_version=TAXII_SERVICES_VERSION_ID, 
                                                             protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
-                                                            service_address="http://127.0.0.1/services/discovery",
+                                                            service_address="http://%s/services/discovery" % (request.get_host()),
                                                             message_bindings=[TAXII_MESSAGE_XML_BINDING_ID],
                                                             available=True)
     all_services.append(service_instance)
