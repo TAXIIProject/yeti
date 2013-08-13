@@ -3,11 +3,15 @@
         <title>YETI</title>
         <style type="text/css">
             body {
+            	background-image:url('static/images/yeti_bg_0_40_150.png');
+				background-repeat:no-repeat;
+				background-attachment:fixed;
+				background-position:right; 
                 background-color: #F6F6F6;
                 font: 14px Helvetica, arial, freesans, clean, sans-serif;
                 line-height: 1.4;
             }
-            
+
             a {
                 color: #4183c4;
 				text-decoration: none;
@@ -15,11 +19,13 @@
 		    
 		    h1 {
 		      margin-bottom: 0em;
-		      font-size: 35px;
+		      font-size: 30px;
+		      line-height: 1.1;
 		    }
 		    
 		    h2 {
 		      margin-bottom: 0em;
+		      line-height: 1.1;
 		    }
             
             p {
@@ -33,6 +39,16 @@
             span {
                 white-space: nowrap;
             }
+            
+           code, pre {
+				font-family: Consolas, "Liberation Mono", Courier, monospace;
+				font-size: 12px;
+				margin: 0 2px;
+				padding: 0px 5px;
+				border: 1px solid #ddd;
+				background-color: #f8f8f8;
+				border-radius: 3px;
+			}
             
             #main {
                 margin-top: 50px;
@@ -60,19 +76,25 @@
                 <p>
                     The following TAXII services are implemented by YETI. The services listed below are defined by the <a href="http://taxii.mitre.org/specifications/version1.0/TAXII_Services_Specification.pdf">TAXII Services Specification</a>.
                 </p>
+                <h2>Discovery</h2>
+                <p>
+                	The Discovery service is the mechanism for communicating information related to the availability and use of TAXII Services. The Discovery service can be accessed by transmitting
+                	a Discovery request message to the <code>/services/discovery/</code> location of this YETI installation. YETI comes bundled with a discovery_client.py script to serve as a 
+                	demonstration of this service. The discovery_client script.py script is located in the scripts directory of your YETI installation.
+                </p>
                 <h2>Inbox</h2>
                 <p>
                     The Inbox service is the mechanism by which a TAXII consumer accepts messages from a TAXII producer in producer-initiated exchanges (i.e., push messaging).
-                    The Inbox service can be accessed by transmitting an Inbox message to the <span>/services/inbox/&lt;inbox_name&gt;</span> location of this YETI installation. 
-                    For example, sending data to the default inbox established by a quickstart YETI instance would require sending an Inbox message to <span>http://localhost/services/inbox/default</span>.
-                    YETI comes bundled with a inbox_client.py script to serve as a demonstration of the Inbox service. This script is located in the scripts directory of your YETI installation.
+                    The Inbox service can be accessed by transmitting an Inbox message to the <code>/services/inbox/&lt;inbox_name&gt;</code> location of this YETI installation. 
+                    For example, sending data to the default inbox established by a quickstart YETI instance would require sending an Inbox message to <code>http://localhost:8080/services/inbox/default/</code>.
+                    YETI comes bundled with a inbox_client.py script to serve as a demonstration of the Inbox service. This script is located in the <code>scripts</code> directory of your YETI installation.
                 </p>
                 <h2>Poll</h2>
                 <p>
                     The Poll service is the mechanism by which a TAXII consumers can pull data from a TAXII Data Feed. The Poll service can be accessed by transmitting a Poll request to the
-                    <span>/services/poll/</span> location of this YETI installation. The name of the TAXII Data Feed for the Poll request is contained within the TAXII message itself and
+                    <code>/services/poll/</code> location of this YETI installation. The name of the TAXII Data Feed for the Poll request is contained within the TAXII message itself and
                     not specified within the URL. To Poll data from the default Data Feed established by a quickstart YETI instance, a TAXII client would transmit a Poll request to
-                    <span>http://localhost/services/poll</span>. YETI comes bundled with a poll_client.py script to serve as a demonstration of the Poll service. This script is located
+                    <code>http://localhost/services/poll/</code>. YETI comes bundled with a poll_client.py script to serve as a demonstration of the Poll service. This script is located
                     in the scripts directory of your YETI installation.
                 </p>
                 <h1>Administration</h1>

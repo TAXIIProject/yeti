@@ -229,9 +229,9 @@ class Inbox(models.Model):
     name = models.CharField(max_length=MAX_TITLE_LEN, unique=True) # this will become part of the URL where it can be accessed at
     description = models.TextField(blank=True)
     supported_content_bindings = models.ManyToManyField(ContentBindingId)
-    supported_protocol_bindings = models.ManyToManyField(ProtocolBindingId)
     supported_message_bindings = models.ManyToManyField(MessageBindingId)
     content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True) # content blocks associated with this inbox
+    supported_protocol_binding = models.ForeignKey(ProtocolBindingId)
     data_feeds = models.ManyToManyField(DataFeed, blank=True, null=True) # data received at an inbox will automatically be made available on these data feeds
     users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this inbox
     

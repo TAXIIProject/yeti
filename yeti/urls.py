@@ -15,5 +15,3 @@ urlpatterns = patterns('',
     url(r'^services/', include('taxii_services.urls')),
     #url(r'^test/', 'taxii_services.views.test')
 )
-
-handler500 = 'taxii_services.views.server_error'

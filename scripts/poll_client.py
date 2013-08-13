@@ -16,7 +16,7 @@ def main():
     parser = OptionParser()
     parser.add_option("--host", dest="host", default="localhost", help="Host where the Poll Service is hosted. Defaults to localhost.")
     parser.add_option("--port", dest="port", default="8080", help="Port where the Poll Service is hosted. Defaults to 8080.")
-    parser.add_option("--path", dest="path", default="/services/poll/", help="Path where the Poll Service is hosted. Defaults to /poll/.")
+    parser.add_option("--path", dest="path", default="/services/poll/", help="Path where the Poll Service is hosted. Defaults to /services/poll/.")
     parser.add_option("--feed", dest="feed", default="default", help="Data Feed to poll. Defaults to 'default'.")
     parser.add_option("--begin_timestamp", dest="begin_ts", default=None, help="The begin timestamp (format: YYYY-MM-DDTHH:MM:SS.ssssss+/-hh:mm) for the poll request. Defaults to None.")
     parser.add_option("--end_timestamp", dest="end_ts", default=None, help="The end timestamp (format: YYYY-MM-DDTHH:MM:SS.ssssss+/-hh:mm) for the poll request. Defaults to None.")
