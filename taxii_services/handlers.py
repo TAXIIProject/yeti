@@ -5,6 +5,7 @@ import logging
 import datetime
 from dateutil.tz import tzutc
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from taxii_services.models import Inbox, DataFeed, ContentBlock, ContentBindingId
 import libtaxii as t
 import libtaxii.messages as tm
@@ -251,7 +252,7 @@ def discovery_get_services(request, taxii_message):
         for inbox in Inbox.objects.all():
             service_type = tm.SVC_INBOX
             inbox_name  = inbox.name
-            service_addr   = "http://%s/services/inbox/%s" % (request.get_host(), inbox_name)
+            service_addr   = request.build_absolute_uri(reverse('taxii_services.views.inbox_service', args=[inbox_name]))
             proto_binding = TAXII_PROTO_HTTP_BINDING_ID
             message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
             content_bindings = [x.binding_id for x in inbox.supported_content_bindings.all()]
@@ -280,7 +281,7 @@ def discovery_get_services(request, taxii_message):
         service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=tm.SVC_POLL, 
                                                                 services_version=TAXII_SERVICES_VERSION_ID, 
                                                                 protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
-                                                                service_address="http://%s/services/poll" % (request.get_host()), 
+                                                                service_address=request.build_absolute_uri(reverse('taxii_services.views.poll_service')),
                                                                 message_bindings=all_data_feed_msg_bindings,
                                                                 available=True)
         all_services.append(service_instance)
@@ -290,7 +291,7 @@ def discovery_get_services(request, taxii_message):
     service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=tm.SVC_DISCOVERY, 
                                                             services_version=TAXII_SERVICES_VERSION_ID, 
                                                             protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
-                                                            service_address="http://%s/services/discovery" % (request.get_host()),
+                                                            service_address=request.build_absolute_uri(reverse('taxii_services.views.discovery_service')),
                                                             message_bindings=[TAXII_MESSAGE_XML_BINDING_ID],
                                                             available=True)
     all_services.append(service_instance)
