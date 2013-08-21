@@ -93,7 +93,7 @@
         "pk": 1,
         "fields": {
             "name" : "default",
-            "description" : "Default TAXII Data Feed",
+            "description" : "Default TAXII Inbox",
             "users" : [1],
             "supported_content_bindings" : [1],
             "supported_protocol_binding" : 1,
