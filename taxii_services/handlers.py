@@ -247,30 +247,31 @@ def discovery_get_services(request, taxii_message):
     """Returns a Discovery response for a given Discovery Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.discovery_get_services')
     all_services = []
-    # Inbox Services
-    if len(Inbox.objects.all()) > 0:
-        for inbox in Inbox.objects.all():
-            service_type = tm.SVC_INBOX
-            inbox_name  = inbox.name
-            service_addr   = request.build_absolute_uri(reverse('taxii_services.views.inbox_service', args=[inbox_name]))
-            proto_binding = TAXII_PROTO_HTTP_BINDING_ID
-            message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
-            content_bindings = [x.binding_id for x in inbox.supported_content_bindings.all()]
-            available = True # TODO: this should reflect whether or not the authenticated user has access to this inbox
-           
-            service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=service_type,
-                                                                    services_version=TAXII_SERVICES_VERSION_ID,
-                                                                    protocol_binding=proto_binding, 
-                                                                    service_address=service_addr, 
-                                                                    message_bindings=message_bindings,
-                                                                    inbox_service_accepted_content=content_bindings, 
-                                                                    available=available)
-            all_services.append(service_instance)
     
-    # Poll Services
-    if len(DataFeed.objects.all()) > 0:
+    # Inbox Services
+    for inbox in Inbox.objects.all():
+        service_type = tm.SVC_INBOX
+        inbox_name  = inbox.name
+        service_addr   = request.build_absolute_uri(reverse('taxii_services.views.inbox_service', args=[inbox_name]))
+        proto_binding = TAXII_PROTO_HTTP_BINDING_ID
+        message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
+        content_bindings = [x.binding_id for x in inbox.supported_content_bindings.all()]
+        available = True # TODO: this should reflect whether or not the authenticated user has access to this inbox
+       
+        service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=service_type,
+                                                                services_version=TAXII_SERVICES_VERSION_ID,
+                                                                protocol_binding=proto_binding, 
+                                                                service_address=service_addr, 
+                                                                message_bindings=message_bindings,
+                                                                inbox_service_accepted_content=content_bindings, 
+                                                                available=available)
+        all_services.append(service_instance)
+    
+    # Poll Service
+    all_data_feeds = DataFeed.objects.all()
+    if all_data_feeds:
         all_data_feed_msg_bindings = set()
-        for data_feed in DataFeed.objects.all():
+        for data_feed in all_data_feeds:
             poll_svc_instances = data_feed.poll_service_instances.all()
             
             for poll_svc_instance in poll_svc_instances:
