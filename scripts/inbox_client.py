@@ -2,9 +2,8 @@
 # Copyright (C) 2013 - The MITRE Corporation
 # For license information, see the LICENSE.txt file
 
-import sys
 
-from optparse import OptionParser
+import argparse
 
 import libtaxii as t
 import libtaxii.messages as tm
@@ -68,21 +67,21 @@ stix_watchlist = '''<!--
 </stix:STIX_Package>'''
 
 def main():
-    parser = OptionParser()
-    parser.add_option("--host", dest="host", default="localhost", help="Host where the Inbox Service is hosted. Defaults to localhost.")
-    parser.add_option("--port", dest="port", default="8080", help="Port where the Inbox Service is hosted. Defaults to 8080.")
-    parser.add_option("--path", dest="path", default="/services/inbox/default/", help="Path where the Inbox Service is hosted. Defaults to /services/inbox/default/.")
-    parser.add_option("--content-binding", dest="content_binding", default=t.CB_STIX_XML_10, help="Content binding of the Content Block to send. Defaults to %s" % t.CB_STIX_XML_10 )
-    parser.add_option("--content-file", dest="content_file", default=stix_watchlist, help="Content of the Content Block to send. Defaults to a STIX watchlist.")
+    parser = argparse.ArgumentParser(description="Inbox Client")
+    parser.add_argument("--host", dest="host", default="localhost", help="Host where the Inbox Service is hosted. Defaults to localhost.")
+    parser.add_argument("--port", dest="port", default="8080", help="Port where the Inbox Service is hosted. Defaults to 8080.")
+    parser.add_argument("--path", dest="path", default="/services/inbox/default/", help="Path where the Inbox Service is hosted. Defaults to /services/inbox/default/.")
+    parser.add_argument("--content-binding", dest="content_binding", default=t.CB_STIX_XML_10, help="Content binding of the Content Block to send. Defaults to %s" % t.CB_STIX_XML_10 )
+    parser.add_argument("--content-file", dest="content_file", default=stix_watchlist, help="Content of the Content Block to send. Defaults to a STIX watchlist.")
 
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
 
-    if options.content_file is stix_watchlist:
+    if args.content_file is stix_watchlist:
         c = StringIO.StringIO(stix_watchlist)
     else:
-        c = open(options.content_file, 'r')
+        c = open(args.content_file, 'r')
     
-    cb = tm.ContentBlock(options.content_binding, c.read())
+    cb = tm.ContentBlock(args.content_binding, c.read())
 
     inbox_message = tm.InboxMessage(message_id = tm.generate_message_id(), content_blocks=[cb])
     inbox_xml = inbox_message.to_xml()
@@ -90,7 +89,7 @@ def main():
     print "Inbox Message: \r\n", inbox_xml
     client = tc.HttpClient()
     client.setProxy('noproxy')
-    resp = client.callTaxiiService2(options.host, options.path, t.VID_TAXII_XML_10, inbox_xml, options.port)
+    resp = client.callTaxiiService2(args.host, args.path, t.VID_TAXII_XML_10, inbox_xml, args.port)
     response_message = t.get_message_from_http_response(resp, '0')
     print "Response Message: \r\n", response_message.to_xml()
 
