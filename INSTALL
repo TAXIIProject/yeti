@@ -5,7 +5,7 @@ The following sections describe how to install and run YETI.
 
 Dependencies
 ------------
-YETI leverages the following external libraries:
+YETI requires Python 2.7 and leverages the following external libraries:
 + Django v1.5.x (http://www.djangoproject.com)
 + pyOpenSSL (http://pypi.python.org/pypi/pyOpenSSL)
 + libtaxii (http://pypi.python.org/pypi/libtaxii)
