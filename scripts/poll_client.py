@@ -38,7 +38,7 @@ def main():
         else:
             end_ts = None
     except ValueError:
-        print "Unable to parse timestamp value. The format should be YYYY-MM-DDTHH:MM:SS.ssssss+/-hh:mm. Aborting poll."
+        print "Unable to parse timestamp value. Timestamp should include both date and time information along with a timezone or UTC offset (e.g., YYYY-MM-DDTHH:MM:SS.ssssss+/-hh:mm). Aborting poll."
         sys.exit()
 
     poll_req = tm.PollRequest(message_id=tm.generate_message_id(),
