@@ -9,8 +9,8 @@ YETI is an implementation of TAXII that supports the Inbox and Poll services def
 YETI was written in Python 2.7 and utilizes the  Django 1.5 web application framework. Releases of YETI will be 
 [tagged](http://learn.github.com/p/tagging.html) and can be found [HERE](https://github.com/TAXIIProject/yeti/tags).
 
-Once [deployed](https://github.com/TAXIIProject/yeti/wiki/Deployment), users can interact with YETI via the inbox
-and poll client scripts bundled with YETI and found within the scripts directory.
+Once [deployed](https://github.com/TAXIIProject/yeti/wiki/Deployment), users can interact with YETI via the inbox,
+discovery, and poll client scripts bundled with YETI and found within the scripts directory.
 
 ## Dependencies
 * [Django](https://www.djangoproject.com/)
