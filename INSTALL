@@ -50,8 +50,8 @@ environemnt. To start YETI, follow these steps:
 8) Open a web browser and enter http://127.0.0.1:8080 in the URL bar
 
 You should be presented with a YETI welcome page that details the available services of your
-YETI installation. Once YETI is running, you can interact with it via the inbox_client.py
-and poll_client.py scripts found within the scripts directory.
+YETI installation. Once YETI is running, you can interact with it via the inbox_client.py, 
+discovery_client.py, and poll_client.py scripts found within the scripts directory.
 
 
 WSGI
