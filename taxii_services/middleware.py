@@ -10,7 +10,7 @@ import taxii_services.handlers as handlers
 class ProcessExceptionMiddleware(object):
     def process_exception(self, request, exception):
         logger = logging.getLogger('yeti.taxii_services.middleware.ProcessExceptionMiddleware.process_exception')
-        logger.exception("server error occured")
+        logger.exception('server error occured')
     
         if request.path.startswith('/services'):
             logger.debug('returning ST_FAILURE message')
