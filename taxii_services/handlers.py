@@ -138,6 +138,7 @@ def validate_taxii_request(request):
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='No POST data')
         logger.info('Request had a body length of 0. Returning error.')
         return create_taxii_response(m, use_https=request.is_secure())
+    
     return None
 
 def inbox_add_content(request, inbox_name, taxii_message):
@@ -158,9 +159,10 @@ def inbox_add_content(request, inbox_name, taxii_message):
             content_binding_id = ContentBindingId.objects.get(binding_id=content_block.content_binding)
         except:
             logger.debug('taxii message [%s] contained unrecognized content binding [%s]' % (taxii_message.message_id, content_block.content_binding))
-        
+            continue # cannot proceed - move on to the next content block
+            
         if content_binding_id not in inbox.supported_content_bindings.all():
-            logger.info('inbox [%s] does not accept content [%s]' % content_block.content_binding)
+            logger.debug('inbox [%s] does not accept content with binding id [%s]' % content_block.content_binding)
         else:
             c = ContentBlock()
             c.message_id = taxii_message.message_id
