@@ -258,7 +258,7 @@ def discovery_get_services(request, taxii_message):
         proto_binding = TAXII_PROTO_HTTP_BINDING_ID
         message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
         content_bindings = [x.binding_id for x in inbox.supported_content_bindings.all()]
-        available = True # TODO: this should reflect whether or not the authenticated user has access to this inbox
+        available = True # TODO: this should reflect whether or not the user has access to this inbox
        
         service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=service_type,
                                                                 services_version=TAXII_SERVICES_VERSION_ID,

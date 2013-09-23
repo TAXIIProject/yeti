@@ -197,7 +197,6 @@ LOGGING = {
             'level': LOG_LEVEL,
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            #TODO: I'm not sure where this goes
             'filename': os.path.join(LOG_DIRECTORY, 'yeti.log'),
         },
         'stdout': {
