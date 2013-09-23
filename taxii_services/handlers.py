@@ -162,7 +162,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
             continue # cannot proceed - move on to the next content block
             
         if content_binding_id not in inbox.supported_content_bindings.all():
-            logger.debug('inbox [%s] does not accept content with binding id [%s]' % content_block.content_binding)
+            logger.debug('inbox [%s] does not accept content with binding id [%s]' % (inbox_name, content_block.content_binding))
         else:
             c = ContentBlock()
             c.message_id = taxii_message.message_id
@@ -183,7 +183,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
                     data_feed.content_blocks.add(c)
                     data_feed.save()
                 else:
-                    logger.debug('inbox [%s] received data using content binding [%s] - associated data feed [%s] does not support this binding. ')
+                    logger.debug('inbox [%s] received data using content binding [%s] - associated data feed [%s] does not support this binding.' % (inbox_name, content_binding_id, data_feed))
     
     inbox.save()
     m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type = tm.ST_SUCCESS)
