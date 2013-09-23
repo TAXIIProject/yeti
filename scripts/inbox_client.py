@@ -82,6 +82,7 @@ def main():
         c = open(args.content_file, 'r')
     
     cb = tm.ContentBlock(args.content_binding, c.read())
+    c.close()
 
     inbox_message = tm.InboxMessage(message_id = tm.generate_message_id(), content_blocks=[cb])
     inbox_xml = inbox_message.to_xml()
