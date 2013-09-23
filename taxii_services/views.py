@@ -20,11 +20,11 @@ def inbox_service(request, inbox_name):
     
     try:
         taxii_message = tm.get_message_from_xml(request.body)
-        logger.debug('received taxii_message [%s]' % (taxii_message.message_id))
     except Exception as ex:
         logger.debug('unable to parse inbound message: %s' % (ex.message))
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
+    logger.debug('received taxii_message [%s]' % (taxii_message.message_id))
     
     if taxii_message.message_type != tm.MSG_INBOX_MESSAGE:
         logger.info('taxii taxii_message [%s] was not inbox type [%s]' % (taxii_message.message_id, taxii_message.message_type))
@@ -46,11 +46,11 @@ def poll_service(request):
     
     try:
         taxii_message = tm.get_message_from_xml(request.body)
-        logger.debug('received taxii message [%s]' % (taxii_message.message_id))
     except Exception as ex:
         logger.debug('unable to parse inbound message: %s' % (ex.message))
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
+    logger.debug('received taxii message [%s]' % (taxii_message.message_id))
     
     if taxii_message.message_type != tm.MSG_POLL_REQUEST:
         logger.info('Message [%s] was not poll request [%s]' % (taxii_message.message_id,taxii_message.message_type))
@@ -72,11 +72,11 @@ def discovery_service(request):
     
     try:
         taxii_message = tm.get_message_from_xml(request.body)
-        logger.debug('received taxii message [%s]' % (taxii_message.message_id))
     except Exception as ex:
         logger.debug('unable to parse inbound message: %s' % (ex.message))
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
+    logger.debug('received taxii message [%s]' % (taxii_message.message_id))
     
     if taxii_message.message_type != tm.MSG_DISCOVERY_REQUEST:
         logger.info('Message [%s] was not discovery request [%s]' % (taxii_message.message_id,taxii_message.message_type))

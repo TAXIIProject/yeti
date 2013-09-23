@@ -98,7 +98,7 @@ def validate_taxii_headers(request, request_message_id):
         supported_values = DICT_TAXII_HTTP_HEADER_VALUES[header]
         
         if header_value not in supported_values:
-            msg = 'The value of %s is not supported. The value was %s. Supported values are %s' % (DICT_REVERSE_DJANGO_NORMALIZATION[header], header_value, supported_values)
+            msg = 'The value of %s is not supported. Supported values are %s' % (DICT_REVERSE_DJANGO_NORMALIZATION[header], supported_values)
             m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
             return create_taxii_response(m, use_https=request.is_secure())
     
@@ -149,7 +149,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
     try:
         inbox = Inbox.objects.get(name=inbox_name)
     except:
-        logger.debug('attempting to push content to unknown inbox [%s]' % (inbox_name))
+        logger.debug('attempting to push content to unknown inbox')
         m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Inbox does not exist [%s]' % (inbox_name))
         return create_taxii_response(m, use_https=request.is_secure())
     
@@ -162,7 +162,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
             continue # cannot proceed - move on to the next content block
             
         if content_binding_id not in inbox.supported_content_bindings.all():
-            logger.debug('inbox [%s] does not accept content with binding id [%s]' % content_block.content_binding)
+            logger.debug('inbox [%s] does not accept content with binding id [%s]' % (inbox_name, content_block.content_binding))
         else:
             c = ContentBlock()
             c.message_id = taxii_message.message_id
@@ -183,7 +183,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
                     data_feed.content_blocks.add(c)
                     data_feed.save()
                 else:
-                    logger.debug('inbox [%s] received data using content binding [%s] - associated data feed [%s] does not support this binding. ')
+                    logger.debug('inbox [%s] received data using content binding [%s] - associated data feed [%s] does not support this binding.' % (inbox_name, content_binding_id, data_feed))
     
     inbox.save()
     m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type = tm.ST_SUCCESS)
@@ -198,7 +198,7 @@ def poll_get_content(request, taxii_message):
     try:
         data_feed = DataFeed.objects.get(name=taxii_message.feed_name)
     except:
-        logger.debug('attempting to poll unknown data feed [%s]' % (taxii_message.feed_name))
+        logger.debug('attempting to poll unknown data feed')
         m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Data feed does not exist [%s]' % (taxii_message.feed_name))
         return create_taxii_response(m, use_https=request.is_secure())
     
@@ -258,7 +258,7 @@ def discovery_get_services(request, taxii_message):
         proto_binding = TAXII_PROTO_HTTP_BINDING_ID
         message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
         content_bindings = [x.binding_id for x in inbox.supported_content_bindings.all()]
-        available = True # TODO: this should reflect whether or not the authenticated user has access to this inbox
+        available = True # TODO: this should reflect whether or not the user has access to this inbox
        
         service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=service_type,
                                                                 services_version=TAXII_SERVICES_VERSION_ID,

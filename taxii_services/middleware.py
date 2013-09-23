@@ -15,7 +15,7 @@ class ProcessExceptionMiddleware(object):
         if request.path.startswith('/services'):
             logger.debug('returning ST_FAILURE message')
             m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='An internal server error occurred')
-            return handlers.create_taxii_response(m, handlers.HTTP_STATUS_OK, use_https=request.is_secure()) # should the http status be 500?
+            return handlers.create_taxii_response(m, handlers.HTTP_STATUS_OK, use_https=request.is_secure())
 
         resp = HttpResponseServerError()
         resp.body = 'A server error occurred'
