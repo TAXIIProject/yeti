@@ -86,7 +86,8 @@ def validate_taxii_headers(request, request_message_id):
     # Make sure the required headers are present
     missing_required_headers = set(DICT_REQUIRED_TAXII_HTTP_HEADERS).difference(set(request.META))
     if missing_required_headers:
-        msg = "Required headers not present: [%s]" % (', '.join([DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers])) 
+        required_headers = ', '.join(DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers)
+        msg = "Required headers not present: [%s]" % (required_headers) 
         m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
         return create_taxii_response(m, use_https=request.is_secure())
 
@@ -133,6 +134,7 @@ def validate_taxii_request(request):
     
     header_validation_resp = validate_taxii_headers(request, '0') # TODO: What to use for request message id?
     if header_validation_resp: # If response is not None an validation of the TAXII headers failed
+        logger.info('taxii header validation failed for reason [%s]' % (normalize(header_validation_resp.message)))
         return header_validation_resp
     
     if len(request.body) == 0:
