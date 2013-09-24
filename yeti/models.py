@@ -2,6 +2,7 @@
 # For license information, see the LICENSE.txt file
 
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, post_delete
 import datetime
@@ -24,12 +25,17 @@ class Certificate(models.Model):
 		return self.title
 	
 	def clean(self):
-		import OpenSSL
-		x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, self.pem_certificate)
-		x509subject = x509.get_subject()
-		self.subject = str(x509subject)[18:-2]
-		x509issuer = x509.get_issuer()
-		self.issuer = str(x509issuer)[18:-2]
+		try:
+			import OpenSSL
+			x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, self.pem_certificate)
+			x509subject = x509.get_subject()
+			self.subject = str(x509subject)[18:-2]
+			x509issuer = x509.get_issuer()
+			self.issuer = str(x509issuer)[18:-2]
+		except ImportError:
+			raise ValidationError(message="Cannot validate certificate: pyOpenSSL is not installed.")
+		except Exception as ex:
+			raise ValidationError(message="Could not validate certificate [%s]" % (str(ex)))
 
 def do_export_certs(sender, **kwargs):
 	"""
