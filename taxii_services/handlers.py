@@ -302,6 +302,7 @@ def discovery_get_services(request, taxii_message):
                                                             message_bindings=[TAXII_MESSAGE_XML_BINDING_ID],
                                                             available=True)
     all_services.append(service_instance)
+    logger.debug('returning %s services' % (len(all_services)))
     
     # Build response
     discovery_response_message = tm.DiscoveryResponse(message_id=tm.generate_message_id(), 
