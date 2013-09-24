@@ -35,7 +35,7 @@ class Certificate(models.Model):
 		except ImportError:
 			raise ValidationError(message="Cannot validate certificate: pyOpenSSL is not installed.")
 		except Exception as ex:
-			raise ValidationError(message="Could not validate certificate [%s]" % (str(ex)))
+			raise ValidationError(message="Unable to add/edit certificate")
 
 def do_export_certs(sender, **kwargs):
 	"""
