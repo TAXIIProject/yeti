@@ -5,6 +5,7 @@ import logging
 from django.views.decorators.csrf import csrf_exempt
 from taxii_services.decorators import taxii_auth_check
 import taxii_services.handlers as handlers
+from taxii_services.utils import normalize
 import libtaxii.messages as tm
 
     
@@ -24,10 +25,11 @@ def inbox_service(request, inbox_name):
         logger.debug('unable to parse inbound message: %s' % (ex.message))
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
-    logger.debug('received taxii_message [%s]' % (taxii_message.message_id))
+    
+    logger.debug('inbox [%s] received taxii_message [%s]' % (normalize(inbox_name), normalize(taxii_message.message_id)))
     
     if taxii_message.message_type != tm.MSG_INBOX_MESSAGE:
-        logger.info('taxii taxii_message [%s] was not inbox type [%s]' % (taxii_message.message_id, taxii_message.message_type))
+        logger.info('taxii taxii_message [%s] was not inbox type [%s]' % (normalize(taxii_message.message_id), normalize(taxii_message.message_type)))
         m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_FAILURE, message='Message sent to inbox service did not have an inbox taxii_message type')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
     
@@ -50,10 +52,11 @@ def poll_service(request):
         logger.debug('unable to parse inbound message: %s' % (ex.message))
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
-    logger.debug('received taxii message [%s]' % (taxii_message.message_id))
+    
+    logger.debug('received taxii message [%s]' % (normalize(taxii_message.message_id)))
     
     if taxii_message.message_type != tm.MSG_POLL_REQUEST:
-        logger.info('Message [%s] was not poll request [%s]' % (taxii_message.message_id,taxii_message.message_type))
+        logger.info('message [%s] was not poll request [%s]' % (normalize(taxii_message.message_id), normalize(taxii_message.message_type)))
         m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_FAILURE, message='Message sent to poll service did not have a poll request message type')
         return handlers.create_taxii_response(m, use_https=request.is_secure())    
     
@@ -76,10 +79,11 @@ def discovery_service(request):
         logger.debug('unable to parse inbound message: %s' % (ex.message))
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
-    logger.debug('received taxii message [%s]' % (taxii_message.message_id))
+    
+    logger.debug('received taxii message [%s]' % (normalize(taxii_message.message_id)))
     
     if taxii_message.message_type != tm.MSG_DISCOVERY_REQUEST:
-        logger.info('Message [%s] was not discovery request [%s]' % (taxii_message.message_id,taxii_message.message_type))
+        logger.info('message [%s] was not discovery request [%s]' % (normalize(taxii_message.message_id), normalize(taxii_message.message_type)))
         m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_FAILURE, message='Message sent to discovery service did not have a discovery request message type')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
 

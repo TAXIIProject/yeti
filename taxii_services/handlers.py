@@ -7,6 +7,7 @@ from dateutil.tz import tzutc
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from taxii_services.models import Inbox, DataFeed, ContentBlock, ContentBindingId
+from taxii_services.utils import normalize
 import libtaxii as t
 import libtaxii.messages as tm
 
@@ -85,7 +86,8 @@ def validate_taxii_headers(request, request_message_id):
     # Make sure the required headers are present
     missing_required_headers = set(DICT_REQUIRED_TAXII_HTTP_HEADERS).difference(set(request.META))
     if missing_required_headers:
-        msg = "Required headers not present: [%s]" % (', '.join([DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers])) 
+        required_headers = ', '.join(DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers)
+        msg = "Required headers not present: [%s]" % (required_headers) 
         m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
         return create_taxii_response(m, use_https=request.is_secure())
 
@@ -132,6 +134,7 @@ def validate_taxii_request(request):
     
     header_validation_resp = validate_taxii_headers(request, '0') # TODO: What to use for request message id?
     if header_validation_resp: # If response is not None an validation of the TAXII headers failed
+        logger.info('taxii header validation failed for reason [%s]' % (normalize(header_validation_resp.message)))
         return header_validation_resp
     
     if len(request.body) == 0:
@@ -139,30 +142,31 @@ def validate_taxii_request(request):
         logger.info('Request had a body length of 0. Returning error.')
         return create_taxii_response(m, use_https=request.is_secure())
     
+    logger.debug('request was valid')
     return None
 
 def inbox_add_content(request, inbox_name, taxii_message):
     """Adds content to inbox and associated data feeds"""
     logger = logging.getLogger('taxii_services.utils.handlers.inbox_add_content')
-    logger.debug('adding content to inbox [%s]' % (inbox_name))
+    logger.debug('adding content to inbox [%s]' % (normalize(inbox_name)))
 
     try:
         inbox = Inbox.objects.get(name=inbox_name)
     except:
-        logger.debug('attempting to push content to unknown inbox')
-        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Inbox does not exist [%s]' % (inbox_name))
+        logger.debug('attempting to push content to unknown inbox [%s]' % (normalize(inbox_name)))
+        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Inbox does not exist [%s]' % (normalize(inbox_name)))
         return create_taxii_response(m, use_https=request.is_secure())
     
-    logger.debug('taxii message [%s] contains [%d] content blocks' %(taxii_message.message_id, len(taxii_message.content_blocks)))
+    logger.debug('taxii message [%s] contains [%d] content blocks' % (normalize(taxii_message.message_id), len(taxii_message.content_blocks)))
     for content_block in taxii_message.content_blocks:
         try:
             content_binding_id = ContentBindingId.objects.get(binding_id=content_block.content_binding)
         except:
-            logger.debug('taxii message [%s] contained unrecognized content binding [%s]' % (taxii_message.message_id, content_block.content_binding))
+            logger.debug('taxii message [%s] contained unrecognized content binding [%s]' % (normalize(taxii_message.message_id), normalize(content_block.content_binding)))
             continue # cannot proceed - move on to the next content block
             
         if content_binding_id not in inbox.supported_content_bindings.all():
-            logger.debug('inbox [%s] does not accept content with binding id [%s]' % (inbox_name, content_block.content_binding))
+            logger.debug('inbox [%s] does not accept content with binding id [%s]' % (normalize(inbox_name), normalize(content_block.content_binding)))
         else:
             c = ContentBlock()
             c.message_id = taxii_message.message_id
@@ -183,7 +187,9 @@ def inbox_add_content(request, inbox_name, taxii_message):
                     data_feed.content_blocks.add(c)
                     data_feed.save()
                 else:
-                    logger.debug('inbox [%s] received data using content binding [%s] - associated data feed [%s] does not support this binding.' % (inbox_name, content_binding_id, data_feed))
+                    logger.debug('inbox [%s] received data using content binding [%s] - '
+                                 'associated data feed [%s] does not support this binding.' % 
+                                 (normalize(inbox_name), normalize(content_block.content_binding), normalize(data_feed.name)))
     
     inbox.save()
     m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type = tm.ST_SUCCESS)
@@ -192,14 +198,14 @@ def inbox_add_content(request, inbox_name, taxii_message):
 def poll_get_content(request, taxii_message):
     """Returns a Poll response for a given Poll Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.poll_get_content')
-    logger.debug('polling data from data feed [%s]' % taxii_message.feed_name)
+    logger.debug('polling data from data feed [%s]' % (normalize(taxii_message.feed_name)))
     logger.debug('begin_ts: %s, end_ts: %s' % (taxii_message.exclusive_begin_timestamp_label, taxii_message.inclusive_end_timestamp_label))
     
     try:
         data_feed = DataFeed.objects.get(name=taxii_message.feed_name)
     except:
-        logger.debug('attempting to poll unknown data feed')
-        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Data feed does not exist [%s]' % (taxii_message.feed_name))
+        logger.debug('attempting to poll unknown data feed [%s]' % (normalize(taxii_message.feed_name)))
+        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Data feed does not exist [%s]' % (normalize(taxii_message.feed_name)))
         return create_taxii_response(m, use_https=request.is_secure())
     
     # build query for poll results
@@ -217,7 +223,7 @@ def poll_get_content(request, taxii_message):
         query_params['content_binding__in'] = taxii_message.content_bindings
     
     content_blocks = data_feed.content_blocks.filter(**query_params).order_by('timestamp_label')
-    logger.debug('returned %d content blocks from data feed' % (len(content_blocks)))
+    logger.debug('returned %d content blocks from data feed [%s]' % (len(content_blocks), normalize(data_feed.name)))
     
     # TAXII Poll Requests have exclusive begin timestamp label fields, while Poll Responses
     # have *inclusive* begin timestamp label fields. To satisfy this, we add one millisecond
@@ -298,6 +304,7 @@ def discovery_get_services(request, taxii_message):
                                                             message_bindings=[TAXII_MESSAGE_XML_BINDING_ID],
                                                             available=True)
     all_services.append(service_instance)
+    logger.debug('returning %s services' % (len(all_services)))
     
     # Build response
     discovery_response_message = tm.DiscoveryResponse(message_id=tm.generate_message_id(), 

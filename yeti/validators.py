@@ -8,8 +8,8 @@ from django.core.exceptions import ValidationError
 def CertificateValidator(string_value):
     try:
         import OpenSSL
-        x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, string_value)
-        x509.get_subject().get_components()
-        pass
+        OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, string_value)
+    except ImportError:
+        raise ValidationError(u'Cannot validate certificate: pyOpenSSL is not installed')
     except Exception as e:
         raise ValidationError(u'Certificate not a valid PEM x509 certificate: %s' % e)
