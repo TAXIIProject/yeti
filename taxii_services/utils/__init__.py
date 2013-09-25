@@ -1,7 +1,7 @@
 # Copyright (C) 2013 - The MITRE Corporation
 # For license information, see the LICENSE.txt file
 
-import cgi
+import django.utils.html
 
 def get_source_ip(request):
     """Given a request object, returns the source IP used to make the request."""
@@ -19,5 +19,5 @@ def normalize(str_):
     strips leading/trailing whitespace.
     """
     ret = ' '.join(str(str_).split()) if str_ is not None else None
-    ret = cgi.escape(ret)
+    ret = django.utils.html.escape(ret)
     return ret
