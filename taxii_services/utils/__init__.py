@@ -16,7 +16,7 @@ def get_source_ip(request):
 
 def normalize(str_):
     """Normalizes all whitespace in string to a single whitespace and 
-    strips leading/trailing whitespace.
+    strips leading/trailing whitespace; also performs HTML escapeing.
     """
     ret = ' '.join(str(str_).split()) if str_ is not None else None
     ret = django.utils.html.escape(ret)
