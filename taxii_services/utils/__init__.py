@@ -14,10 +14,18 @@ def get_source_ip(request):
     return ip
 
 
-def normalize(str_):
-    """Normalizes all whitespace in string to a single whitespace and 
-    strips leading/trailing whitespace; also performs HTML escapeing.
+def make_safe(str_):
+    """Returns a copy of the input string that is safe for logging.
+    
+    The following operations are performed on the string:
+    - Normalize all whitespace to a single space
+    - Removes trailing and leading whitespace
+    - HTML-escape the string 
     """
-    ret = ' '.join(str(str_).split()) if str_ is not None else None
-    ret = django.utils.html.escape(ret)
-    return ret
+    if str_ is None:
+        return None
+    
+    normalized = ' '.join(str(str_).split())
+    escaped = django.utils.html.escape(normalized)
+    
+    return escaped
