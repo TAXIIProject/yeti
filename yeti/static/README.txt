@@ -1,0 +1,1 @@
+All files under the admin/ folder in this directory are from the Django project (https://github.com/django/django/tree/master/django/contrib/admin). A copy of the license has been provided in that folder.
