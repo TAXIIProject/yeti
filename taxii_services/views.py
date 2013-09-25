@@ -26,7 +26,8 @@ def inbox_service(request, inbox_name):
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
     
-    logger.debug('Inbox [%s] received TAXII message with id [%s]', make_safe(inbox_name), make_safe(taxii_message.message_id))
+    logger.debug('Inbox [%s] received TAXII message with id [%s] and type [%s]', 
+                 make_safe(inbox_name), make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
     
     if taxii_message.message_type != tm.MSG_INBOX_MESSAGE:
         logger.info('TAXII message with id [%s] was not Inbox type [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
@@ -53,7 +54,7 @@ def poll_service(request):
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
     
-    logger.debug('Received TAXII message with id [%s]', make_safe(taxii_message.message_id))
+    logger.debug('Poll service received TAXII message with id [%s] and type [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
     
     if taxii_message.message_type != tm.MSG_POLL_REQUEST:
         logger.info('TAXII message with id [%s] was not Poll request [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
@@ -80,7 +81,7 @@ def discovery_service(request):
         m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_BAD_MESSAGE, message='Message received could not be parsed')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
     
-    logger.debug('Received TAXII message with id [%s]', make_safe(taxii_message.message_id))
+    logger.debug('Discovery service received TAXII message with id [%s] and type [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
     
     if taxii_message.message_type != tm.MSG_DISCOVERY_REQUEST:
         logger.info('TAXII message with id [%s] was not Discovery request [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
