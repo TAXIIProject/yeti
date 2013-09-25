@@ -1,6 +1,8 @@
 # Copyright (C) 2013 - The MITRE Corporation
 # For license information, see the LICENSE.txt file
 
+import cgi
+
 def get_source_ip(request):
     """Given a request object, returns the source IP used to make the request."""
     if request is None: 
@@ -16,4 +18,6 @@ def normalize(str_):
     """Normalizes all whitespace in string to a single whitespace and 
     strips leading/trailing whitespace.
     """
-    return ' '.join(str(str_).split()) if str_ is not None else None
+    ret = ' '.join(str(str_).split()) if str_ is not None else None
+    ret = cgi.escape(ret)
+    return ret
