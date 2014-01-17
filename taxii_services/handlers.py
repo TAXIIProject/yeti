@@ -6,10 +6,10 @@ import datetime
 from dateutil.tz import tzutc
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
-from taxii_services.models import Inbox, DataFeed, ContentBlock, ContentBindingId
+from taxii_services.models import Inbox, DataCollection, ContentBlock, ContentBindingId
 from taxii_services.utils import make_safe
 import libtaxii as t
-import libtaxii.messages as tm
+import libtaxii.messages_11 as tm11
 
 
 # A set of headers that are utilized by TAXII. These are formatted as Django's
@@ -29,7 +29,7 @@ DICT_REQUIRED_TAXII_HTTP_HEADERS = (DJANGO_HTTP_HEADER_CONTENT_TYPE,
 #For each TAXII Header that may appear in a request, a list of the values this application supports
 DICT_TAXII_HTTP_HEADER_VALUES = {DJANGO_HTTP_HEADER_ACCEPT: ['application/xml'],
                                  DJANGO_HTTP_HEADER_CONTENT_TYPE: ['application/xml'],
-                                 DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE: [t.VID_TAXII_XML_10],
+                                 DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE: [t.VID_TAXII_XML_11],
                                  DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: [t.VID_TAXII_HTTPS_10, t.VID_TAXII_HTTP_10]}
 
 # A set of headers that are utilized by TAXII. These are formatted using HTTP header conventions
@@ -47,14 +47,14 @@ DICT_REVERSE_DJANGO_NORMALIZATION = {DJANGO_HTTP_HEADER_CONTENT_TYPE: HTTP_HEADE
                                      DJANGO_HTTP_HEADER_ACCEPT: HTTP_HEADER_ACCEPT}
 
 # TAXII Services Version ID
-TAXII_SERVICES_VERSION_ID = "urn:taxii.mitre.org:services:1.0"
+TAXII_SERVICES_VERSION_ID = "urn:taxii.mitre.org:services:1.1"
 
 # TAXII Protocol IDs
 TAXII_PROTO_HTTP_BINDING_ID     = "urn:taxii.mitre.org:protocol:http:1.0"
 TAXII_PROTO_HTTPS_BINDING_ID    = "urn:taxii.mitre.org:protocol:https:1.0"
 
 # TAXII Message Binding IDs
-TAXII_MESSAGE_XML_BINDING_ID    = "urn:taxii.mitre.org:message:xml:1.0"
+TAXII_MESSAGE_XML_BINDING_ID    = "urn:taxii.mitre.org:message:xml:1.1"
 
 # HTTP status codes
 HTTP_STATUS_OK              = 200
@@ -72,7 +72,7 @@ def create_taxii_response(message, status_code=HTTP_STATUS_OK, use_https=True):
 def set_taxii_headers_response(response, use_https):
     """Sets the TAXII HTTP Headers for a given HTTP response"""
     response[HTTP_HEADER_CONTENT_TYPE] = 'application/xml'
-    response[HTTP_HEADER_X_TAXII_CONTENT_TYPE] = t.VID_TAXII_XML_10
+    response[HTTP_HEADER_X_TAXII_CONTENT_TYPE] = t.VID_TAXII_XML_11
     protocol = t.VID_TAXII_HTTPS_10 if use_https else t.VID_TAXII_HTTP_10
     response[HTTP_HEADER_X_TAXII_PROTOCOL] = protocol
     return response
@@ -88,7 +88,7 @@ def validate_taxii_headers(request, request_message_id):
     if missing_required_headers:
         required_headers = ', '.join(DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers)
         msg = "Required headers not present: [%s]" % (required_headers) 
-        m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
+        m = tm11.StatusMessage(tm11.generate_message_id(), request_message_id, status_type=tm11.ST_FAILURE, message=msg)
         return create_taxii_response(m, use_https=request.is_secure())
 
     #For headers that exist, make sure the values are supported
@@ -101,7 +101,7 @@ def validate_taxii_headers(request, request_message_id):
         
         if header_value not in supported_values:
             msg = 'The value of %s is not supported. Supported values are %s' % (DICT_REVERSE_DJANGO_NORMALIZATION[header], supported_values)
-            m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
+            m = tm11.StatusMessage(tm11.generate_message_id(), request_message_id, status_type=tm11.ST_FAILURE, message=msg)
             return create_taxii_response(m, use_https=request.is_secure())
     
     # Check to make sure the specified protocol matches the protocol used
@@ -116,7 +116,7 @@ def validate_taxii_headers(request, request_message_id):
     
     if header_proto != request_proto:
         msg = 'Protocol value incorrect. TAXII header specified %s but was sent over %s' % (header_proto, request_proto)
-        m = tm.StatusMessage(tm.generate_message_id(), request_message_id, status_type=tm.ST_FAILURE, message=msg)
+        m = tm11.StatusMessage(tm11.generate_message_id(), request_message_id, status_type=tm11.ST_FAILURE, message=msg)
         return create_taxii_response(m, use_https=request.is_secure())
     
     # At this point, the header values are known to be good.
@@ -129,7 +129,7 @@ def validate_taxii_request(request):
     
     if request.method != 'POST':
         logger.info('Request was not POST - returning error')
-        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='Request must be POST')
+        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_FAILURE, message='Request must be POST')
         return create_taxii_response(m, use_https=request.is_secure())
     
     header_validation_resp = validate_taxii_headers(request, '0') # TODO: What to use for request message id?
@@ -138,7 +138,7 @@ def validate_taxii_request(request):
         return header_validation_resp
     
     if len(request.body) == 0:
-        m = tm.StatusMessage(tm.generate_message_id(), '0', status_type=tm.ST_FAILURE, message='No POST data')
+        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_FAILURE, message='No POST data')
         logger.info('Request had a body length of 0. Returning error.')
         return create_taxii_response(m, use_https=request.is_secure())
     
@@ -146,7 +146,7 @@ def validate_taxii_request(request):
     return None
 
 def inbox_add_content(request, inbox_name, taxii_message):
-    """Adds content to inbox and associated data feeds"""
+    """Adds content to inbox and associated data collections"""
     logger = logging.getLogger('taxii_services.utils.handlers.inbox_add_content')
     logger.debug('Adding content to inbox [%s]', make_safe(inbox_name))
 
@@ -154,7 +154,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
         inbox = Inbox.objects.get(name=inbox_name)
     except:
         logger.debug('Attempting to push content to unknown inbox [%s]', make_safe(inbox_name))
-        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Inbox does not exist [%s]' % (make_safe(inbox_name)))
+        m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_NOT_FOUND, message='Inbox does not exist [%s]' % (make_safe(inbox_name)))
         return create_taxii_response(m, use_https=request.is_secure())
     
     logger.debug('TAXII message [%s] contains [%d] content blocks', make_safe(taxii_message.message_id), len(taxii_message.content_blocks))
@@ -182,30 +182,30 @@ def inbox_add_content(request, inbox_name, taxii_message):
             c.save()
             inbox.content_blocks.add(c) # add content block to inbox
             
-            for data_feed in inbox.data_feeds.all():
-                if content_binding_id in data_feed.supported_content_bindings.all():
-                    data_feed.content_blocks.add(c)
-                    data_feed.save()
+            for data_collection in inbox.data_collections.all():
+                if content_binding_id in data_collection.supported_content_bindings.all():
+                    data_collection.content_blocks.add(c)
+                    data_collection.save()
                 else:
                     logger.debug('Inbox [%s] received data using content binding [%s] - '
-                                 'associated data feed [%s] does not support this binding.',
-                                 make_safe(inbox_name), make_safe(content_block.content_binding), make_safe(data_feed.name))
+                                 'associated data collection [%s] does not support this binding.',
+                                 make_safe(inbox_name), make_safe(content_block.content_binding), make_safe(data_collection.name))
     
     inbox.save()
-    m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type = tm.ST_SUCCESS)
+    m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type = tm11.ST_SUCCESS)
     return create_taxii_response(m, use_https=request.is_secure())
 
 def poll_get_content(request, taxii_message):
     """Returns a Poll response for a given Poll Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.poll_get_content')
-    logger.debug('Polling data from data feed [%s] - begin_ts: %s, end_ts: %s', 
-                 make_safe(taxii_message.feed_name), taxii_message.exclusive_begin_timestamp_label, taxii_message.inclusive_end_timestamp_label)
+    logger.debug('Polling data from data collection [%s] - begin_ts: %s, end_ts: %s', 
+                 make_safe(taxii_message.collection_name), taxii_message.exclusive_begin_timestamp_label, taxii_message.inclusive_end_timestamp_label)
     
     try:
-        data_feed = DataFeed.objects.get(name=taxii_message.feed_name)
+        data_collection = DataCollection.objects.get(name=taxii_message.collection_name)
     except:
-        logger.debug('Attempting to poll unknown data feed [%s]', make_safe(taxii_message.feed_name))
-        m = tm.StatusMessage(tm.generate_message_id(), taxii_message.message_id, status_type=tm.ST_NOT_FOUND, message='Data feed does not exist [%s]' % (make_safe(taxii_message.feed_name)))
+        logger.debug('Attempting to poll unknown data collection [%s]', make_safe(taxii_message.collection_name))
+        m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_NOT_FOUND, message='Data collection does not exist [%s]' % (make_safe(taxii_message.collection_name)))
         return create_taxii_response(m, use_https=request.is_secure())
     
     # build query for poll results
@@ -219,11 +219,11 @@ def poll_get_content(request, taxii_message):
     else:
         query_params['timestamp_label__lte'] = current_datetime
     
-    if taxii_message.content_bindings:
+    if taxii_message.poll_parameters.content_bindings:
         query_params['content_binding__in'] = taxii_message.content_bindings
     
-    content_blocks = data_feed.content_blocks.filter(**query_params).order_by('timestamp_label')
-    logger.debug('Returned [%d] content blocks from data feed [%s]', len(content_blocks), make_safe(data_feed.name))
+    content_blocks = data_collection.content_blocks.filter(**query_params).order_by('timestamp_label')
+    logger.debug('Returned [%d] content blocks from data collection [%s]', len(content_blocks), make_safe(data_collection.name))
     
     # TAXII Poll Requests have exclusive begin timestamp label fields, while Poll Responses
     # have *inclusive* begin timestamp label fields. To satisfy this, we add one millisecond
@@ -235,14 +235,14 @@ def poll_get_content(request, taxii_message):
         inclusive_begin_ts = taxii_message.exclusive_begin_timestamp_label + datetime.timedelta(milliseconds=1)
     
     # build poll response
-    poll_response_message = tm.PollResponse(tm.generate_message_id(), 
+    poll_response_message = tm11.PollResponse(tm11.generate_message_id(), 
                                             taxii_message.message_id, 
-                                            feed_name=data_feed.name, 
-                                            inclusive_begin_timestamp_label=inclusive_begin_ts, 
+                                            collection_name=data_collection.name, 
+                                            exclusive_begin_timestamp_label=inclusive_begin_ts, 
                                             inclusive_end_timestamp_label=query_params['timestamp_label__lte'])
     
     for content_block in content_blocks:
-        cb = tm.ContentBlock(content_block.content_binding.binding_id, content_block.content, content_block.timestamp_label)
+        cb = tm11.ContentBlock(tm11.ContentBinding(content_block.content_binding.binding_id), content_block.content, content_block.timestamp_label)
         
         if content_block.padding:
             cb.padding = content_block.padding
@@ -258,15 +258,15 @@ def discovery_get_services(request, taxii_message):
     
     # Inbox Services
     for inbox in Inbox.objects.all():
-        service_type = tm.SVC_INBOX
+        service_type = tm11.SVC_INBOX
         inbox_name  = inbox.name
         service_addr   = request.build_absolute_uri(reverse('taxii_services.views.inbox_service', args=[inbox_name]))
         proto_binding = TAXII_PROTO_HTTP_BINDING_ID
         message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
-        content_bindings = [x.binding_id for x in inbox.supported_content_bindings.all()]
+        content_bindings = [tm11.ContentBinding(x.binding_id) for x in inbox.supported_content_bindings.all()]
         available = True # TODO: this should reflect whether or not the user has access to this inbox
        
-        service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=service_type,
+        service_instance = tm11.DiscoveryResponse.ServiceInstance(service_type=service_type,
                                                                 services_version=TAXII_SERVICES_VERSION_ID,
                                                                 protocol_binding=proto_binding, 
                                                                 service_address=service_addr, 
@@ -276,28 +276,28 @@ def discovery_get_services(request, taxii_message):
         all_services.append(service_instance)
     
     # Poll Service
-    all_data_feeds = DataFeed.objects.all()
-    if all_data_feeds:
-        all_data_feed_msg_bindings = set()
-        for data_feed in all_data_feeds:
-            poll_svc_instances = data_feed.poll_service_instances.all()
+    all_data_collections = DataCollection.objects.all()
+    if all_data_collections:
+        all_data_collection_msg_bindings = set()
+        for data_collection in all_data_collections:
+            poll_svc_instances = data_collection.poll_service_instances.all()
             
             for poll_svc_instance in poll_svc_instances:
                 message_bindings = [x.binding_id for x in poll_svc_instance.message_bindings.all()]
-                all_data_feed_msg_bindings.update(message_bindings)
+                all_data_collection_msg_bindings.update(message_bindings)
             
         
-        service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=tm.SVC_POLL, 
+        service_instance = tm11.DiscoveryResponse.ServiceInstance(service_type=tm11.SVC_POLL, 
                                                                 services_version=TAXII_SERVICES_VERSION_ID, 
                                                                 protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
                                                                 service_address=request.build_absolute_uri(reverse('taxii_services.views.poll_service')),
-                                                                message_bindings=all_data_feed_msg_bindings,
+                                                                message_bindings=all_data_collection_msg_bindings,
                                                                 available=True)
         all_services.append(service_instance)
 
 
     # Discovery Service
-    service_instance = tm.DiscoveryResponse.ServiceInstance(service_type=tm.SVC_DISCOVERY, 
+    service_instance = tm11.DiscoveryResponse.ServiceInstance(service_type=tm11.SVC_DISCOVERY, 
                                                             services_version=TAXII_SERVICES_VERSION_ID, 
                                                             protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
                                                             service_address=request.build_absolute_uri(reverse('taxii_services.views.discovery_service')),
@@ -307,7 +307,7 @@ def discovery_get_services(request, taxii_message):
     logger.debug('Returning [%s] services', len(all_services))
     
     # Build response
-    discovery_response_message = tm.DiscoveryResponse(message_id=tm.generate_message_id(), 
+    discovery_response_message = tm11.DiscoveryResponse(message_id=tm11.generate_message_id(), 
                                                       in_response_to=taxii_message.message_id,
                                                       service_instances=all_services)
     
