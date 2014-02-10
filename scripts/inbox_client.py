@@ -6,7 +6,7 @@
 import argparse
 
 import libtaxii as t
-import libtaxii.messages as tm
+import libtaxii.messages_11 as tm11
 import libtaxii.clients as tc
 import StringIO
 
@@ -81,16 +81,16 @@ def main():
     else:
         c = open(args.content_file, 'r')
     
-    cb = tm.ContentBlock(args.content_binding, c.read())
+    cb = tm11.ContentBlock(tm11.ContentBinding(args.content_binding), c.read())
     c.close()
 
-    inbox_message = tm.InboxMessage(message_id = tm.generate_message_id(), content_blocks=[cb])
+    inbox_message = tm11.InboxMessage(message_id = tm11.generate_message_id(), content_blocks=[cb])
     inbox_xml = inbox_message.to_xml()
 
     print "Inbox Message: \r\n", inbox_xml
     client = tc.HttpClient()
     client.setProxy('noproxy')
-    resp = client.callTaxiiService2(args.host, args.path, t.VID_TAXII_XML_10, inbox_xml, args.port)
+    resp = client.callTaxiiService2(args.host, args.path, t.VID_TAXII_XML_11, inbox_xml, args.port)
     response_message = t.get_message_from_http_response(resp, '0')
     print "Response Message: \r\n", response_message.to_xml()
 

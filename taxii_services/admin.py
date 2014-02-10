@@ -2,11 +2,11 @@
 # For license information, see the LICENSE.txt file
 
 from django.contrib import admin
-from taxii_services.models import Inbox, DataFeed, MessageBindingId, ContentBindingId, ContentBlock, ProtocolBindingId, DataFeedPushMethod, DataFeedPollInformation, DataFeedSubscriptionMethod
-from taxii_services.forms import DataFeedModelForm, InboxModelForm
+from taxii_services.models import Inbox, DataCollection, MessageBindingId, ContentBindingId, ContentBlock, ProtocolBindingId, DataCollectionPushMethod, DataCollectionPollInformation, DataCollectionSubscriptionMethod
+from taxii_services.forms import DataCollectionModelForm, InboxModelForm
 
-class DataFeedAdmin(admin.ModelAdmin):
-    form = DataFeedModelForm
+class DataCollectionAdmin(admin.ModelAdmin):
+    form = DataCollectionModelForm
     list_display = ['name', 'description']
     
 class InboxAdmin(admin.ModelAdmin):
@@ -25,11 +25,11 @@ class ContentBlockAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'description', 'timestamp_label','submitted_by', 'message_id', 'content_binding', 'content', 'padding', 'date_created', 'date_updated']
 
 admin.site.register(Inbox, InboxAdmin)
-admin.site.register(DataFeed, DataFeedAdmin)
+admin.site.register(DataCollection, DataCollectionAdmin)
 admin.site.register(ContentBlock, ContentBlockAdmin)
 admin.site.register(MessageBindingId, MessageBindingIdAdmin)
 admin.site.register(ContentBindingId, ContentBindingIdAdmin)
 admin.site.register(ProtocolBindingId, ProtocolBindingIdAdmin)
-admin.site.register(DataFeedPushMethod)
-admin.site.register(DataFeedPollInformation)
-admin.site.register(DataFeedSubscriptionMethod)
+admin.site.register(DataCollectionPushMethod)
+admin.site.register(DataCollectionPollInformation)
+admin.site.register(DataCollectionSubscriptionMethod)

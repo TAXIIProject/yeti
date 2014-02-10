@@ -4,8 +4,8 @@
 import re
 from django import forms
 
-class DataFeedModelForm(forms.ModelForm):
-    """Form for DataFeed objects."""
+class DataCollectionModelForm(forms.ModelForm):
+    """Form for DataCollection objects."""
     def clean_name(self):
         data = self.cleaned_data["name"]
         

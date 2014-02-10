@@ -23,8 +23,8 @@
         "model": "taxii_services.MessageBindingId",
         "pk": 1,
         "fields": {
-        	"title" : "TAXII XML Message Binding v1.0",
-            "binding_id": "urn:taxii.mitre.org:message:xml:1.0",
+        	"title" : "TAXII XML Message Binding v1.1",
+            "binding_id": "urn:taxii.mitre.org:message:xml:1.1",
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
@@ -40,7 +40,7 @@
         }
     },
     {
-        "model": "taxii_services.DataFeedPushMethod",
+        "model": "taxii_services.DataCollectionPushMethod",
         "pk": 1,
         "fields": {
         	"title" : "TAXII XML over HTTP",
@@ -51,7 +51,7 @@
         }
     },
     {
-        "model": "taxii_services.DataFeedPushMethod",
+        "model": "taxii_services.DataCollectionPushMethod",
         "pk": 2,
         "fields": {
             "title" : "TAXII XML over HTTPS",
@@ -62,10 +62,10 @@
         }
     },
     {
-        "model": "taxii_services.DataFeedPollInformation",
+        "model": "taxii_services.DataCollectionPollInformation",
         "pk": 1,
         "fields": {
-            "title" : "Default TAXII Data Feed Poll Information",
+            "title" : "Default TAXII Data Collection Poll Information",
             "description" : "",
             "protocol_binding" : 1,
             "message_bindings" : [1],
@@ -75,11 +75,11 @@
         }
     },
     {
-        "model": "taxii_services.DataFeed",
+        "model": "taxii_services.DataCollection",
         "pk": 1,
         "fields": {
             "name" : "default",
-            "description" : "Default TAXII Data Feed",
+            "description" : "Default TAXII Data Collection",
             "users" : [1],
             "supported_content_bindings" : [1],
             "push_methods" : [1],
@@ -98,7 +98,7 @@
             "supported_content_bindings" : [1],
             "supported_protocol_binding" : 1,
             "supported_message_bindings" : [1],
-            "data_feeds" : [1],
+            "data_collections" : [1],
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }

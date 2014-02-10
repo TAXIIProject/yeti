@@ -39,7 +39,7 @@ class ContentBindingId(models.Model):
     types for a given TAXII exchange (e.g., Poll, Inbox, etc.).
     
     Ex:
-    STIX v1.0 content binding id : "urn:stix.mitre.org:xml:1.0"
+    STIX v1.0 content binding id : "urn:stix.mitre.org:xml:1.1"
     """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
     description = models.TextField(blank=True)
@@ -79,10 +79,10 @@ class MessageBindingId(models.Model):
     class Meta:
         verbose_name = "Message Binding Id"
 
-class DataFeedPushMethod(models.Model):
+class DataCollectionPushMethod(models.Model):
     """
     Used to establish the protocols that can be used to push content via
-    a subscription. This appears in a Feed Information Response message,
+    a subscription. This appears in a Collection Information Response message,
     as defined by the TAXII Services Specification.
     """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
@@ -100,12 +100,12 @@ class DataFeedPushMethod(models.Model):
             return u'%s | %s' % (self.protocol_binding, self.message_binding)
     
     class Meta:
-        verbose_name = "Data Feed Push Method"
+        verbose_name = "Data Collection Push Method"
     
-class DataFeedPollInformation(models.Model):
+class DataCollectionPollInformation(models.Model):
     """
-    Used to establish the supported protocols and address of a Data Feed.
-    This appears in a Feed Information Response message, as defined by the
+    Used to establish the supported protocols and address of a Data Collection.
+    This appears in a Collection Information Response message, as defined by the
     TAXII Services Specification.
     """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
@@ -125,14 +125,14 @@ class DataFeedPollInformation(models.Model):
     
     class Meta:
         ordering = ['address']
-        verbose_name = "Data Feed Poll Information"
-        verbose_name_plural = "Data Feed Poll Information"
+        verbose_name = "Data Collection Poll Information"
+        verbose_name_plural = "Data Collection Poll Information"
     
-class DataFeedSubscriptionMethod(models.Model):
+class DataCollectionSubscriptionMethod(models.Model):
     """
     Used to identify the protocol and address of the TAXII daemon hosting
-    the Feed Management Service that can process subscriptions for a TAXII
-    Data Feed. This appears in a Feed Information Response message, as defined
+    the Collection Management Service that can process subscriptions for a TAXII
+    Data Collection. This appears in a Collection Information Response message, as defined
     by the TAXII Services Specification.
     """
     title = models.CharField(max_length=MAX_TITLE_LEN, blank=True)
@@ -152,7 +152,7 @@ class DataFeedSubscriptionMethod(models.Model):
     
     class Meta:
         ordering = ['address']  
-        verbose_name = "Data Feed Subscription Method"
+        verbose_name = "Data Collection Subscription Method"
 
 class ContentBlock(models.Model):
     """Represents the content block of a TAXII Poll Response or Inbox message."""
@@ -178,16 +178,16 @@ class ContentBlock(models.Model):
         ordering = ['timestamp_label']
         verbose_name = "Content Block"
     
-class DataFeed(models.Model):
-    """Represents a TAXII Data Feed"""   
-    name = models.CharField(max_length=MAX_TITLE_LEN) # this will be used to access this data feed
+class DataCollection(models.Model):
+    """Represents a TAXII Data Collection"""   
+    name = models.CharField(max_length=MAX_TITLE_LEN) # this will be used to access this data collection
     description = models.TextField(blank=True)
-    users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this data feed.
+    users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this data collection.
     #authentication_required = models.BooleanField(default=True)
     supported_content_bindings = models.ManyToManyField(ContentBindingId)
-    push_methods = models.ManyToManyField(DataFeedPushMethod)
-    poll_service_instances = models.ManyToManyField(DataFeedPollInformation)
-    subscription_methods = models.ManyToManyField(DataFeedSubscriptionMethod, blank=True, null=True)
+    push_methods = models.ManyToManyField(DataCollectionPushMethod)
+    poll_service_instances = models.ManyToManyField(DataCollectionPollInformation)
+    subscription_methods = models.ManyToManyField(DataCollectionSubscriptionMethod, blank=True, null=True)
     content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True)
     
     date_created = models.DateTimeField(auto_now_add=True)
@@ -198,14 +198,14 @@ class DataFeed(models.Model):
 
     class Meta:
         ordering = ['name']
-        verbose_name = "Data Feed"
+        verbose_name = "Data Collection"
 
-class DataFeedSubscription(models.Model):
-    """Represents a Data Feed Subscription. This is not used by YETI at the moment."""
+class DataCollectionSubscription(models.Model):
+    """Represents a Data Collection Subscription. This is not used by YETI at the moment."""
     subscription_id = models.CharField(max_length=MAX_ID_LEN, unique=True) # uri formatted subscription id
     user = models.ForeignKey(User)
-    data_feed = models.ForeignKey(DataFeed)
-    data_feed_method = models.ForeignKey(DataFeedSubscriptionMethod)
+    data_collection = models.ForeignKey(DataCollection)
+    data_collection_method = models.ForeignKey(DataCollectionSubscriptionMethod)
     active = models.BooleanField(default=True)    
     expires = models.DateTimeField()
     
@@ -217,14 +217,14 @@ class DataFeedSubscription(models.Model):
 
     class Meta:
         ordering = ['subscription_id']
-        verbose_name = "Data Feed Subscription"
+        verbose_name = "Data Collection Subscription"
         
 class Inbox(models.Model):
     """
     Characterizes a TAXII Inbox. Inboxes are the mechanism by which TAXII consumers
     receive data from TAXII publishers. This Inbox implementation allows an Inbox
-    to be "bound" to zero or more Data Feeds, meaning that data received by an Inbox
-    can populate Data Feeds if a user configures it as such.
+    to be "bound" to zero or more Data Collections, meaning that data received by an Inbox
+    can populate Data Collections if a user configures it as such.
     """
     name = models.CharField(max_length=MAX_TITLE_LEN, unique=True) # this will become part of the URL where it can be accessed at
     description = models.TextField(blank=True)
@@ -232,7 +232,7 @@ class Inbox(models.Model):
     supported_message_bindings = models.ManyToManyField(MessageBindingId)
     content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True) # content blocks associated with this inbox
     supported_protocol_binding = models.ForeignKey(ProtocolBindingId)
-    data_feeds = models.ManyToManyField(DataFeed, blank=True, null=True) # data received at an inbox will automatically be made available on these data feeds
+    data_collections = models.ManyToManyField(DataCollection, blank=True, null=True) # data received at an inbox will automatically be made available on these data collections
     users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this inbox
     
     date_created = models.DateTimeField(auto_now_add=True)
