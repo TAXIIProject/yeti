@@ -239,15 +239,17 @@ def poll_get_content(request, taxii_message):
                                             taxii_message.message_id, 
                                             collection_name=data_collection.name, 
                                             exclusive_begin_timestamp_label=inclusive_begin_ts, 
-                                            inclusive_end_timestamp_label=query_params['timestamp_label__lte'])
+                                            inclusive_end_timestamp_label=query_params['timestamp_label__lte'],
+                                            record_count=tm11.RecordCount(len(content_blocks), False))
     
-    for content_block in content_blocks:
-        cb = tm11.ContentBlock(tm11.ContentBinding(content_block.content_binding.binding_id), content_block.content, content_block.timestamp_label)
-        
-        if content_block.padding:
-            cb.padding = content_block.padding
-        
-        poll_response_message.content_blocks.append(cb)
+    if taxii_message.poll_parameters.response_type == tm11.RT_FULL:
+        for content_block in content_blocks:
+            cb = tm11.ContentBlock(tm11.ContentBinding(content_block.content_binding.binding_id), content_block.content, content_block.timestamp_label)
+            
+            if content_block.padding:
+                cb.padding = content_block.padding
+            
+            poll_response_message.content_blocks.append(cb)
     
     return create_taxii_response(poll_response_message, use_https=request.is_secure())
 
