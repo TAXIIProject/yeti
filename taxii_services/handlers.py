@@ -149,7 +149,15 @@ def inbox_add_content(request, inbox_name, taxii_message):
     """Adds content to inbox and associated data collections"""
     logger = logging.getLogger('taxii_services.utils.handlers.inbox_add_content')
     logger.debug('Adding content to inbox [%s]', make_safe(inbox_name))
-
+    
+    if len(taxii_message.destination_collection_names) > 0:
+        logger.debug('Client specified a Destination Collection Name, which is not supported by YETI.')
+        m = tm11.StatusMessage(tm11.generate_message_id(), 
+                               taxii_message.message_id, 
+                               status_type=tm11.DESTINATION_COLLECTION_ERROR, 
+                               message='Destination Collection Names are not allowed')
+        return create_taxii_response(m, use_https=request.is_secure())
+    
     try:
         inbox = Inbox.objects.get(name=inbox_name)
     except:
