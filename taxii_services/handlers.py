@@ -208,12 +208,6 @@ def poll_get_content(request, taxii_message):
         m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_NOT_FOUND, message='Data collection does not exist [%s]' % (make_safe(taxii_message.collection_name)))
         return create_taxii_response(m, use_https=request.is_secure())
     
-    if taxii_message.poll_parameters is not None and taxii_message.poll_parameters.query is not None:
-        #YETI doesn't support query yet.
-        logger.debug('Poll Request contained a query. Query is not supported.')
-        m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.UNSUPPORTED_QUERY, message='Query is not supported by YETI.')
-        return create_taxii_response(m, use_https=request.is_secure())
-    
     # build query for poll results
     query_params = {}
     if taxii_message.exclusive_begin_timestamp_label:
