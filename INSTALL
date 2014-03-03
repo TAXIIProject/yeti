@@ -8,7 +8,7 @@ Dependencies
 YETI requires Python 2.7 and leverages the following external libraries:
 + Django v1.5.x (http://www.djangoproject.com)
 + pyOpenSSL (http://pypi.python.org/pypi/pyOpenSSL)
-+ libtaxii (http://pypi.python.org/pypi/libtaxii)
++ libtaxii (http://pypi.python.org/pypi/libtaxii) 1.1.101 or higher
   - lxml (http://lxml.de/index.html#download)
   - libxml2 2.9.0 or higher (http://www.xmlsoft.org/downloads.html)
   - python-dateutil 1.5 or later (http://labix.org/python-dateutil)
