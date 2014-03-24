@@ -49,9 +49,9 @@ def poll_service(request):
     
     try:
         taxii_message = tm11.get_message_from_xml(request.body)
-    except UnsupportedQueryException as e:
+    except tm11.UnsupportedQueryException as e:
         logger.debug('Unsupported query found in TAXII Message')
-        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.UNSUPPORTED_QUERY, message='The message used an unsupported query format')
+        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_UNSUPPORTED_QUERY, message='The message used an unsupported query format')
         return handlers.create_taxii_response(m, use_https=request.is_secure())
     except Exception as ex:
         logger.debug('Unable to parse inbound message: %s', ex.message)
