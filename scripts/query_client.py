@@ -28,24 +28,6 @@ def main():
         print "At least one of --ip or --hash must be specified!"
         sys.exit()
     
-    # try:
-        # if args.begin_ts:
-            # begin_ts = dateutil.parser.parse(args.begin_ts)
-            # if not begin_ts.tzinfo:
-                # raise ValueError
-        # else:
-            # begin_ts = None
-
-        # if args.end_ts:
-            # end_ts = dateutil.parser.parse(args.end_ts)
-            # if not end_ts.tzinfo:
-                # raise ValueError
-        # else:
-            # end_ts = None
-    # except ValueError:
-        # print "Unable to parse timestamp value. Timestamp should include both date and time information along with a timezone or UTC offset (e.g., YYYY-MM-DDTHH:MM:SS.ssssss+/-hh:mm). Aborting poll."
-        # sys.exit()
-    
     criterion = []
     
     if args.ip is not None:
