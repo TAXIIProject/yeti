@@ -50,7 +50,7 @@ def main():
     poll_req_xml = poll_req.to_xml()
     print "Poll Request: \r\n", poll_req_xml
     client = tc.HttpClient()
-    client.setProxy('noproxy')
+    client.setProxy('noproxy') 
     resp = client.callTaxiiService2(args.host, args.path, t.VID_TAXII_XML_11, poll_req_xml, args.port)
     response_message = t.get_message_from_http_response(resp, '0')
     print "Response Message: \r\n", response_message.to_xml()
