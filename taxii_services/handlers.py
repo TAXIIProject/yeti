@@ -10,6 +10,10 @@ from taxii_services.models import Inbox, DataCollection, ContentBlock, ContentBi
 from taxii_services.utils import make_safe
 import libtaxii as t
 import libtaxii.messages_11 as tm11
+import libtaxii.taxii_default_query as tdq
+from lxml import etree
+import StringIO
+import query_helpers as qh
 
 
 # A set of headers that are utilized by TAXII. These are formatted as Django's
@@ -261,6 +265,59 @@ def poll_get_content(request, taxii_message):
     
     return create_taxii_response(poll_response_message, use_https=request.is_secure())
 
+def query_get_content(request, taxii_message):
+    """
+    Returns a Poll response for a given Poll Request Message with a query.
+    
+    This method is intentionally simple (and therefore inefficient).
+    """
+    logger = logging.getLogger('taxii_services.utils.handlers.query_get_content')
+    logger.debug('Polling data from data collection [%s]', make_safe(taxii_message.collection_name))
+    
+    try:
+        data_collection = DataCollection.objects.get(name=taxii_message.collection_name)
+    except:
+        logger.debug('Attempting to poll unknown data collection [%s]', make_safe(taxii_message.collection_name))
+        m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_NOT_FOUND, message='Data collection does not exist [%s]' % (make_safe(taxii_message.collection_name)))
+        return create_taxii_response(m, use_https=request.is_secure())
+    
+    query = taxii_message.poll_parameters.query
+    
+    #This only supports STIX 1.1 queries
+    if query.targeting_expression_id != t.CB_STIX_XML_11:
+        pass#TODO: Return appropriate Status Message
+    
+    cb = ContentBindingId.objects.get(binding_id=t.CB_STIX_XML_11)
+    content_blocks = data_collection.content_blocks.filter(content_binding = cb.id)
+    logger.debug('Returned [%d] content blocks to run the query against from data collection [%s]', len(content_blocks), make_safe(data_collection.name))
+    matching_content_blocks = []
+    
+    for block in content_blocks:
+        stix_etree = etree.parse(StringIO.StringIO(block.content))
+        if qh.evaluate_criteria(query.criteria, stix_etree):
+            matching_content_blocks.append(block)
+    
+    logger.debug('[%d] content blocks match query from data collection [%s]', len(content_blocks), make_safe(data_collection.name))
+    
+    # build poll response
+    poll_response_message = tm11.PollResponse(tm11.generate_message_id(), 
+                                              taxii_message.message_id, 
+                                              collection_name=data_collection.name, 
+                                              #exclusive_begin_timestamp_label=inclusive_begin_ts, 
+                                              #inclusive_end_timestamp_label=query_params['timestamp_label__lte'],
+                                              record_count=tm11.RecordCount(len(matching_content_blocks), False))
+    
+    if taxii_message.poll_parameters.response_type == tm11.RT_FULL:
+        for content_block in matching_content_blocks:
+            cb = tm11.ContentBlock(tm11.ContentBinding(content_block.content_binding.binding_id), content_block.content, content_block.timestamp_label)
+            
+            if content_block.padding:
+                cb.padding = content_block.padding
+            
+            poll_response_message.content_blocks.append(cb)
+    
+    return create_taxii_response(poll_response_message, use_https=request.is_secure())
+
 def discovery_get_services(request, taxii_message):
     """Returns a Discovery response for a given Discovery Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.discovery_get_services')
@@ -285,8 +342,8 @@ def discovery_get_services(request, taxii_message):
                                                                 available=available)
         all_services.append(service_instance)
     
-    # Poll Service
-    all_data_collections = DataCollection.objects.all()
+    # Poll Service - not queryable
+    all_data_collections = DataCollection.objects.filter(queryable=False)
     if all_data_collections:
         all_data_collection_msg_bindings = set()
         for data_collection in all_data_collections:
@@ -304,7 +361,35 @@ def discovery_get_services(request, taxii_message):
                                                                 message_bindings=all_data_collection_msg_bindings,
                                                                 available=True)
         all_services.append(service_instance)
-
+    
+    #Poll Service - queryable
+    queryable_collections = DataCollection.objects.filter(queryable=True)
+    if queryable_collections:
+        queryable_collections_msg_bindings = set()
+        for data_collection in queryable_collections:
+            poll_svc_instances = data_collection.poll_service_instances.all()
+            
+            for poll_svc_instance in poll_svc_instances:
+                message_bindings = [x.binding_id for x in poll_svc_instance.message_bindings.all()]
+                queryable_collections_msg_bindings.update(message_bindings)
+        
+        #Create the QueryInformation structure
+        te = tdq.DefaultQueryInfo.TargetingExpressionInfo(
+            targeting_expression_id = t.CB_STIX_XML_11,
+            preferred_scope = ['//Hash/Simple_Hash_Value'],
+            allowed_scope=['//Address_Value'])
+        
+        qi = tdq.DefaultQueryInfo([te], [tdq.CM_CORE])
+        
+        
+        service_instance = tm11.DiscoveryResponse.ServiceInstance(service_type=tm11.SVC_POLL, 
+                                                                services_version=TAXII_SERVICES_VERSION_ID, 
+                                                                protocol_binding=TAXII_PROTO_HTTP_BINDING_ID, 
+                                                                service_address=request.build_absolute_uri(reverse('taxii_services.views.query_example_service')),
+                                                                message_bindings=all_data_collection_msg_bindings,
+                                                                supported_query = [qi],
+                                                                available=True)
+        all_services.append(service_instance)
 
     # Discovery Service
     service_instance = tm11.DiscoveryResponse.ServiceInstance(service_type=tm11.SVC_DISCOVERY, 

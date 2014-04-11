@@ -189,6 +189,7 @@ class DataCollection(models.Model):
     poll_service_instances = models.ManyToManyField(DataCollectionPollInformation)
     subscription_methods = models.ManyToManyField(DataCollectionSubscriptionMethod, blank=True, null=True)
     content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True)
+    queryable = models.BooleanField(default=False)
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
