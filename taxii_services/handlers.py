@@ -269,7 +269,9 @@ def query_get_content(request, taxii_message):
     """
     Returns a Poll response for a given Poll Request Message with a query.
     
-    This method is intentionally simple (and therefore inefficient).
+    This method is intentionally simple (and therefore inefficient). This method
+    pulls all potentiall matching records from the database, instantiates the 
+    content as an etree, then runs an XPath against each etree.
     """
     logger = logging.getLogger('taxii_services.utils.handlers.query_get_content')
     logger.debug('Polling data from data collection [%s]', make_safe(taxii_message.collection_name))
