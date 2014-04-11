@@ -14,7 +14,7 @@ class QueryHelperException(Exception):
     def __init__(self, message, status_type, status_detail=None):
         Exception.__init__(self, message)
         self.status_type = status_type
-        status_detail = status_detail or {}
+        self.status_detail = status_detail or {}
 
 def evaluate_criteria(criteria, stix_etree):
     """Evaluates a Criteria which contains at least one Criteria/Criterion child

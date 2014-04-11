@@ -14,11 +14,11 @@ import libtaxii.clients as tc
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Poll Client")
+    parser = argparse.ArgumentParser(description="Poll Query Client")
     parser.add_argument("--host", dest="host", default="localhost", help="Host where the Poll Service is hosted. Defaults to localhost.")
     parser.add_argument("--port", dest="port", default="8080", help="Port where the Poll Service is hosted. Defaults to 8080.")
     parser.add_argument("--path", dest="path", default="/services/query_example/", help="Path where the Poll Service is hosted. Defaults to /services/query_example/.")
-    parser.add_argument("--collection", dest="collection", default="default_queryable", help="Data Collection to poll. Defaults to 'default'.")
+    parser.add_argument("--collection", dest="collection", default="default_queryable", help="Data Collection to poll. Defaults to 'default_queryable'.")
     parser.add_argument("--ip", dest="ip", default=None, help="The IP address to query")
     parser.add_argument("--hash", dest="hash", default=None, help="The file hash to query")
 

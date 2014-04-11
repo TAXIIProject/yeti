@@ -289,9 +289,9 @@ def query_get_content(request, taxii_message):
     if query.targeting_expression_id != t.CB_STIX_XML_11:
         m = tm11.StatusMessage(tm11.generate_message_id(), 
                                taxii_message.message_id, 
-                               status_type=tdq.UNSUPPORTED_TARGETING_EXPRESSION_ID, 
+                               status_type=tdq.ST_UNSUPPORTED_TARGETING_EXPRESSION_ID, 
                                message="Unsupported Targeting Expression ID", 
-                               status_details = {'TARGETING_EXPRESSION_ID': t.CB_STIX_XML_11})
+                               status_detail = {'TARGETING_EXPRESSION_ID': t.CB_STIX_XML_11})
         return create_taxii_response(m, use_https=request.is_secure())
     
     cb = ContentBindingId.objects.get(binding_id=t.CB_STIX_XML_11)
@@ -304,12 +304,13 @@ def query_get_content(request, taxii_message):
         try:
             if qh.evaluate_criteria(query.criteria, stix_etree):
                 matching_content_blocks.append(block)
-        except QueryHelperException as qhe:
+        except qh.QueryHelperException as qhe:
+            logger.debug('There was an error with the query - returning status type: %s; message: %s', qhe.status_type, qhe.message)
             m = tm11.StatusMessage(tm11.generate_message_id(), 
                                    taxii_message.message_id, 
                                    status_type=qhe.status_type, 
                                    message=qhe.message, 
-                                   status_details = qhe.status_details)
+                                   status_detail = qhe.status_detail)
             return create_taxii_response(m, use_https=request.is_secure())
     
     logger.debug('[%d] content blocks match query from data collection [%s]', len(matching_content_blocks), make_safe(data_collection.name))
