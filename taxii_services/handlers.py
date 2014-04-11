@@ -270,7 +270,7 @@ def query_get_content(request, taxii_message):
     Returns a Poll response for a given Poll Request Message with a query.
     
     This method is intentionally simple (and therefore inefficient). This method
-    pulls all potentiall matching records from the database, instantiates the 
+    pulls all potentially matching records from the database, instantiates the 
     content as an etree, then runs an XPath against each etree.
     """
     logger = logging.getLogger('taxii_services.utils.handlers.query_get_content')
@@ -287,7 +287,12 @@ def query_get_content(request, taxii_message):
     
     #This only supports STIX 1.1 queries
     if query.targeting_expression_id != t.CB_STIX_XML_11:
-        pass#TODO: Return appropriate Status Message
+        m = tm11.StatusMessage(tm11.generate_message_id(), 
+                               taxii_message.message_id, 
+                               status_type=tdq.UNSUPPORTED_TARGETING_EXPRESSION_ID, 
+                               message="Unsupported Targeting Expression ID", 
+                               status_details = {'TARGETING_EXPRESSION_ID': t.CB_STIX_XML_11})
+        return create_taxii_response(m, use_https=request.is_secure())
     
     cb = ContentBindingId.objects.get(binding_id=t.CB_STIX_XML_11)
     content_blocks = data_collection.content_blocks.filter(content_binding = cb.id)
@@ -296,22 +301,28 @@ def query_get_content(request, taxii_message):
     
     for block in content_blocks:
         stix_etree = etree.parse(StringIO.StringIO(block.content))
-        if qh.evaluate_criteria(query.criteria, stix_etree):
-            matching_content_blocks.append(block)
+        try:
+            if qh.evaluate_criteria(query.criteria, stix_etree):
+                matching_content_blocks.append(block)
+        except QueryHelperException as qhe:
+            m = tm11.StatusMessage(tm11.generate_message_id(), 
+                                   taxii_message.message_id, 
+                                   status_type=qhe.status_type, 
+                                   message=qhe.message, 
+                                   status_details = qhe.status_details)
+            return create_taxii_response(m, use_https=request.is_secure())
     
-    logger.debug('[%d] content blocks match query from data collection [%s]', len(content_blocks), make_safe(data_collection.name))
+    logger.debug('[%d] content blocks match query from data collection [%s]', len(matching_content_blocks), make_safe(data_collection.name))
     
     # build poll response
     poll_response_message = tm11.PollResponse(tm11.generate_message_id(), 
                                               taxii_message.message_id, 
-                                              collection_name=data_collection.name, 
-                                              #exclusive_begin_timestamp_label=inclusive_begin_ts, 
-                                              #inclusive_end_timestamp_label=query_params['timestamp_label__lte'],
+                                              collection_name=data_collection.name,
                                               record_count=tm11.RecordCount(len(matching_content_blocks), False))
     
     if taxii_message.poll_parameters.response_type == tm11.RT_FULL:
         for content_block in matching_content_blocks:
-            cb = tm11.ContentBlock(tm11.ContentBinding(content_block.content_binding.binding_id), content_block.content, content_block.timestamp_label)
+            cb = tm11.ContentBlock(tm11.ContentBinding(content_block.content_binding.binding_id), content_block.content)
             
             if content_block.padding:
                 cb.padding = content_block.padding

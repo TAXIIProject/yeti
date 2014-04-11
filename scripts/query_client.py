@@ -48,8 +48,6 @@ def main():
 
     poll_req = tm11.PollRequest(message_id=tm11.generate_message_id(),
                               collection_name=args.collection,
-                              #exclusive_begin_timestamp_label=begin_ts,
-                              #inclusive_end_timestamp_label=end_ts,
                               poll_parameters=tm11.PollRequest.PollParameters(query=q))
 
     poll_req_xml = poll_req.to_xml()
