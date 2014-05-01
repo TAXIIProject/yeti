@@ -247,4 +247,26 @@ class Inbox(models.Model):
         verbose_name = "Inbox"
         verbose_name_plural = "Inboxes"
         
-        
+class ResultSet(models.Model):
+    """
+    Contains a result set for asynchronous polling.
+    """
+    data_collection = models.ForeignKey(DataCollection)
+    result_id = models.TextField(unique=True)
+    content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True)#Can have 0 Content Blocks
+    begin_ts = models.DateTimeField(blank=True, null=True)
+    end_ts = models.DateTimeField(blank=True, null=True)
+    
+    def __unicode__(self):
+        return u'%s' % self.result_id
+    
+    #def count_blocks(self, obj):
+    #    return 'dsa'#len(self.content_blocks)
+    #
+    #count_blocks.short_description = 'Content Blocks (count)'
+    
+    class Meta:
+        ordering = ['result_id']
+        verbose_name = 'ResultSet'
+        verbose_name_plural = 'ResultSets'
+
