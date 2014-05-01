@@ -19,6 +19,7 @@ def main():
     parser.add_argument("--port", dest="port", default="8080", help="Port where the Poll Service is hosted. Defaults to 8080.")
     parser.add_argument("--path", dest="path", default="/services/query_example/", help="Path where the Poll Service is hosted. Defaults to /services/query_example/.")
     parser.add_argument("--collection", dest="collection", default="default_queryable", help="Data Collection to poll. Defaults to 'default_queryable'.")
+    parser.add_argument("--allow_asynch", dest="allow_asynch", default=True, help="Indicate whether or not the client support Asynchronous Polling. Defaults to True")
     parser.add_argument("--ip", dest="ip", default=None, help="The IP address to query")
     parser.add_argument("--hash", dest="hash", default=None, help="The file hash to query")
 
@@ -48,7 +49,7 @@ def main():
 
     poll_req = tm11.PollRequest(message_id=tm11.generate_message_id(),
                               collection_name=args.collection,
-                              poll_parameters=tm11.PollRequest.PollParameters(query=q))
+                              poll_parameters=tm11.PollRequest.PollParameters(allow_asynch=args.allow_asynch, query=q))
 
     poll_req_xml = poll_req.to_xml()
     print "Poll Request: \r\n", poll_req_xml
