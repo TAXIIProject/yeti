@@ -6,6 +6,7 @@ import argparse
 
 import libtaxii as t
 import libtaxii.messages_11 as tm11
+import libtaxii.taxii_default_query as tdq
 import libtaxii.clients as tc
 
 def main():
@@ -21,7 +22,7 @@ def main():
 
     print "Discovery Request: \r\n", discovery_req_xml
     client = tc.HttpClient()
-    client.setProxy('noproxy')
+    client.setProxy('noproxy') 
     resp = client.callTaxiiService2(args.host, args.path, t.VID_TAXII_XML_11, discovery_req_xml, args.port)
     response_message = t.get_message_from_http_response(resp, '0')
     print "Response Message: \r\n", response_message.to_xml()

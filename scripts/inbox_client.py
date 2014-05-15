@@ -40,11 +40,11 @@ stix_watchlist = '''<!--
     xmlns:stixVocabs="http://stix.mitre.org/default_vocabularies-1"
     xmlns:example="http://example.com/"
     xsi:schemaLocation="
-    http://stix.mitre.org/stix-1 http://stix.mitre.org/XMLSchema/core/1.0/stix_core.xsd
-    http://stix.mitre.org/Indicator-2 http://stix.mitre.org/XMLSchema/indicator/2.0/indicator.xsd
-    http://cybox.mitre.org/default_vocabularies-2 http://cybox.mitre.org/XMLSchema/default_vocabularies/2.0.0/cybox_default_vocabularies.xsd
-    http://stix.mitre.org/default_vocabularies-1 http://stix.mitre.org/XMLSchema/default_vocabularies/1.0.0/stix_default_vocabularies.xsd
-    http://cybox.mitre.org/objects#AddressObject-2 http://cybox.mitre.org/XMLSchema/objects/Address/2.0/Address_Object.xsd"
+    http://stix.mitre.org/stix-1 http://stix.mitre.org/XMLSchema/core/1.1/stix_core.xsd
+    http://stix.mitre.org/Indicator-2 http://stix.mitre.org/XMLSchema/indicator/2.1/indicator.xsd
+    http://cybox.mitre.org/default_vocabularies-2 http://cybox.mitre.org/XMLSchema/default_vocabularies/2.1/cybox_default_vocabularies.xsd
+    http://stix.mitre.org/default_vocabularies-1 http://stix.mitre.org/XMLSchema/default_vocabularies/1.1.0/stix_default_vocabularies.xsd
+    http://cybox.mitre.org/objects#AddressObject-2 http://cybox.mitre.org/XMLSchema/objects/Address/2.1/Address_Object.xsd"
     id="example:STIXPackage-33fe3b22-0201-47cf-85d0-97c02164528d"
     >
     <stix:STIX_Header>
@@ -58,7 +58,7 @@ stix_watchlist = '''<!--
             <indicator:Observable  id="example:Observable-1c798262-a4cd-434d-a958-884d6980c459">
                 <cybox:Object id="example:Object-1980ce43-8e03-490b-863a-ea404d12242e">
                     <cybox:Properties xsi:type="AddressObject:AddressObjectType" category="ipv4-addr">
-                        <AddressObject:Address_Value condition="Equals" apply_condition="ANY">10.0.0.0,10.0.0.1,10.0.0.2</AddressObject:Address_Value>
+                        <AddressObject:Address_Value condition="Equals" apply_condition="ANY">10.0.0.0</AddressObject:Address_Value>
                     </cybox:Properties>
                 </cybox:Object>
             </indicator:Observable>
@@ -71,7 +71,7 @@ def main():
     parser.add_argument("--host", dest="host", default="localhost", help="Host where the Inbox Service is hosted. Defaults to localhost.")
     parser.add_argument("--port", dest="port", default="8080", help="Port where the Inbox Service is hosted. Defaults to 8080.")
     parser.add_argument("--path", dest="path", default="/services/inbox/default/", help="Path where the Inbox Service is hosted. Defaults to /services/inbox/default/.")
-    parser.add_argument("--content-binding", dest="content_binding", default=t.CB_STIX_XML_10, help="Content binding of the Content Block to send. Defaults to %s" % t.CB_STIX_XML_10 )
+    parser.add_argument("--content-binding", dest="content_binding", default=t.CB_STIX_XML_11, help="Content binding of the Content Block to send. Defaults to %s" % t.CB_STIX_XML_11 )
     parser.add_argument("--content-file", dest="content_file", default=stix_watchlist, help="Content of the Content Block to send. Defaults to a STIX watchlist.")
 
     args = parser.parse_args()
@@ -89,7 +89,7 @@ def main():
 
     print "Inbox Message: \r\n", inbox_xml
     client = tc.HttpClient()
-    client.setProxy('noproxy')
+    client.setProxy('noproxy') 
     resp = client.callTaxiiService2(args.host, args.path, t.VID_TAXII_XML_11, inbox_xml, args.port)
     response_message = t.get_message_from_http_response(resp, '0')
     print "Response Message: \r\n", response_message.to_xml()
