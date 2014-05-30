@@ -4,157 +4,27 @@
 import logging
 import datetime
 from dateutil.tz import tzutc
-from django.http import HttpResponse
+#from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from taxii_services.models import Inbox, DataCollection, ContentBlock, ContentBindingId, ResultSet
 from taxii_services.utils import make_safe
 import libtaxii as t
 import libtaxii.messages_11 as tm11
 import libtaxii.taxii_default_query as tdq
-from lxml import etree
+#from lxml import etree
 import StringIO
 import query_helpers as qh
 import re
 import os.path
+import taxii_web_utils.response_utils as response_utils
 
-
-# A set of headers that are utilized by TAXII. These are formatted as Django's
-# HttpRequest.META keys: https://docs.djangoproject.com/en/dev/ref/request-response/#django.http.HttpRequest.REQUEST
-DJANGO_HTTP_HEADER_CONTENT_TYPE         = 'CONTENT_TYPE'
-DJANGO_HTTP_HEADER_ACCEPT               = 'HTTP_ACCEPT'
-DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE = 'HTTP_X_TAXII_CONTENT_TYPE'
-DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL     = 'HTTP_X_TAXII_PROTOCOL'
-DJANGO_HTTP_HEADER_X_TAXII_ACCEPT       = 'HTTP_X_TAXII_ACCEPT'
-DJANGO_HTTP_HEADER_X_TAXII_SERVICES     = 'HTTP_X_TAXII_SERVICES'
-
-# A list of request headers that are required by TAXII
-DICT_REQUIRED_TAXII_HTTP_HEADERS = (DJANGO_HTTP_HEADER_CONTENT_TYPE, 
-                                    DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE,
-                                    DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL)
-
-#For each TAXII Header that may appear in a request, a list of the values this application supports
-DICT_TAXII_HTTP_HEADER_VALUES = {DJANGO_HTTP_HEADER_ACCEPT: ['application/xml'],
-                                 DJANGO_HTTP_HEADER_CONTENT_TYPE: ['application/xml'],
-                                 DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE: [t.VID_TAXII_XML_11],
-                                 DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: [t.VID_TAXII_HTTPS_10, t.VID_TAXII_HTTP_10]}
-
-# A set of headers that are utilized by TAXII. These are formatted using HTTP header conventions
-HTTP_HEADER_CONTENT_TYPE            = 'Content-Type'
-HTTP_HEADER_ACCEPT                  = 'Accept'
-HTTP_HEADER_X_TAXII_CONTENT_TYPE    = 'X-TAXII-Content-Type'
-HTTP_HEADER_X_TAXII_PROTOCOL        = 'X-TAXII-Protocol'
-HTTP_HEADER_X_TAXII_ACCEPT          = 'X-TAXII-Accept'
-HTTP_HEADER_X_TAXII_SERVICES        = 'X-TAXII-Services'
-
-# Dictionary for mapping Django's HttpRequest.META headers to actual HTTP headers
-DICT_REVERSE_DJANGO_NORMALIZATION = {DJANGO_HTTP_HEADER_CONTENT_TYPE: HTTP_HEADER_CONTENT_TYPE,
-                                     DJANGO_HTTP_HEADER_X_TAXII_CONTENT_TYPE: HTTP_HEADER_X_TAXII_CONTENT_TYPE,
-                                     DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL: HTTP_HEADER_X_TAXII_PROTOCOL,
-                                     DJANGO_HTTP_HEADER_ACCEPT: HTTP_HEADER_ACCEPT}
-
-# TAXII Services Version ID
-TAXII_SERVICES_VERSION_ID = "urn:taxii.mitre.org:services:1.1"
-
-# TAXII Protocol IDs
-TAXII_PROTO_HTTP_BINDING_ID     = "urn:taxii.mitre.org:protocol:http:1.0"
-TAXII_PROTO_HTTPS_BINDING_ID    = "urn:taxii.mitre.org:protocol:https:1.0"
-
-# TAXII Message Binding IDs
-TAXII_MESSAGE_XML_BINDING_ID    = "urn:taxii.mitre.org:message:xml:1.1"
-
-# HTTP status codes
-HTTP_STATUS_OK              = 200
-HTTP_STATUS_SERVER_ERROR    = 500
-HTTP_STATUS_NOT_FOUND       = 400
-
-def create_taxii_response(message, status_code=HTTP_STATUS_OK, use_https=True):
-    """Creates a TAXII HTTP Response for a given message and status code"""
-    resp = HttpResponse()
-    resp.content = message.to_xml()
-    set_taxii_headers_response(resp, use_https)
-    resp.status_code = status_code
-    return resp
-
-def set_taxii_headers_response(response, use_https):
-    """Sets the TAXII HTTP Headers for a given HTTP response"""
-    response[HTTP_HEADER_CONTENT_TYPE] = 'application/xml'
-    response[HTTP_HEADER_X_TAXII_CONTENT_TYPE] = t.VID_TAXII_XML_11
-    protocol = t.VID_TAXII_HTTPS_10 if use_https else t.VID_TAXII_HTTP_10
-    response[HTTP_HEADER_X_TAXII_PROTOCOL] = protocol
-    return response
-
-def validate_taxii_headers(request, request_message_id):
-    """
-    Validates TAXII headers. It returns a response containing a TAXII
-    status message if the headers were not valid. It returns None if 
-    the headers are valid.
-    """
-    # Make sure the required headers are present
-    missing_required_headers = set(DICT_REQUIRED_TAXII_HTTP_HEADERS).difference(set(request.META))
-    if missing_required_headers:
-        required_headers = ', '.join(DICT_REVERSE_DJANGO_NORMALIZATION[x] for x in missing_required_headers)
-        msg = "Required headers not present: [%s]" % (required_headers) 
-        m = tm11.StatusMessage(tm11.generate_message_id(), request_message_id, status_type=tm11.ST_FAILURE, message=msg)
-        return create_taxii_response(m, use_https=request.is_secure())
-
-    #For headers that exist, make sure the values are supported
-    for header in DICT_TAXII_HTTP_HEADER_VALUES:
-        if header not in request.META:
-            continue
-
-        header_value = request.META[header]
-        supported_values = DICT_TAXII_HTTP_HEADER_VALUES[header]
-        
-        if header_value not in supported_values:
-            msg = 'The value of %s is not supported. Supported values are %s' % (DICT_REVERSE_DJANGO_NORMALIZATION[header], supported_values)
-            m = tm11.StatusMessage(tm11.generate_message_id(), request_message_id, status_type=tm11.ST_FAILURE, message=msg)
-            return create_taxii_response(m, use_https=request.is_secure())
-    
-    # Check to make sure the specified protocol matches the protocol used
-    if request.META[DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL] == t.VID_TAXII_HTTPS_10:
-        header_proto = 'HTTPS'
-    elif request.META[DJANGO_HTTP_HEADER_X_TAXII_PROTOCOL] == t.VID_TAXII_HTTP_10:
-        header_proto = 'HTTP'
-    else:
-        header_proto = 'unknown'
-    
-    request_proto = 'HTTPS' if request.is_secure() else 'HTTP' # Did the request come over HTTP or HTTPS?
-    
-    if header_proto != request_proto:
-        msg = 'Protocol value incorrect. TAXII header specified %s but was sent over %s' % (header_proto, request_proto)
-        m = tm11.StatusMessage(tm11.generate_message_id(), request_message_id, status_type=tm11.ST_FAILURE, message=msg)
-        return create_taxii_response(m, use_https=request.is_secure())
-    
-    # At this point, the header values are known to be good.
-    return None
-
-def validate_taxii_request(request):
-    """Validates the broader request parameters and request type for a TAXII exchange"""
-    logger = logging.getLogger("taxii_services.utils.handlers.validate_taxii_request")
-    logger.debug('Attempting to validate request')
-    
-    if request.method != 'POST':
-        logger.info('Request was not POST - returning error')
-        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_FAILURE, message='Request must be POST')
-        return create_taxii_response(m, use_https=request.is_secure())
-    
-    header_validation_resp = validate_taxii_headers(request, '0') # TODO: What to use for request message id?
-    if header_validation_resp: # If response is not None an validation of the TAXII headers failed
-        logger.info('TAXII header validation failed for reason [%s]', make_safe(header_validation_resp.message))
-        return header_validation_resp
-    
-    if len(request.body) == 0:
-        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_FAILURE, message='No POST data')
-        logger.info('Request had a body length of 0. Returning error.')
-        return create_taxii_response(m, use_https=request.is_secure())
-    
-    logger.debug('Request was valid')
-    return None
 
 def inbox_add_content(request, inbox_name, taxii_message):
     """Adds content to inbox and associated data collections"""
     logger = logging.getLogger('taxii_services.utils.handlers.inbox_add_content')
     logger.debug('Adding content to inbox [%s]', make_safe(inbox_name))
+    
+    headers = response_utils.get_response_headers('1.1', request.is_secure)
     
     if len(taxii_message.destination_collection_names) > 0:
         logger.debug('Client specified a Destination Collection Name, which is not supported by YETI.')
@@ -162,14 +32,15 @@ def inbox_add_content(request, inbox_name, taxii_message):
                                taxii_message.message_id, 
                                status_type=tm11.ST_DESTINATION_COLLECTION_ERROR, 
                                message='Destination Collection Names are not allowed')
-        return create_taxii_response(m, use_https=request.is_secure())
+        
+        return response_utils.create_taxii_response(m.to_xml(), headers)
     
     try:
         inbox = Inbox.objects.get(name=inbox_name)
     except:
         logger.debug('Attempting to push content to unknown inbox [%s]', make_safe(inbox_name))
         m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_NOT_FOUND, message='Inbox does not exist [%s]' % (make_safe(inbox_name)))
-        return create_taxii_response(m, use_https=request.is_secure())
+        return response_utils.create_taxii_response(m.to_xml(), headers)
     
     logger.debug('TAXII message [%s] contains [%d] content blocks', make_safe(taxii_message.message_id), len(taxii_message.content_blocks))
     for content_block in taxii_message.content_blocks:
@@ -207,7 +78,7 @@ def inbox_add_content(request, inbox_name, taxii_message):
     
     inbox.save()
     m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type = tm11.ST_SUCCESS)
-    return create_taxii_response(m, use_https=request.is_secure())
+    return response_utils.create_taxii_response(m.to_xml(), headers)
 
 def poll_get_content(request, taxii_message):
     """Returns a Poll response for a given Poll Request Message"""
@@ -215,12 +86,14 @@ def poll_get_content(request, taxii_message):
     logger.debug('Polling data from data collection [%s] - begin_ts: %s, end_ts: %s', 
                  make_safe(taxii_message.collection_name), taxii_message.exclusive_begin_timestamp_label, taxii_message.inclusive_end_timestamp_label)
     
+    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    
     try:
         data_collection = DataCollection.objects.get(name=taxii_message.collection_name)
     except:
         logger.debug('Attempting to poll unknown data collection [%s]', make_safe(taxii_message.collection_name))
         m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_NOT_FOUND, message='Data collection does not exist [%s]' % (make_safe(taxii_message.collection_name)))
-        return create_taxii_response(m, use_https=request.is_secure())
+        return response_utils.create_taxii_response(m.to_xml(), headers)
     
     # build query for poll results
     query_params = {}
@@ -265,7 +138,7 @@ def poll_get_content(request, taxii_message):
             
             poll_response_message.content_blocks.append(cb)
     
-    return create_taxii_response(poll_response_message, use_https=request.is_secure())
+    return response_utils.create_taxii_response(poll_response_message.to_xml(), headers)
 
 def query_get_content(request, taxii_message):
     """
@@ -278,12 +151,16 @@ def query_get_content(request, taxii_message):
     logger = logging.getLogger('taxii_services.utils.handlers.query_get_content')
     logger.debug('Polling data from data collection [%s]', make_safe(taxii_message.collection_name))
     
+    #TODO: This is about the 5th time i've written this line of code - can I keep it DRY?
+    #TODO2: Is this the right level of abstraction?
+    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    
     try:
         data_collection = DataCollection.objects.get(name=taxii_message.collection_name)
     except:
         logger.debug('Attempting to poll unknown data collection [%s]', make_safe(taxii_message.collection_name))
         m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_NOT_FOUND, message='Data collection does not exist [%s]' % (make_safe(taxii_message.collection_name)))
-        return create_taxii_response(m, use_https=request.is_secure())
+        return response_utils.create_taxii_response(m.to_xml(), headers)
     
     query = taxii_message.poll_parameters.query
     
@@ -294,7 +171,7 @@ def query_get_content(request, taxii_message):
                                status_type=tdq.ST_UNSUPPORTED_TARGETING_EXPRESSION_ID, 
                                message="Unsupported Targeting Expression ID", 
                                status_detail = {'TARGETING_EXPRESSION_ID': t.CB_STIX_XML_11})
-        return create_taxii_response(m, use_https=request.is_secure())
+        return response_utils.create_taxii_response(m.to_xml(), headers)
     
     cb = ContentBindingId.objects.get(binding_id=t.CB_STIX_XML_11)
     content_blocks = data_collection.content_blocks.filter(content_binding = cb.id)
@@ -313,7 +190,7 @@ def query_get_content(request, taxii_message):
                                    status_type=qhe.status_type, 
                                    message=qhe.message, 
                                    status_detail = qhe.status_detail)
-            return create_taxii_response(m, use_https=request.is_secure())
+            return response_utils.create_taxii_response(m.to_xml(), headers)
     
     logger.debug('[%d] content blocks match query from data collection [%s]', len(matching_content_blocks), make_safe(data_collection.name))
     
@@ -343,7 +220,7 @@ def query_get_content(request, taxii_message):
                                    taxii_message.message_id, 
                                    status_type=tm11.ST_FAILURE, 
                                    message='You did not indicate support for Asynchronous Polling, but the server could only send an asynchronous response')
-            return create_taxii_response(m, use_https=request.is_secure())
+            return response_utils.create_taxii_response(m.to_xml(), headers)
         
         #Create the result ID
         #The result_id ends up looking something like '2014_05_01T12_56_24_403000'
@@ -361,7 +238,7 @@ def query_get_content(request, taxii_message):
                                message='Your response is pending. Please request it again at a later time.',
                                status_detail = {'ESTIMATED_WAIT': '0', 'RESULT_ID': result_id, 'WILL_PUSH': False})
         logger.debug('Responding with status message of PENDING, result_id = %s', result_id)
-        return create_taxii_response(m, use_https=request.is_secure())
+        return response_utils.create_taxii_response(m.to_xml(), headers)
     
     logger.debug('Returning Poll Response')
     
@@ -380,7 +257,7 @@ def query_get_content(request, taxii_message):
             
             poll_response_message.content_blocks.append(cb)
     
-    return create_taxii_response(poll_response_message, use_https=request.is_secure())
+    return response_utils.create_taxii_response(poll_response_message.to_xml(), headers)
 
 def query_fulfillment(request, taxii_message):
     """
@@ -391,6 +268,8 @@ def query_fulfillment(request, taxii_message):
     """
     logger = logging.getLogger('taxii_services.utils.handlers.query_get_content')
     
+    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    
     r = re.compile('^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}_\d{6}$')
     if not r.match(taxii_message.result_id):#The ID doesn't match - error
         logger.debug('The request result_id did not match the validation regex')
@@ -398,7 +277,7 @@ def query_fulfillment(request, taxii_message):
                                taxii_message.message_id,
                                status_type = tm11.NOT_FOUND,
                                message='The requested Result ID was not found.')
-        return create_taxii_response(m, use_https=request.is_secure())
+        return response_utils.create_taxii_response(m.to_xml(), headers)
     
     try:
         rs = ResultSet.objects.get(result_id = taxii_message.result_id)
@@ -408,7 +287,7 @@ def query_fulfillment(request, taxii_message):
                                taxii_message.message_id,
                                status_type = tm11.ST_NOT_FOUND,
                                message='The requested Result ID was not found.')
-        return create_taxii_response(m, use_https=request.is_secure())
+        return response_utils.create_taxii_response(m.to_xml(), headers)
     
     poll_response = tm11.PollResponse(tm11.generate_message_id(), 
                                       taxii_message.message_id,
@@ -426,11 +305,14 @@ def query_fulfillment(request, taxii_message):
     rs.delete()
     
     logger.debug('Returning the result. The result set has been deleted.')
-    return create_taxii_response(poll_response, use_https=request.is_secure())
+    return response_utils.create_taxii_response(poll_response.to_xml(), headers)
 
 def discovery_get_services(request, taxii_message):
     """Returns a Discovery response for a given Discovery Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.discovery_get_services')
+    
+    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    
     all_services = []
     
     # Inbox Services
@@ -516,5 +398,5 @@ def discovery_get_services(request, taxii_message):
                                                       in_response_to=taxii_message.message_id,
                                                       service_instances=all_services)
     
-    return create_taxii_response(discovery_response_message, use_https=request.is_secure())
+    return response_utils.create_taxii_response(discovery_response_message.to_xml(), headers)
 

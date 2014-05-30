@@ -7,8 +7,8 @@ from taxii_services.decorators import taxii_auth_check
 import taxii_services.handlers as handlers
 from taxii_services.utils import make_safe
 import libtaxii.messages_11 as tm11
+import taxii_web_utils.request_utils as ru
 
-    
 @csrf_exempt
 @taxii_auth_check
 def inbox_service(request, inbox_name):
@@ -16,23 +16,10 @@ def inbox_service(request, inbox_name):
     logger = logging.getLogger('yeti.taxii_services.views.inbox_service')
     logger.debug('Entering Inbox service')
     
-    resp = handlers.validate_taxii_request(request)
-    if resp: return resp # if validation failed, return the response
-    
-    try:
-        taxii_message = tm11.get_message_from_xml(request.body)
-    except Exception as ex:
-        logger.debug('Unable to parse inbound message: %s', ex.message)
-        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_BAD_MESSAGE, message='Message received could not be parsed')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())
+    taxii_message = ru.validate_and_parse_request(request, ru.TAXII_11_HeaderRules, tm11.InboxMessage, True)
     
     logger.debug('Inbox [%s] received TAXII message with id [%s] and type [%s]', 
                  make_safe(inbox_name), make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
-    
-    if taxii_message.message_type != tm11.MSG_INBOX_MESSAGE:
-        logger.info('TAXII message with id [%s] was not Inbox type [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
-        m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_FAILURE, message='Message sent to Inbox service did not have an inbox Message type')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())
     
     resp = handlers.inbox_add_content(request, inbox_name, taxii_message)
     return resp
@@ -44,26 +31,9 @@ def poll_service(request):
     logger = logging.getLogger("yeti.taxii_services.views.poll_service")
     logger.debug('Entering poll service')
     
-    resp = handlers.validate_taxii_request(request)
-    if resp: return resp # if validation failed, return the response
-    
-    try:
-        taxii_message = tm11.get_message_from_xml(request.body)
-    except tm11.UnsupportedQueryException as e:
-        logger.debug('Unsupported query found in TAXII Message')
-        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_UNSUPPORTED_QUERY, message='The message used an unsupported query format')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())
-    except Exception as ex:
-        logger.debug('Unable to parse inbound message: %s', ex.message)
-        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_BAD_MESSAGE, message='Message received could not be parsed')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())
+    taxii_message = ru.validate_and_parse_request(request, ru.TAXII_11_HeaderRules, tm11.PollRequest, True)
     
     logger.debug('Poll service received TAXII message with id [%s] and type [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
-    
-    if taxii_message.message_type != tm11.MSG_POLL_REQUEST:
-        logger.info('TAXII message with id [%s] was not Poll request [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
-        m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_FAILURE, message='Message sent to Poll service did not have a poll request message type')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())    
     
     resp = handlers.poll_get_content(request, taxii_message)
     return resp
@@ -75,23 +45,10 @@ def discovery_service(request):
     logger = logging.getLogger('yeti.taxii_services.views.discovery_service')
     logger.debug('Entering discovery service')
     
-    resp = handlers.validate_taxii_request(request)
-    if resp: return resp # if validation fails, return the response
-    
-    try:
-        taxii_message = tm11.get_message_from_xml(request.body)
-    except Exception as ex:
-        logger.debug('Unable to parse inbound message: %s', ex.message)
-        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_BAD_MESSAGE, message='Message received could not be parsed')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())
+    taxii_message = ru.validate_and_parse_request(request, ru.TAXII_11_HeaderRules, tm11.DiscoveryRequest, True)
     
     logger.debug('Discovery service received TAXII message with id [%s] and type [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
     
-    if taxii_message.message_type != tm11.MSG_DISCOVERY_REQUEST:
-        logger.info('TAXII message with id [%s] was not Discovery request [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
-        m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_FAILURE, message='Message sent to discovery service did not have a discovery request message type')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())
-
     resp = handlers.discovery_get_services(request, taxii_message)
     return resp
 
@@ -102,16 +59,7 @@ def query_example_service(request):
     logger = logging.getLogger('yeti.taxii_services.views.query_example_service')
     logger.debug('Entering poll query service')
     
-    resp = handlers.validate_taxii_request(request)
-    if resp: 
-        return resp # if validation fails, return the response
-    
-    try:
-        taxii_message = tm11.get_message_from_xml(request.body)
-    except Exception as ex:
-        logger.debug('Unable to parse inbound message: %s', ex.message)
-        m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_BAD_MESSAGE, message='Message received could not be parsed')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())
+    taxii_message = ru.validate_and_parse_request(request, ru.TAXII_11_HeaderRules, [tm11.PollRequest, tm11.PollFulfillmentRequest], True)
     
     logger.debug('Poll service (w/ query) received TAXII message with id [%s] and type [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
     
@@ -120,8 +68,6 @@ def query_example_service(request):
     elif taxii_message.message_type == tm11.MSG_POLL_FULFILLMENT_REQUEST:
         resp = handlers.query_fulfillment(request, taxii_message)
     else:
-        logger.info('TAXII message with id [%s] was not Poll request [%s]', make_safe(taxii_message.message_id), make_safe(taxii_message.message_type))
-        m = tm11.StatusMessage(tm11.generate_message_id(), taxii_message.message_id, status_type=tm11.ST_FAILURE, message='Message sent to Poll service did not have a poll request message type')
-        return handlers.create_taxii_response(m, use_https=request.is_secure())
+        raise Exception('uh.... ?')
     
     return resp
