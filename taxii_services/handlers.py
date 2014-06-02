@@ -18,13 +18,36 @@ import re
 import os.path
 import taxii_web_utils.response_utils as response_utils
 
+#I was writing a lot of code like:
+# if request.is_secure():
+#   headers = response_utils.TAXII_11_HTTPS_Headers
+#else:
+#    headers = response_utils.TAXII_11_HTTP_Headers
+#
+# So i tried to shorten the amount of code it took to get the right headers.
+# Maybe that's the wrong thing and maybe the headers should be
+# defined in the app configuration file..... i don't know
+
+def get_response_headers(taxii_version='1.1', is_secure=True):
+    if taxii_version == '1.1':
+        if is_secure:
+            return response_utils.TAXII_11_HTTPS_Headers
+        else:
+            return response_utils.TAXII_11_HTTP_Headers
+    elif taxii_version == '1.0':
+        if is_secure:
+            return response_utils.TAXII_10_HTTPS_Headers
+        else:
+            return response_utils.TAXII_10_HTTP_Headers
+    else:
+        raise 'unknown TAXII Version. Must be \'1.1\' or \'1.0\''
 
 def inbox_add_content(request, inbox_name, taxii_message):
     """Adds content to inbox and associated data collections"""
     logger = logging.getLogger('taxii_services.utils.handlers.inbox_add_content')
     logger.debug('Adding content to inbox [%s]', make_safe(inbox_name))
     
-    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    headers = get_response_headers('1.1', request.is_secure)
     
     if len(taxii_message.destination_collection_names) > 0:
         logger.debug('Client specified a Destination Collection Name, which is not supported by YETI.')
@@ -86,7 +109,7 @@ def poll_get_content(request, taxii_message):
     logger.debug('Polling data from data collection [%s] - begin_ts: %s, end_ts: %s', 
                  make_safe(taxii_message.collection_name), taxii_message.exclusive_begin_timestamp_label, taxii_message.inclusive_end_timestamp_label)
     
-    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    headers = get_response_headers('1.1', request.is_secure)
     
     try:
         data_collection = DataCollection.objects.get(name=taxii_message.collection_name)
@@ -151,9 +174,7 @@ def query_get_content(request, taxii_message):
     logger = logging.getLogger('taxii_services.utils.handlers.query_get_content')
     logger.debug('Polling data from data collection [%s]', make_safe(taxii_message.collection_name))
     
-    #TODO: This is about the 5th time i've written this line of code - can I keep it DRY?
-    #TODO2: Is this the right level of abstraction?
-    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    headers = get_response_headers('1.1', request.is_secure)
     
     try:
         data_collection = DataCollection.objects.get(name=taxii_message.collection_name)
@@ -268,7 +289,7 @@ def query_fulfillment(request, taxii_message):
     """
     logger = logging.getLogger('taxii_services.utils.handlers.query_get_content')
     
-    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    headers = get_response_headers('1.1', request.is_secure)
     
     r = re.compile('^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}_\d{6}$')
     if not r.match(taxii_message.result_id):#The ID doesn't match - error
@@ -311,7 +332,7 @@ def discovery_get_services(request, taxii_message):
     """Returns a Discovery response for a given Discovery Request Message"""
     logger = logging.getLogger('taxii_services.utils.handlers.discovery_get_services')
     
-    headers = response_utils.get_response_headers('1.1', request.is_secure)
+    headers = get_response_headers('1.1', request.is_secure)
     
     all_services = []
     
