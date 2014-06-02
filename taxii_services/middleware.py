@@ -5,6 +5,7 @@ import logging
 from django.http import HttpResponseServerError
 
 import libtaxii.messages_11 as tm11
+import taxii_services.handlers as handlers
 import taxii_web_utils.response_utils as response_utils
 
 class ProcessExceptionMiddleware(object):
@@ -16,10 +17,8 @@ class ProcessExceptionMiddleware(object):
             
             logger.debug('Returning ST_FAILURE message')
             m = tm11.StatusMessage(tm11.generate_message_id(), '0', status_type=tm11.ST_FAILURE, message='An internal server error occurred')
-            if request.is_secure():
-                headers = response_utils.TAXII_11_HTTPS_Headers
-            else:
-                headers = response_utils.TAXII_11_HTTP_Headers
+            
+            headers = handlers.get_response_headers('1.1', request.is_secure())
             
             return response_utils.create_taxii_response(m.to_xml(), headers)
 
