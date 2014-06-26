@@ -3,14 +3,12 @@
 
 import logging
 from django.views.decorators.csrf import csrf_exempt
-from taxii_services.decorators import taxii_auth_check
 import taxii_services.handlers as handlers
 from taxii_services.utils import make_safe
 import libtaxii.messages_11 as tm11
 
     
 @csrf_exempt
-@taxii_auth_check
 def inbox_service(request, inbox_name):
     """Handles TAXII Inbox Service requests."""
     logger = logging.getLogger('yeti.taxii_services.views.inbox_service')
@@ -38,7 +36,6 @@ def inbox_service(request, inbox_name):
     return resp
 
 @csrf_exempt
-@taxii_auth_check
 def poll_service(request):
     """Handles TAXII Poll Service requests."""
     logger = logging.getLogger("yeti.taxii_services.views.poll_service")
@@ -69,7 +66,6 @@ def poll_service(request):
     return resp
 
 @csrf_exempt
-@taxii_auth_check
 def discovery_service(request):
     """Handles TAXII Discovery Service requests"""
     logger = logging.getLogger('yeti.taxii_services.views.discovery_service')
@@ -96,7 +92,6 @@ def discovery_service(request):
     return resp
 
 @csrf_exempt
-@taxii_auth_check
 def query_example_service(request):
     """Handles TAXII Poll Service requests. Supports Query"""
     logger = logging.getLogger('yeti.taxii_services.views.query_example_service')
