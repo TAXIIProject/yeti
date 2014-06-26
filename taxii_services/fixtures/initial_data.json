@@ -50,6 +50,16 @@
         }
     },
     {
+        "model": "taxii_services.ContentBindingId",
+        "pk": 3,
+        "fields": {
+        	"title" : "STIX v1.1.1 XML Content",
+            "binding_id": "urn:stix.mitre.org:xml:1.1.1",
+            "date_created": "2014-06-26T08:22:00-05:00",
+            "date_updated": "2014-06-26T08:22:00-05:00"
+        }
+    },
+    {
         "model": "taxii_services.DataCollectionPushMethod",
         "pk": 1,
         "fields": {
@@ -90,8 +100,7 @@
         "fields": {
             "name" : "default",
             "description" : "Default TAXII Data Collection",
-            "users" : [1],
-            "supported_content_bindings" : [1],
+            "supported_content_bindings" : [1, 2, 3],
             "push_methods" : [1],
             "poll_service_instances" : [1], 
             "queryable": "False",
@@ -105,7 +114,6 @@
         "fields": {
             "name" : "default_queryable",
             "description" : "Default TAXII Queryable Data Collection",
-            "users" : [1],
             "supported_content_bindings" : [2],
             "push_methods" : [1],
             "poll_service_instances" : [1], 
@@ -120,8 +128,7 @@
         "fields": {
             "name" : "default",
             "description" : "Default TAXII Inbox",
-            "users" : [1],
-            "supported_content_bindings" : [1],
+            "supported_content_bindings" : [1, 2, 3],
             "supported_protocol_binding" : 1,
             "supported_message_bindings" : [1],
             "data_collections" : [1],
@@ -135,7 +142,6 @@
         "fields": {
             "name" : "default_queryable",
             "description" : "Default TAXII Inbox",
-            "users" : [1],
             "supported_content_bindings" : [2],
             "supported_protocol_binding" : 1,
             "supported_message_bindings" : [1],
