@@ -14,7 +14,7 @@ DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
 AUTH_REQUIRED = False # possible location for global configuration flag
-DEBUG = False # If set to True, YETI will not return TAXII Messages for internal server errors.
+DEBUG = True # If set to True, YETI will not return TAXII Messages for internal server errors.
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
 TEMP_DIR = os.path.join(SITE_ROOT, "tmp")
@@ -225,11 +225,3 @@ try:
     from yeti.settings_local import * # overwrite with local settings if settings_local.py exists
 except ImportError:
     pass
-
-# Set the taxii_services authentication required flag to AUTH_REQUIRED
-# This is done after the settings_local import in case local settings
-# override the AUTH_FLAG declared above. We do this to keep the 
-# taxii_services app as untethered from yeti as possible
-import taxii_services.settings
-taxii_services.settings.AUTH_REQUIRED = AUTH_REQUIRED
-
