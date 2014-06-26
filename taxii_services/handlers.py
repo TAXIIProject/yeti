@@ -7,7 +7,7 @@ from dateutil.tz import tzutc
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from taxii_services.models import Inbox, DataCollection, ContentBlock, ContentBindingId, ResultSet
-from taxii_services.utils import make_safe
+from taxii_services.utils import make_safe, get_source_ip
 import libtaxii as t
 import libtaxii.messages_11 as tm11
 import libtaxii.taxii_default_query as tdq
@@ -190,10 +190,10 @@ def inbox_add_content(request, inbox_name, taxii_message):
             if content_block.padding: 
                 c.padding = content_block.padding
             
-            if request.user.is_authenticated():
-                c.submitted_by = request.user
+            c.submitted_by = get_source_ip(request)
             
             c.save()
+            logger.debug('Saved content block')
             inbox.content_blocks.add(c) # add content block to inbox
             
             for data_collection in inbox.data_collections.all():
@@ -441,7 +441,7 @@ def discovery_get_services(request, taxii_message):
         proto_binding = TAXII_PROTO_HTTP_BINDING_ID
         message_bindings = [x.binding_id for x in inbox.supported_message_bindings.all()]
         content_bindings = [tm11.ContentBinding(x.binding_id) for x in inbox.supported_content_bindings.all()]
-        available = True # TODO: this should reflect whether or not the user has access to this inbox
+        available = True # This is always True for YETI
        
         service_instance = tm11.DiscoveryResponse.ServiceInstance(service_type=service_type,
                                                                 services_version=TAXII_SERVICES_VERSION_ID,

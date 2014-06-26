@@ -2,7 +2,6 @@
 # For license information, see the LICENSE.txt file
 
 from django.db import models
-from django.contrib.auth.models import User
 from dateutil.tz import tzutc
 import datetime
 
@@ -160,7 +159,7 @@ class ContentBlock(models.Model):
     description = models.TextField(blank=True) # not required by TAXII
     
     timestamp_label = models.DateTimeField(default=lambda:datetime.datetime.now(tzutc())) # need to ensure uniqueness of this field
-    submitted_by = models.ForeignKey(User, blank=True, null=True) # Not sure this is needed, but we track it anyway
+    submitted_by = models.CharField(max_length=25, blank=True, null=True) # This should track IP addresses
     message_id = models.CharField(max_length=MAX_ID_LEN, blank=True) # associated message id if present. is there always a 1-to-1 for message ids and content blocks
     
     #TAXII Properties of a content block
@@ -182,8 +181,6 @@ class DataCollection(models.Model):
     """Represents a TAXII Data Collection"""   
     name = models.CharField(max_length=MAX_TITLE_LEN) # this will be used to access this data collection
     description = models.TextField(blank=True)
-    users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this data collection.
-    #authentication_required = models.BooleanField(default=True)
     supported_content_bindings = models.ManyToManyField(ContentBindingId)
     push_methods = models.ManyToManyField(DataCollectionPushMethod)
     poll_service_instances = models.ManyToManyField(DataCollectionPollInformation)
@@ -204,7 +201,6 @@ class DataCollection(models.Model):
 class DataCollectionSubscription(models.Model):
     """Represents a Data Collection Subscription. This is not used by YETI at the moment."""
     subscription_id = models.CharField(max_length=MAX_ID_LEN, unique=True) # uri formatted subscription id
-    user = models.ForeignKey(User)
     data_collection = models.ForeignKey(DataCollection)
     data_collection_method = models.ForeignKey(DataCollectionSubscriptionMethod)
     active = models.BooleanField(default=True)    
@@ -225,7 +221,7 @@ class Inbox(models.Model):
     Characterizes a TAXII Inbox. Inboxes are the mechanism by which TAXII consumers
     receive data from TAXII publishers. This Inbox implementation allows an Inbox
     to be "bound" to zero or more Data Collections, meaning that data received by an Inbox
-    can populate Data Collections if a user configures it as such.
+    can populate Data Collections if it is configured it as such.
     """
     name = models.CharField(max_length=MAX_TITLE_LEN, unique=True) # this will become part of the URL where it can be accessed at
     description = models.TextField(blank=True)
@@ -234,7 +230,6 @@ class Inbox(models.Model):
     content_blocks = models.ManyToManyField(ContentBlock, blank=True, null=True) # content blocks associated with this inbox
     supported_protocol_binding = models.ForeignKey(ProtocolBindingId)
     data_collections = models.ManyToManyField(DataCollection, blank=True, null=True) # data received at an inbox will automatically be made available on these data collections
-    users = models.ManyToManyField(User, blank=True, null=True) # users allowed to access this inbox
     
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
