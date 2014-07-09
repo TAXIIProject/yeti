@@ -14,14 +14,10 @@ DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
 AUTH_REQUIRED = False # possible location for global configuration flag
-DEBUG = False # If set to True, YETI will not return TAXII Messages for internal server errors.
+DEBUG = True # If set to True, YETI will not return TAXII Messages for internal server errors.
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
 TEMP_DIR = os.path.join(SITE_ROOT, "tmp")
-
-
-### YETI Specific Configs ###
-CERT_EXPORT_LOCATION = os.path.join(SITE_ROOT, 'client_certs/all_certs.cer') # The file Apache uses to validate users
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -158,6 +154,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'taxiiweb',
     'yeti',
     'taxii_services',
 )

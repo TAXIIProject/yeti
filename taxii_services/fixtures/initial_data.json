@@ -1,81 +1,81 @@
 [
     {
-      "model": "taxii_services.ProtocolBindingId",
+      "model": "taxiiweb.ProtocolBinding",
       "pk": 1,
       "fields": {
-      	"title" : "TAXII HTTP Protocol Binding v1.0",
+      	"name" : "TAXII HTTP Protocol Binding v1.0",
         "binding_id": "urn:taxii.mitre.org:protocol:http:1.0",
         "date_created": "2013-07-02T08:22:00-05:00",
         "date_updated": "2013-07-02T08:22:00-05:00"
       }
     },
     {
-      "model": "taxii_services.ProtocolBindingId",
+      "model": "taxiiweb.ProtocolBinding",
       "pk": 2,
       "fields": {
-      	"title" : "TAXII HTTPS Protocol Binding v1.0",
+      	"name" : "TAXII HTTPS Protocol Binding v1.0",
         "binding_id": "urn:taxii.mitre.org:protocol:https:1.0",
         "date_created": "2013-07-02T08:22:00-05:00",
         "date_updated": "2013-07-02T08:22:00-05:00"
       }
     },
     {
-        "model": "taxii_services.MessageBindingId",
+        "model": "taxiiweb.MessageBinding",
         "pk": 1,
         "fields": {
-        	"title" : "TAXII XML Message Binding v1.1",
+        	"name" : "TAXII XML Message Binding v1.1",
             "binding_id": "urn:taxii.mitre.org:message:xml:1.1",
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
     },
     {
-        "model": "taxii_services.ContentBindingId",
+        "model": "taxiiweb.ContentBinding",
         "pk": 1,
         "fields": {
-        	"title" : "STIX v1.0 XML Content",
+        	"name" : "STIX v1.0 XML Content",
             "binding_id": "urn:stix.mitre.org:xml:1.0",
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
     },
     {
-        "model": "taxii_services.ContentBindingId",
+        "model": "taxiiweb.ContentBinding",
         "pk": 2,
         "fields": {
-        	"title" : "STIX v1.1 XML Content",
+        	"name" : "STIX v1.1 XML Content",
             "binding_id": "urn:stix.mitre.org:xml:1.1",
             "date_created": "2014-04-11T08:22:00-05:00",
             "date_updated": "2014-04-11T08:22:00-05:00"
         }
     },
     {
-        "model": "taxii_services.DataCollectionPushMethod",
+        "model": "taxiiweb.PushMethod",
         "pk": 1,
         "fields": {
-        	"title" : "TAXII XML over HTTP",
+        	"name" : "TAXII XML over HTTP",
             "protocol_binding" : 1, 
-            "message_binding" : 1,
+            "message_bindings" : [1],
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
     },
     {
-        "model": "taxii_services.DataCollectionPushMethod",
+        "model": "taxiiweb.PushMethod",
         "pk": 2,
         "fields": {
-            "title" : "TAXII XML over HTTPS",
+            "name" : "TAXII XML over HTTPS",
             "protocol_binding" : 2, 
-            "message_binding" : 1,
+            "message_bindings" : [1],
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
     },
     {
-        "model": "taxii_services.DataCollectionPollInformation",
+        "model": "taxiiweb.PollInformation",
         "pk": 1,
         "fields": {
-            "title" : "Default TAXII Data Collection Poll Information",
+            "name" : "Default TAXII Data Collection Poll Information",
             "description" : "",
             "protocol_binding" : 1,
             "message_bindings" : [1],
@@ -85,63 +85,65 @@
         }
     },
     {
-        "model": "taxii_services.DataCollection",
+        "model": "taxiiweb.DataCollection",
         "pk": 1,
         "fields": {
             "name" : "default",
             "description" : "Default TAXII Data Collection",
-            "users" : [1],
             "supported_content_bindings" : [1],
-            "push_methods" : [1],
-            "poll_service_instances" : [1], 
-            "queryable": "False",
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
     },
     {
-        "model": "taxii_services.DataCollection",
+        "model": "taxiiweb.DataCollection",
         "pk": 2,
         "fields": {
             "name" : "default_queryable",
             "description" : "Default TAXII Queryable Data Collection",
-            "users" : [1],
             "supported_content_bindings" : [2],
-            "push_methods" : [1],
-            "poll_service_instances" : [1], 
-            "queryable": "True",
             "date_created": "2014-04-11T08:22:00-05:00",
             "date_updated": "2014-04-11T08:22:00-05:00"
         }
     },
     {
-        "model": "taxii_services.Inbox",
+        "model": "taxiiweb.InboxService",
         "pk": 1,
         "fields": {
             "name" : "default",
             "description" : "Default TAXII Inbox",
-            "users" : [1],
             "supported_content_bindings" : [1],
-            "supported_protocol_binding" : 1,
+            "supported_protocol_bindings" : [1],
             "supported_message_bindings" : [1],
-            "data_collections" : [1],
+            "destination_collections" : [1],
             "date_created": "2013-07-02T08:22:00-05:00",
             "date_updated": "2013-07-02T08:22:00-05:00"
         }
     },
     {
-        "model": "taxii_services.Inbox",
+        "model": "taxiiweb.InboxService",
         "pk": 2,
         "fields": {
             "name" : "default_queryable",
             "description" : "Default TAXII Inbox",
-            "users" : [1],
             "supported_content_bindings" : [2],
-            "supported_protocol_binding" : 1,
+            "supported_protocol_bindings" : [1],
             "supported_message_bindings" : [1],
-            "data_collections" : [2],
+            "destination_collections" : [2],
             "date_created": "2014-04-11T08:22:00-05:00",
             "date_updated": "2014-04-11T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxiiweb.DiscoveryService",
+        "pk": 1,
+        "fields": {
+            "name": "YETI Discovery Service",
+            "description": "The built in discovery service for YETI",
+            "advertised_discovery_services": [1],
+            "advertised_inbox_services": [],
+            "advertised_poll_services": [],
+            "advertised_management_services": []
         }
     }
 ]

@@ -70,9 +70,10 @@ def main():
     parser = argparse.ArgumentParser(description="Inbox Client")
     parser.add_argument("--host", dest="host", default="localhost", help="Host where the Inbox Service is hosted. Defaults to localhost.")
     parser.add_argument("--port", dest="port", default="8080", help="Port where the Inbox Service is hosted. Defaults to 8080.")
-    parser.add_argument("--path", dest="path", default="/services/inbox/default/", help="Path where the Inbox Service is hosted. Defaults to /services/inbox/default/.")
+    parser.add_argument("--path", dest="path", default="/services/inbox/", help="Path where the Inbox Service is hosted. Defaults to /services/inbox/.")
     parser.add_argument("--content-binding", dest="content_binding", default=t.CB_STIX_XML_11, help="Content binding of the Content Block to send. Defaults to %s" % t.CB_STIX_XML_11 )
     parser.add_argument("--content-file", dest="content_file", default=stix_watchlist, help="Content of the Content Block to send. Defaults to a STIX watchlist.")
+    parser.add_argument("--destination-collection", dest="destination_collection", default="default", help="The destination collection to send this to. Defaults to 'default'")
 
     args = parser.parse_args()
 
@@ -84,7 +85,7 @@ def main():
     cb = tm11.ContentBlock(tm11.ContentBinding(args.content_binding), c.read())
     c.close()
 
-    inbox_message = tm11.InboxMessage(message_id = tm11.generate_message_id(), content_blocks=[cb])
+    inbox_message = tm11.InboxMessage(message_id = tm11.generate_message_id(), destination_collection_names=[args.destination_collection], content_blocks=[cb])
     inbox_xml = inbox_message.to_xml()
 
     print "Inbox Message: \r\n", inbox_xml

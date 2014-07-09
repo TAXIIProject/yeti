@@ -4,8 +4,8 @@
 from django.conf.urls import patterns, url
 
 urlpatterns = patterns('',
-    url(r'^inbox/(\w+)/?$', 'taxii_services.views.inbox_service'),
-    url(r'^poll/?$', 'taxii_services.views.poll_service'),
-    url(r'^query_example/?$', 'taxii_services.views.query_example_service'),
-    url(r'^discovery/?$', 'taxii_services.views.discovery_service'),
+    url(r'^inbox/?$', 'taxiiweb.views.service_router'),
+    url(r'^poll/?$', 'taxiiweb.views.service_router'),
+    url(r'^query_example/?$', 'taxiiweb.views.service_router'),
+    url(r'^discovery/?$', 'taxiiweb.views.service_router'),
 )
