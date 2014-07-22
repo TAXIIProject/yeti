@@ -396,7 +396,7 @@ def query_fulfillment(request, taxii_message):
         logger.debug('The request result_id did not match the validation regex')
         m = tm11.StatusMessage(tm11.generate_message_id(),
                                taxii_message.message_id,
-                               status_type = tm11.NOT_FOUND,
+                               status_type = tm11.ST_NOT_FOUND,
                                message='The requested Result ID was not found.')
         return create_taxii_response(m, use_https=request.is_secure())
     
