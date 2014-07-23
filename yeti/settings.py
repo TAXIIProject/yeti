@@ -154,9 +154,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'taxiiweb',
+    #'taxiiweb',
+    'taxii_services2',
     'yeti',
-    'taxii_services',
 )
 
 # A sample logging configuration. The only tangible logging
