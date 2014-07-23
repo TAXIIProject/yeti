@@ -1,0 +1,144 @@
+[
+    {
+      "model": "taxii_services2.ProtocolBinding",
+      "pk": 1,
+      "fields": {
+        "name" : "TAXII HTTP Protocol Binding v1.0",
+        "binding_id": "urn:taxii.mitre.org:protocol:http:1.0",
+        "date_created": "2013-07-02T08:22:00-05:00",
+        "date_updated": "2013-07-02T08:22:00-05:00"
+      }
+    },
+    {
+      "model": "taxii_services2.ProtocolBinding",
+      "pk": 2,
+      "fields": {
+        "name" : "TAXII HTTPS Protocol Binding v1.0",
+        "binding_id": "urn:taxii.mitre.org:protocol:https:1.0",
+        "date_created": "2013-07-02T08:22:00-05:00",
+        "date_updated": "2013-07-02T08:22:00-05:00"
+      }
+    },
+    {
+        "model": "taxii_services2.MessageBinding",
+        "pk": 1,
+        "fields": {
+            "name" : "TAXII XML Message Binding v1.1",
+            "binding_id": "urn:taxii.mitre.org:message:xml:1.1",
+            "date_created": "2013-07-02T08:22:00-05:00",
+            "date_updated": "2013-07-02T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ContentBinding",
+        "pk": 1,
+        "fields": {
+            "name" : "STIX v1.0 XML Content",
+            "binding_id": "urn:stix.mitre.org:xml:1.0",
+            "date_created": "2013-07-02T08:22:00-05:00",
+            "date_updated": "2013-07-02T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ContentBinding",
+        "pk": 2,
+        "fields": {
+            "name" : "STIX v1.0.1 XML Content",
+            "binding_id": "urn:stix.mitre.org:xml:1.0.1",
+            "date_created": "2014-04-11T08:22:00-05:00",
+            "date_updated": "2014-04-11T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ContentBinding",
+        "pk": 3,
+        "fields": {
+            "name" : "STIX v1.1 XML Content",
+            "binding_id": "urn:stix.mitre.org:xml:1.1",
+            "date_created": "2014-04-11T08:22:00-05:00",
+            "date_updated": "2014-04-11T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ContentBinding",
+        "pk": 4,
+        "fields": {
+            "name" : "STIX v1.1.1 XML Content",
+            "binding_id": "urn:stix.mitre.org:xml:1.1.1",
+            "date_created": "2014-04-11T08:22:00-05:00",
+            "date_updated": "2014-04-11T08:22:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ContentBindingSubtype",
+        "pk": 1,
+        "fields": {
+            "name": "STIX v1.1.1 Indicator Profile",
+            "description": "The indicator profile for STIX 1.1.1",
+            "parent": 4,
+            "subtype_id": "urn:stix.mitre.org:xml:1.1.1:indicator_profile",
+            "date_created": "2014-07-10T07:51:00-05:00",
+            "date_updated": "2014-07-10T07:51:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ServiceHandler",
+        "pk": 1,
+        "fields": {
+            "name": "Default Inbox Service Handler",
+            "description": "The built in Inbox Service handler from django-taxiiweb",
+            "type": "inbox",
+            "handler": "taxii_services2.handlers.inbox_handler",
+            "date_created": "2014-07-09T14:08:00-05:00",
+            "date_updated": "2014-07-09T14:08:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ServiceHandler",
+        "pk": 2,
+        "fields": {
+            "name": "Default Discovery Service Handler",
+            "description": "The built in Discovery Service handler from django-taxiiweb",
+            "type": "discovery",
+            "handler": "taxii_services2.handlers.discovery_handler",
+            "date_created": "2014-07-09T14:08:00-05:00",
+            "date_updated": "2014-07-09T14:08:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ServiceHandler",
+        "pk": 3,
+        "fields": {
+            "name": "Default Poll Service Handler",
+            "description": "The built in Poll Service handler from django-taxiiweb",
+            "type": "poll",
+            "handler": "taxii_services2.handlers.poll_handler",
+            "date_created": "2014-07-09T14:08:00-05:00",
+            "date_updated": "2014-07-09T14:08:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.ServiceHandler",
+        "pk": 4,
+        "fields": {
+            "name": "Default Collection Management Service Handler",
+            "description": "The built in Collection Management Service handler from django-taxiiweb",
+            "type": "collection",
+            "handler": "taxii_services2.handlers.collection_management_handler",
+            "date_created": "2014-07-09T14:08:00-05:00",
+            "date_updated": "2014-07-09T14:08:00-05:00"
+        }
+    },
+    {
+        "model": "taxii_services2.DataCollection",
+        "pk": 1,
+        "fields": {
+            "name": "default",
+            "description": "The default TAXII Data Collection",
+            "type": "feed",
+            "supported_content": [1],
+            "date_created": "2014-07-10T09:13:00-05:00",
+            "date_updated": "2014-07-10T09:13:00-05:00"
+        }
+    }
+]
