@@ -1,11 +1,14 @@
 # Copyright (c) 2014, The MITRE Corporation. All rights reserved.
 # For license information, see the LICENSE.txt file
 
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, include, url
+from django.views.generic import TemplateView
+
+# Uncomment the next two lines to enable the admin:
+from django.contrib import admin
+
+admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^inbox/(\w+)/?$', 'taxii_services.views.inbox_service'),
-    url(r'^poll/?$', 'taxii_services.views.poll_service'),
-    url(r'^query_example/?$', 'taxii_services.views.query_example_service'),
-    url(r'^discovery/?$', 'taxii_services.views.discovery_service'),
+    url(r'^(\w+)/$', 'taxii_services2.views.service_router'),
 )

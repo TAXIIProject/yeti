@@ -1,2 +1,4 @@
-# Copyright (c) 2014, The MITRE Corporation. All rights reserved.
+# Copyright (C) 2014 - The MITRE Corporation
 # For license information, see the LICENSE.txt file
+
+__version__ = "0.1"
