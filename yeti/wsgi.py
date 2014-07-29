@@ -22,7 +22,7 @@ import django.core.handlers.wsgi
 
 
 wsgi_script_dir = os.path.dirname(os.path.realpath(__file__)) # this should be the yeti django app/package directory
-yeti_path = os.path.dirname(wsgi_script_dir) # this is the parent directory, containing the yeti app and taxii_services_app
+yeti_path = os.path.dirname(wsgi_script_dir) # this is the parent directory, containing the yeti app
 if yeti_path not in sys.path:
     sys.path.append(yeti_path)
 
