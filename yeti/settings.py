@@ -13,7 +13,6 @@ sys.path.insert(0, os.path.dirname(__file__))
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
-AUTH_REQUIRED = False # possible location for global configuration flag
 DEBUG = True # If set to True, YETI will not return TAXII Messages for internal server errors.
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
@@ -121,7 +120,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'taxii_services.middleware.ProcessExceptionMiddleware',
+    #'taxii_services.middleware.ProcessExceptionMiddleware',#TODO: What goes on with this?
     #'django.contrib.auth.middleware.RemoteUserMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -131,6 +130,10 @@ MIDDLEWARE_CLASSES = (
 #    'django.contrib.auth.backends.RemoteUserBackend',
 #)
 
+
+FIXTURE_DIRS = (#Shouldn't be necessary, but the initial data wasn't loading otherwise
+   './yeti/fixtures',
+)
 
 ROOT_URLCONF = 'yeti.urls'
 
@@ -155,7 +158,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     #'taxiiweb',
-    'taxii_services2',
+    'taxii_services',
     'yeti',
 )
 
@@ -223,10 +226,5 @@ try:
 except ImportError:
     pass
 
-# Set the taxii_services authentication required flag to AUTH_REQUIRED
-# This is done after the settings_local import in case local settings
-# override the AUTH_FLAG declared above. We do this to keep the 
-# taxii_services app as untethered from yeti as possible
-import taxii_services.settings
-taxii_services.settings.AUTH_REQUIRED = AUTH_REQUIRED
+
 

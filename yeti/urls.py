@@ -6,14 +6,14 @@ from django.views.generic import TemplateView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-import taxii_services2.admin
+import taxii_services.admin
 
-taxii_services2.admin.register_admins()
+taxii_services.admin.register_admins()
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name="index.html")),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^services/', include('taxii_services2.urls')),
+    url(r'^services/', include('taxii_services.urls')),
 )
