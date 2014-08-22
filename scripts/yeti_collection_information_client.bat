@@ -1,0 +1,1 @@
+collection_information_client --host localhost --port 8080

@@ -120,6 +120,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'taxii_services.middleware.StatusMessageExceptionMiddleware'
     #'taxii_services.middleware.ProcessExceptionMiddleware',#TODO: What goes on with this?
     #'django.contrib.auth.middleware.RemoteUserMiddleware',
     # Uncomment the next line for simple clickjacking protection:
@@ -157,7 +158,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    #'taxiiweb',
     'taxii_services',
     'yeti',
 )
@@ -219,12 +219,6 @@ LOGGING = {
         },
     }
 }
-
-
-try:
-    from yeti.settings_local import * # overwrite with local settings if settings_local.py exists
-except ImportError:
-    pass
 
 
 

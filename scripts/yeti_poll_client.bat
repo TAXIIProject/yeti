@@ -1,0 +1,1 @@
+poll_client --host localhost --port 8080 --collection default
