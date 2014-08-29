@@ -13,10 +13,6 @@ sys.path.insert(0, os.path.dirname(__file__))
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
-<<<<<<< HEAD
-AUTH_REQUIRED = False # possible location for global configuration flag
-=======
->>>>>>> a123cffe675ab7ca9e5be0eb7245e8feb5ea131c
 DEBUG = True # If set to True, YETI will not return TAXII Messages for internal server errors.
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
@@ -223,13 +219,3 @@ LOGGING = {
         },
     }
 }
-
-
-<<<<<<< HEAD
-try:
-    from yeti.settings_local import * # overwrite with local settings if settings_local.py exists
-except ImportError:
-    pass
-=======
-
->>>>>>> a123cffe675ab7ca9e5be0eb7245e8feb5ea131c
