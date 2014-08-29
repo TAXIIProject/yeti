@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
-DEBUG = True # If set to True, YETI will not return TAXII Messages for internal server errors.
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
 TEMP_DIR = os.path.join(SITE_ROOT, "tmp")
