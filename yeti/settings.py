@@ -13,15 +13,14 @@ sys.path.insert(0, os.path.dirname(__file__))
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
+<<<<<<< HEAD
 AUTH_REQUIRED = False # possible location for global configuration flag
+=======
+>>>>>>> a123cffe675ab7ca9e5be0eb7245e8feb5ea131c
 DEBUG = True # If set to True, YETI will not return TAXII Messages for internal server errors.
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
 TEMP_DIR = os.path.join(SITE_ROOT, "tmp")
-
-
-### YETI Specific Configs ###
-CERT_EXPORT_LOCATION = os.path.join(SITE_ROOT, 'client_certs/all_certs.cer') # The file Apache uses to validate users
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -125,7 +124,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'taxii_services.middleware.ProcessExceptionMiddleware',
+    'taxii_services.middleware.StatusMessageExceptionMiddleware'
+    #'taxii_services.middleware.ProcessExceptionMiddleware',#TODO: What goes on with this?
     #'django.contrib.auth.middleware.RemoteUserMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -135,6 +135,10 @@ MIDDLEWARE_CLASSES = (
 #    'django.contrib.auth.backends.RemoteUserBackend',
 #)
 
+
+FIXTURE_DIRS = (#Shouldn't be necessary, but the initial data wasn't loading otherwise
+   './yeti/fixtures',
+)
 
 ROOT_URLCONF = 'yeti.urls'
 
@@ -158,8 +162,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'yeti',
     'taxii_services',
+    'yeti',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -221,7 +225,11 @@ LOGGING = {
 }
 
 
+<<<<<<< HEAD
 try:
     from yeti.settings_local import * # overwrite with local settings if settings_local.py exists
 except ImportError:
     pass
+=======
+
+>>>>>>> a123cffe675ab7ca9e5be0eb7245e8feb5ea131c

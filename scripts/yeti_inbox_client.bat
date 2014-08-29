@@ -1,0 +1,1 @@
+inbox_client --host localhost --port 8080 --dcn default
