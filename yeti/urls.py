@@ -8,8 +8,6 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 import taxii_services.admin
 
-taxii_services.admin.register_admins()
-
 admin.autodiscover()
 
 urlpatterns = patterns('',

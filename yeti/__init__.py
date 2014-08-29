@@ -3,5 +3,8 @@
 
 __version__ = "1.1.0"
 
-#import custom_handler
 import StixXml111QueryHandler
+
+import taxii_services
+taxii_services.register_admins()
+taxii_services.register_message_handlers()
