@@ -13,5 +13,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name="index.html")),
     url(r'^admin/', include(admin.site.urls)),
+    #TODO: Can this become a relative so that changes to the code don't require
+    #      changes to all services
     url(r'^services/', include('taxii_services.urls')),
 )
