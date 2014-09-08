@@ -9,6 +9,8 @@ import django
 
 sys.path.insert(0, os.path.dirname(__file__))
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 # calculated paths for django and the site
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
