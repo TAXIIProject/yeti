@@ -1342,5 +1342,7 @@ class StixXml111QueryHandler(BaseXmlQueryHandler):
   }, 
 }
 
-register_query_handler(StixXml111QueryHandler, name="StixXml111QueryHandler")
+# TODO: This line of code causes a weird error for some people. 
+# See issue #https://github.com/TAXIIProject/django-taxii-services/issues/15
+#register_query_handler(StixXml111QueryHandler, name="StixXml111QueryHandler")
 
