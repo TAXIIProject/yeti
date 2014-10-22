@@ -5,4 +5,4 @@ __version__ = "2.0a"
 
 import taxii_services
 taxii_services.register_admins()
-taxii_services.register_message_handlers()
+#taxii_services.register_message_handlers()
