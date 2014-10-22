@@ -17,6 +17,10 @@ discovery, and poll client scripts bundled with YETI and found within the script
 ## Dependencies
 * [Django](https://www.djangoproject.com/)
 * [libtaxii](https://pypi.python.org/pypi/libtaxii/)
+* [taxii_services] (https://pypi.python.org/pypi/taxii-services)
+ * Specific versions of YETI 2.0a depend on specific version of taxii_services:
+ * YETI 2.0a3 depends on taxii_services 0.2
+ * YETI 2.0a2 depends on taxii_services 0.1.2
 * [python-dateutil](https://pypi.python.org/pypi/python-dateutil)
 * [pyOpenSSL](https://pypi.python.org/pypi/pyOpenSSL)
 
