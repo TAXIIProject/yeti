@@ -3,8 +3,6 @@
 
 __version__ = "2.0a"
 
-import StixXml111QueryHandler
-
 import taxii_services
 taxii_services.register_admins()
 taxii_services.register_message_handlers()
