@@ -1,0 +1,77 @@
+Getting Started
+===============
+This page gives an introduction to **YETI** and how to use it.  Please note
+that this page is being actively worked on and feedback is welcome (taxii@mitre.org).
+
+Note that all of the TAXII functionality in YETI is powered by django-taxii-services. If you're a developer looking
+to use YETI to implement TAXII, then what you really want is django-taxii-services. If not, then that distinction
+may not be important.
+
+Dependencies
+------------
+
+In order to use YETI, you must first install YETI's dependencies (listed as of 10/24/2014):
+
+* Django 1.7 or higher
+* libtaxii 1.1.103 or higher
+* taxii_services (aka django-taxii-services) 0.2 or higher
+* python-dateutil
+* pyOpenSSL
+
+Local YETI Deployment
+---------------------
+
+These instructions tell you how to get YETI
+up and running on your local machine.
+
+1. Install the dependencies
+2. Get YETI using one of two methods:
+
+ a. Clone the YETI repostory (:code:`git clone https://github.com/TAXIIProject/yeti.git`) \
+    (Requires git)
+ b. Download and unpack the latest release (2.0a3 at the time of this writing): \
+    https://github.com/TAXIIProject/yeti/releases
+
+3. Open a command prompt and navigate to the folder you extracted YETI into
+#. Set up the database: :code:`python manage.py syncdb`
+
+ a. This sets up the database, and only needs to be run once
+ b. Say "yes" to "Create a superuser?" - Supply your own credentials
+
+4. Run the server: :code:`python manage.py runserver --insecure 0.0.0.0:8080`
+
+Now you have YETI running. You can play with it by:
+
+* Pointing your browser at :code:`http://localhost:8080/`
+
+ * Or go to :code:`http://localhost:8080/admin/` to log into the admin interface
+
+* Run any of the scripts in yeti/scripts. e.g.,
+
+ * :code:`scripts\yeti_collection_information_client.bat`
+ * :code:`scripts\yeti_discovery_information_client.bat`
+ * If you have a proxy, you'll have to specify it by appending \
+   :code:`--proxy http://proxy.example.com:80` to the script \
+   e.g., :code:`scripts\yeti_discovery_information_client.bat --proxy http://proxy.example.com:80`
+
+* Run any libtaxii script from a command prompt:
+
+ * :code:`discovery_client --host localhost --port 8080 [--proxy <proxy_address>]`
+
+Testing with YETI
+-----------------
+YETI comes packaged with some initial data (fixtures, in Django-speak) that allows a tester to stand up
+YETI and get going with a minimal amount of effort. YETI and django-taxii-services are evolving quickly, so
+if you have something you'd like to see, let us know!
+
+YETI comes pre-packaged with:
+
+* An Inbox Service that supports TAXII 1.0 and TAXII 1.1 at http://localhost:8080/services/inbox/
+* A Poll Service that supports TAXII 1.0 and TAXII 1.1 at http://localhost:8080/services/poll/
+* A Collection Management Service that supports TAXII 1.0 and TAXII 1.1 at http://localhost:8080/services/collection-management/
+* A Discovery Service that Supports TAXII 1.0 and TAXII 1.1 at http://localhost:8080/services/discovery/
+
+If you are testing with YETI, be sure to remember that YETI and django-taxii-services are written by humans, and humans
+can make mistakes. We can also document things poorly. If you see something that doesn't look right, if you have a
+question about how something works, or you have a bug report to file, please contact us using GitHub, the TAXII
+Discussion List, or taxii@mitre.org. We are always happy to help.
