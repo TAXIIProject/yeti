@@ -1,6 +1,7 @@
 *.swp
 *.py[co]
 build/
+_build
 dist/
 *.egg-info
 .project
