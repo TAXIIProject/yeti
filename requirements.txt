@@ -1,6 +1,6 @@
 libtaxii==1.1.105
 lxml==3.2.1
-dateutil==2.1
+python-dateutil==2.1
 six==1.3.0
 django==1.7.0
 taxii_services==0.3
