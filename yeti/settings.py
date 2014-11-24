@@ -15,6 +15,7 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT   = os.path.dirname(os.path.realpath(__file__))
 
+# Note: If DEBUG is changed to "False", the SECRET_KEY must be changed to a new, secret value
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = True
@@ -107,7 +108,9 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'gjk*d)_-o2v5zr7!zr)^h2$1%fs&jp^q!_gnv8&x)d-*!87u0^'
+# https://docs.djangoproject.com/en/1.7/ref/settings/#std:setting-SECRET_KEY
+DEFAULT_SECRET_KEY = 'gjk*d)_-o2v5zr7!zr)^h2$1%fs&jp^q!_gnv8&x)d-*!87u0^'
+SECRET_KEY = DEFAULT_SECRET_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -221,3 +224,9 @@ LOGGING = {
         },
     }
 }
+
+
+# Test to see if secret key has been defined. If not, raise a useful error message
+
+if SECRET_KEY == DEFAULT_SECRET_KEY and DEBUG is False:
+    raise ValueError("YETI is being run in non-debug mode and the SECRET_KEY has not been changed.")
