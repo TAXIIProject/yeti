@@ -75,3 +75,45 @@ If you are testing with YETI, be sure to remember that YETI and django-taxii-ser
 can make mistakes. We can also document things poorly. If you see something that doesn't look right, if you have a
 question about how something works, or you have a bug report to file, please contact us using GitHub, the TAXII
 Discussion List, or taxii@mitre.org. We are always happy to help.
+
+Exchanging Threat Information
+--------------------------------------
+This section describes how to use TAXII and YETI to exchange threat information. If you're looking for a primer on TAXII,
+please visit http://taxiiproject.github.io/getting-started/intro/. To exchange threat information using YETI, you can
+make use of the Inbox Service and Poll Service. The Inbox Service lets you push threat information to YETI and the Poll
+Service lets you pull threat information from YETI. In this section both automated and manual options are provided for pushing
+and pulling threat information to/from YETI.
+
+`Note: Examples in this section assume you are running YETI on localhost:8080. If you are not, replace the examples with
+the hostname / port number your YETI instance is running on`
+
+**Getting data into YETI (Pushing)** - You have two options to get data into YETI: use a TAXII Client or use the YETI UI.
+
+
+1. Use a TAXII Client - You can use any TAXII Inbox Client to push data into YETI. If you want to use libtaxii, you can
+use the following command: ``inbox_client --host localhost --port 8080``. Out of the box, ``inbox_client`` sets the
+``Destination_Collection_Name`` parameter of the Inbox Message to ``default`` and sends a default STIX XML document.
+
+2. Use the YETI UI - Navigate to the Content Block admin (this will be located
+at: http://localhost:8080/admin/taxii_services/contentblock/).
+
+  #. Click the ``Add Content Block +`` button in the top right.
+  #. Paste the content into the ``Content`` field, and set the ``Content Binding And Subtype`` field appropriately.
+  #. Navigate to the Data Collection you want this content to appear in using the Data Collection Admin.
+  #. In the ``Content Blocks`` field, add the Content Block you just added.
+
+In all cases, all Content Blocks in the system can always be viewed by navigating to the Content Block admin page.
+Content Blocks must be explicitly added to a specific Data Collection - either through the ``Destination_Collection_Name``
+parameter of an Inbox Message or through the UI - or else they won't be available for polling.
+
+**Getting data out of YETI (Pulling)** - You have two options to get data out of YETI: use a TAXII Client or use the YETI UI.
+
+1. Use a TAXII Client - You can use any TAXII Poll Client to get data out of YETI. If you want to use libtaxii, you can
+use the following command: ``poll_client --host localhost --port 8080``. Out of the box, ``poll_client`` requests information
+from the ``default`` Data Collection.
+
+2. Use the YETI UI - Navigate to the Content Block admin (this will be located
+at: http://localhost:8080/admin/taxii_services/contentblock/).
+
+  #. Click the Content Block you'd like to get information from
+  #. Copy/Paste the Content to wherever you'd like. Framed threat information makes a great gift for your significant other!
