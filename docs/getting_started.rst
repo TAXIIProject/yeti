@@ -49,10 +49,10 @@ Now you have YETI running. You can play with it by:
 * Run any of the scripts in yeti/scripts. e.g.,
 
  * :code:`scripts\yeti_collection_information_client.bat`
- * :code:`scripts\yeti_discovery_information_client.bat`
+ * :code:`scripts\yeti_discovery_client.bat`
  * If you have a proxy, you'll have to specify it by appending \
    :code:`--proxy http://proxy.example.com:80` to the script \
-   e.g., :code:`scripts\yeti_discovery_information_client.bat --proxy http://proxy.example.com:80`
+   e.g., :code:`scripts\yeti_discovery_client.bat --proxy http://proxy.example.com:80`
 
 * Run any libtaxii script from a command prompt:
 
@@ -87,6 +87,7 @@ and pulling threat information to/from YETI.
 `Note: Examples in this section assume you are running YETI on localhost:8080. If you are not, replace the examples with
 the hostname / port number your YETI instance is running on`
 
+**Getting data into YETI (Pushing)** - You have two options to get data into YETI: use a TAXII Client or use the YETI UI.
 **Getting data into YETI (Pushing)** - You have two options to get data into YETI: use a TAXII Client or use the YETI UI.
 
 
