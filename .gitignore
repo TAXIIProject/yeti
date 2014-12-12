@@ -11,7 +11,7 @@ dist/
 *.DS_Store
 output.txt
 .idea
-
+*.log
 # local dev files
 yeti/settings_local.py
 
