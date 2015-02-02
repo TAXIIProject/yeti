@@ -1,41 +1,58 @@
-YETI
---------
+# YETI
 
-YETI is a proof-of-concept implementation of the [Trusted Automated eXchange of Indicator Information](http://taxii.mitre.org)
-(TAXII), created to help developers implement and test their own TAXII applications and help non-developers learn more about
-TAXII.
+A proof-of-concept implementation of the [Trusted Automated eXchange of Indicator Information](http://taxii.mitre.org) (TAXII).
 
 ## Overview
-YETI is a proof-of-concept implementation of TAXII that supports the Inbox, Poll and Discovery services defined by the 
-[TAXII Services Specification](http://taxii.mitre.org/specifications/version1.1/TAXII_Services_Specification.pdf). 
-YETI was written in Python 2.7 and utilizes the  Django 1.5 web application framework. Releases of YETI will be 
-[tagged](http://learn.github.com/p/tagging.html) and can be found [HERE](https://github.com/TAXIIProject/yeti/tags).
 
-Once [deployed](https://github.com/TAXIIProject/yeti/wiki/Deployment), users can interact with YETI via the inbox,
-discovery, and poll client scripts bundled with YETI and found within the scripts directory.
+YETI is a proof-of-concept implementation of TAXII that supports the Inbox,
+Poll and Discovery services defined by the [TAXII Services Specification](http://taxii.mitre.org/specifications/version1.1/TAXII_Services_Specification.pdf).
+YETI was written for Python 2.7 and utilizes the Django 1.7 web application
+framework. It created to help developers implement and test their own TAXII
+applications and help non-developers learn more about TAXII.
+
+[View YETI Releases](https://github.com/TAXIIProject/yeti/releases)
+
+## Getting Started
+
+View our [Getting Started](http://yeti.readthedocs.org/en/latest/getting_started.html)
+page for installation instructions. Once installed (either locally or on a
+remote server), users can interact with YETI using the provided
+[scripts](scripts/), or any other TAXII client.
 
 ## Dependencies
+
 * [Django](https://www.djangoproject.com/)
+* [django-solo](https://pypi.python.org/pypi/django-solo)
 * [libtaxii](https://pypi.python.org/pypi/libtaxii/)
 * [taxii_services] (https://pypi.python.org/pypi/taxii-services)
- * Specific versions of YETI 2.0a depend on specific version of taxii_services:
- * YETI 2.0a3 depends on taxii_services 0.2
- * YETI 2.0a2 depends on taxii_services 0.1.2
+
+NOTE: Specific versions of YETI 2.0 depend on specific versions of
+`taxii_services`:
+
+* YETI 2.0a3 depends on `taxii_services` 0.2 or later
+* YETI 2.0a2 depends on `taxii_services` 0.1.2
+
+NOTE: Versions 1.x of YETI included functionality now provided by the
+`taxii-services` library. Prior to version 2.0,  YETI needs only Django and
+libtaxii, along with the following additional requirements:
+*
 * [python-dateutil](https://pypi.python.org/pypi/python-dateutil)
 * [pyOpenSSL](https://pypi.python.org/pypi/pyOpenSSL)
 
 ## Versioning
-Releases of YETI will be given 'major.minor.revision' version numbers, where 'major' and
-'minor' correspond to the TAXII version being supported. The 'revision' number is used to 
-indicate new versions of YETI.
 
-## Getting Started
-To start using YETI, please refer to the bundled [INSTALL](https://github.com/TAXIIProject/yeti/blob/master/INSTALL)
-file or the [Deployment](https://github.com/TAXIIProject/yeti/wiki/Deployment) section of the YETI wiki.
+As of Version 2.0, YETI uses [semantic versioning](http://semver.org).
 
-## Feedback 
-You are encouraged to provide feedback by commenting on open issues or signing up for the TAXII
-discussion list and posting your questions (http://taxii.mitre.org/community/registration.html).
+Older versions of YETI (prior to 2.0) were given `major.minor.revision` version
+numbers, where `major` and `minor` corresponded to the supported TAXII version.
+The `revision` number was used to indicate new versions of YETI.
+
+## Feedback
+
+Feedback is welcome, either directly though GitHub (issues or pull requests),
+or via the [taxii-discussion list](http://taxii.mitre.org/community/registration.html).
 
 ## License
-For license information, see the LICENSE.txt file.
+
+YETI is released under a 3-Clause BSD license. For more information, see
+[LICENSE.txt](LICENSE.txt).
