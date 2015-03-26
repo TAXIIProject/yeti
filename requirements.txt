@@ -1,4 +1,4 @@
 Django==1.7.4
 django-solo==1.1.0
 libtaxii==1.1.105
-taxii_services==0.3
+taxii_services==0.4
