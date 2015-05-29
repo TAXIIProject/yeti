@@ -88,7 +88,6 @@ and pulling threat information to/from YETI.
 the hostname / port number your YETI instance is running on`
 
 **Getting data into YETI (Pushing)** - You have two options to get data into YETI: use a TAXII Client or use the YETI UI.
-**Getting data into YETI (Pushing)** - You have two options to get data into YETI: use a TAXII Client or use the YETI UI.
 
 
 1. Use a TAXII Client - You can use any TAXII Inbox Client to push data into YETI. If you want to use libtaxii, you can
