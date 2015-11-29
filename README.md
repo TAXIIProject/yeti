@@ -1,11 +1,11 @@
 # YETI
 
-A proof-of-concept implementation of the [Trusted Automated eXchange of Indicator Information](http://taxii.mitre.org) (TAXII).
+A proof-of-concept implementation of the [Trusted Automated eXchange of Indicator Information](http://taxiiproject.github.io/) (TAXII).
 
 ## Overview
 
 YETI is a proof-of-concept implementation of TAXII that supports the Inbox,
-Poll and Discovery services defined by the [TAXII Services Specification](http://taxii.mitre.org/specifications/version1.1/TAXII_Services_Specification.pdf).
+Poll and Discovery services defined by the [TAXII Services Specification](http://taxiiproject.github.io/releases/1.1/TAXII_Services_Specification.pdf).
 YETI was written for Python 2.7 and utilizes the Django 1.7 web application
 framework. It created to help developers implement and test their own TAXII
 applications and help non-developers learn more about TAXII.
@@ -50,7 +50,7 @@ The `revision` number was used to indicate new versions of YETI.
 ## Feedback
 
 Feedback is welcome, either directly though GitHub (issues or pull requests),
-or via the [taxii-discussion list](http://taxii.mitre.org/community/registration.html).
+or directly to taxii@mitre.org.
 
 ## License
 
