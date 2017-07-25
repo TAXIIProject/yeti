@@ -13,6 +13,7 @@ Dependencies
 In order to use YETI, you must first install YETI's dependencies (listed as of 10/24/2014):
 
 * Django 1.7 or higher
+* django-solo
 * libtaxii 1.1.103 or higher
 * taxii_services (aka django-taxii-services) 0.2 or higher
 * python-dateutil
