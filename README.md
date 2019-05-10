@@ -1,10 +1,12 @@
 # YETI
 
-A proof-of-concept implementation of the [Trusted Automated eXchange of Indicator Information](http://taxiiproject.github.io/) (TAXII).
+## WARNING:
+
+This library uses an older, insecure version of Django, but is no longer maintained. If you need an open source TAXII 1.X implementation, please see [this list of other libraries](https://wiki.oasis-open.org/cti/Open%20Source%20Projects>).
 
 ## Overview
 
-YETI is a proof-of-concept implementation of TAXII that supports the Inbox,
+YETI is a proof-of-concept implementation of [Trusted Automated eXchange of Indicator Information](http://taxiiproject.github.io/) (TAXII) that supports the Inbox,
 Poll and Discovery services defined by the [TAXII Services Specification](http://taxiiproject.github.io/releases/1.1/TAXII_Services_Specification.pdf).
 YETI was written for Python 2.7 and utilizes the Django 1.7 web application
 framework. It created to help developers implement and test their own TAXII
@@ -24,7 +26,7 @@ remote server), users can interact with YETI using the provided
 * [Django](https://www.djangoproject.com/)
 * [django-solo](https://pypi.python.org/pypi/django-solo)
 * [libtaxii](https://pypi.python.org/pypi/libtaxii/)
-* [taxii_services] (https://pypi.python.org/pypi/taxii-services)
+* [taxii_services](https://pypi.python.org/pypi/taxii-services)
 
 NOTE: Specific versions of YETI 2.0 depend on specific versions of
 `taxii_services`:
