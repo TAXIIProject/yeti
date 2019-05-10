@@ -1,388 +1,700 @@
 [
-  {
+{
     "fields": {
-      "date_updated": "2014-08-06T18:33:40.342Z",
-      "date_created": "2014-08-06T18:33:40.342Z",
-      "binding_id": "urn:stix.mitre.org:xml:1.0",
-      "name": "STIX v1.0 XML Content",
-      "description": ""
+        "username": "lu",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": "2019-05-08T20:36:22.239Z",
+        "groups": [],
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$15000$aMthgBLQS1cc$O3wKc+Z8GQVVlwg00ao7LqqYK9n+/hwRZ8lYenFPfoM=",
+        "email": "",
+        "date_joined": "2019-05-08T20:36:22.239Z"
     },
-    "model": "taxii_services._bindingbase",
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "domain": "example.com",
+        "name": "example.com"
+    },
+    "model": "sites.site",
     "pk": 1
-  },
-  {
+},
+{
     "fields": {
-      "date_updated": "2014-08-06T18:33:53.083Z",
-      "date_created": "2014-08-06T18:33:53.083Z",
-      "binding_id": "urn:stix.mitre.org:xml:1.1",
-      "name": "STIX v1.1 XML Content",
-      "description": ""
+        "date_updated": "2014-08-06T18:33:40.342Z",
+        "date_created": "2014-08-06T18:33:40.342Z",
+        "binding_id": "urn:stix.mitre.org:xml:1.0",
+        "name": "STIX v1.0 XML Content",
+        "description": ""
     },
-    "model": "taxii_services._bindingbase",
+    "model": "taxii_services.bindingbase",
+    "pk": 1
+},
+{
+    "fields": {
+        "date_updated": "2014-08-06T18:33:53.083Z",
+        "date_created": "2014-08-06T18:33:53.083Z",
+        "binding_id": "urn:stix.mitre.org:xml:1.1",
+        "name": "STIX v1.1 XML Content",
+        "description": ""
+    },
+    "model": "taxii_services.bindingbase",
     "pk": 2
-  },
-  {
+},
+{
     "fields": {
-      "date_updated": "2014-08-06T18:34:09.085Z",
-      "date_created": "2014-08-06T18:34:09.085Z",
-      "binding_id": "urn:stix.mitre.org:xml:1.1.1",
-      "name": "STIX v1.1.1 XML Content",
-      "description": ""
+        "date_updated": "2014-08-06T18:34:09.085Z",
+        "date_created": "2014-08-06T18:34:09.085Z",
+        "binding_id": "urn:stix.mitre.org:xml:1.1.1",
+        "name": "STIX v1.1.1 XML Content",
+        "description": ""
     },
-    "model": "taxii_services._bindingbase",
+    "model": "taxii_services.bindingbase",
     "pk": 3
-  },
-  {
+},
+{
     "fields": {
-      "date_updated": "2014-08-06T18:34:20.029Z",
-      "date_created": "2014-08-06T18:34:20.029Z",
-      "binding_id": "urn:stix.mitre.org:xml:1.0.1",
-      "name": "STIX v1.0.1 XML Content",
-      "description": ""
+        "date_updated": "2014-08-06T18:34:20.029Z",
+        "date_created": "2014-08-06T18:34:20.029Z",
+        "binding_id": "urn:stix.mitre.org:xml:1.0.1",
+        "name": "STIX v1.0.1 XML Content",
+        "description": ""
     },
-    "model": "taxii_services._bindingbase",
+    "model": "taxii_services.bindingbase",
     "pk": 4
-  },
-  {
+},
+{
     "fields": {
-      "date_updated": "2014-08-06T18:35:04.891Z",
-      "date_created": "2014-08-06T18:35:04.891Z",
-      "binding_id": "urn:taxii.mitre.org:message:xml:1.1",
-      "name": "TAXII XML v1.1",
-      "description": ""
+        "date_updated": "2014-08-06T18:35:04.891Z",
+        "date_created": "2014-08-06T18:35:04.891Z",
+        "binding_id": "urn:taxii.mitre.org:message:xml:1.1",
+        "name": "TAXII XML v1.1",
+        "description": ""
     },
-    "model": "taxii_services._bindingbase",
+    "model": "taxii_services.bindingbase",
     "pk": 5
-  },
-  {
+},
+{
     "fields": {
-      "date_updated": "2014-08-06T18:35:20.466Z",
-      "date_created": "2014-08-06T18:35:20.466Z",
-      "binding_id": "urn:taxii.mitre.org:protocol:http:1.0",
-      "name": "TAXII HTTP v1.0",
-      "description": ""
+        "date_updated": "2014-08-06T18:35:20.466Z",
+        "date_created": "2014-08-06T18:35:20.466Z",
+        "binding_id": "urn:taxii.mitre.org:protocol:http:1.0",
+        "name": "TAXII HTTP v1.0",
+        "description": ""
     },
-    "model": "taxii_services._bindingbase",
+    "model": "taxii_services.bindingbase",
     "pk": 6
-  },
-  {
+},
+{
     "fields": {
-      "date_updated": "2014-08-06T18:35:27.831Z",
-      "date_created": "2014-08-06T18:35:27.831Z",
-      "binding_id": "urn:taxii.mitre.org:protocol:https:1.0",
-      "name": "TAXII HTTPS v1.0",
-      "description": ""
+        "date_updated": "2014-08-06T18:35:27.831Z",
+        "date_created": "2014-08-06T18:35:27.831Z",
+        "binding_id": "urn:taxii.mitre.org:protocol:https:1.0",
+        "name": "TAXII HTTPS v1.0",
+        "description": ""
     },
-    "model": "taxii_services._bindingbase",
+    "model": "taxii_services.bindingbase",
     "pk": 7
-  },
-  {
+},
+{
     "fields": {
-      "name": "Inbox Message Handler",
-      "class_name": "InboxMessageHandler",
-      "date_updated": "2014-10-22T16:46:35.262Z",
-      "handler": "taxii_services.message_handlers.InboxMessageHandler",
-      "version": "1",
-      "date_created": "2014-08-06T18:31:47.070Z",
-      "module_name": "taxii_services",
-      "description": "Built-in TAXII 1.1 and 1.0 Message Handler"
+        "name": "taxii_services.message_handlers.InboxMessageHandler",
+        "class_name": "InboxMessageHandler",
+        "date_updated": "2019-05-08T20:53:45.334Z",
+        "handler": "taxii_services.message_handlers.InboxMessageHandler",
+        "version": "1",
+        "date_created": "2014-08-06T18:31:47.070Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 and 1.0 Message Handler"
     },
-    "model": "taxii_services._handler",
+    "model": "taxii_services.handler",
     "pk": 1
-  },
-  {
+},
+{
     "fields": {
-      "name": "Discovery Handler",
-      "class_name": "DiscoveryRequestHandler",
-      "date_updated": "2014-10-22T16:46:31.210Z",
-      "handler": "taxii_services.message_handlers.DiscoveryRequestHandler",
-      "version": "1",
-      "date_created": "2014-08-06T18:32:04.574Z",
-      "module_name": "taxii_services",
-      "description": "Built-in TAXII 1.1 and TAXII 1.0 Discovery Request Handler"
+        "name": "taxii_services.message_handlers.DiscoveryRequestHandler",
+        "class_name": "DiscoveryRequestHandler",
+        "date_updated": "2019-05-08T20:53:45.311Z",
+        "handler": "taxii_services.message_handlers.DiscoveryRequestHandler",
+        "version": "1",
+        "date_created": "2014-08-06T18:32:04.574Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 and TAXII 1.0 Discovery Request Handler"
     },
-    "model": "taxii_services._handler",
+    "model": "taxii_services.handler",
     "pk": 2
-  },
-  {
+},
+{
     "fields": {
-      "name": "Poll Request Handler",
-      "class_name": "PollRequestHandler",
-      "date_updated": "2014-10-22T16:46:53.536Z",
-      "handler": "taxii_services.message_handlers.PollRequestHandler",
-      "version": "1",
-      "date_created": "2014-08-06T18:32:26.904Z",
-      "module_name": "taxii_services",
-      "description": "Built-in TAXII 1.1 and TAXII 1.0 Poll Request Handler"
+        "name": "taxii_services.message_handlers.PollRequestHandler",
+        "class_name": "PollRequestHandler",
+        "date_updated": "2019-05-08T20:53:45.392Z",
+        "handler": "taxii_services.message_handlers.PollRequestHandler",
+        "version": "1",
+        "date_created": "2014-08-06T18:32:26.904Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 and TAXII 1.0 Poll Request Handler"
     },
-    "model": "taxii_services._handler",
+    "model": "taxii_services.handler",
     "pk": 3
-  },
-  {
+},
+{
     "fields": {
-      "name": "Poll Fulfillment Handler",
-      "class_name": "PollFulfillmentRequest11Handler",
-      "date_updated": "2014-10-22T16:46:49.289Z",
-      "handler": "taxii_services.message_handlers.PollFulfillmentRequest11Handler",
-      "version": "1",
-      "date_created": "2014-08-06T18:32:43.727Z",
-      "module_name": "taxii_services",
-      "description": "Built-in TAXII 1.1 Poll Fulfillment Request Handler."
+        "name": "taxii_services.message_handlers.PollFulfillmentRequest11Handler",
+        "class_name": "PollFulfillmentRequest11Handler",
+        "date_updated": "2019-05-08T20:53:45.343Z",
+        "handler": "taxii_services.message_handlers.PollFulfillmentRequest11Handler",
+        "version": "1",
+        "date_created": "2014-08-06T18:32:43.727Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 Poll Fulfillment Request Handler."
     },
-    "model": "taxii_services._handler",
+    "model": "taxii_services.handler",
     "pk": 4
-  },
-  {
+},
+{
     "fields": {
-      "name": "Collection Information Handler",
-      "class_name": "CollectionInformationRequestHandler",
-      "date_updated": "2014-10-22T16:46:26.204Z",
-      "handler": "taxii_services.message_handlers.CollectionInformationRequestHandler",
-      "version": "1",
-      "date_created": "2014-08-06T18:32:54.567Z",
-      "module_name": "taxii_services",
-      "description": "Built-in TAXII 1.1 and 1.0 Collection/Feed Information Request handler."
+        "name": "taxii_services.message_handlers.CollectionInformationRequestHandler",
+        "class_name": "CollectionInformationRequestHandler",
+        "date_updated": "2019-05-08T20:53:45.273Z",
+        "handler": "taxii_services.message_handlers.CollectionInformationRequestHandler",
+        "version": "1",
+        "date_created": "2014-08-06T18:32:54.567Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 and 1.0 Collection/Feed Information Request handler."
     },
-    "model": "taxii_services._handler",
+    "model": "taxii_services.handler",
     "pk": 5
-  },
-  {
+},
+{
     "fields": {
-      "name": "Manage Collection Subscription Request Handler",
-      "class_name": "SubscriptionRequestHandler",
-      "date_updated": "2014-10-22T16:46:44.676Z",
-      "handler": "taxii_services.message_handlers.SubscriptionRequestHandler",
-      "version": "1",
-      "date_created": "2014-08-06T18:33:04.231Z",
-      "module_name": "taxii_services",
-      "description": "Built-in TAXII 1.1 and TAXII 1.0 Management Collection/Feed Subscription Request Handler."
+        "name": "taxii_services.message_handlers.SubscriptionRequestHandler",
+        "class_name": "SubscriptionRequestHandler",
+        "date_updated": "2019-05-08T20:53:45.426Z",
+        "handler": "taxii_services.message_handlers.SubscriptionRequestHandler",
+        "version": "1",
+        "date_created": "2014-08-06T18:33:04.231Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 and TAXII 1.0 Management Collection/Feed Subscription Request Handler."
     },
-    "model": "taxii_services._handler",
+    "model": "taxii_services.handler",
     "pk": 6
-  },
-  {
+},
+{
     "fields": {
-      "supported_message_bindings": [5],
-      "name": "Default Inbox Service",
-      "date_updated": "2014-08-06T18:36:58.425Z",
-      "supported_protocol_bindings": [
-        6,
-        7
-      ],
-      "enabled": true,
-      "date_created": "2014-08-06T18:35:55.560Z",
-      "path": "/services/inbox/",
-      "description": "This is the default Inbox Service."
+        "name": "taxii_services.message_handlers.SubscriptionRequest11Handler",
+        "class_name": "SubscriptionRequest11Handler",
+        "date_updated": "2019-05-08T20:53:45.421Z",
+        "handler": "taxii_services.message_handlers.SubscriptionRequest11Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.169Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 Manage Collection Subscription Request Handler."
     },
-    "model": "taxii_services._taxiiservice",
+    "model": "taxii_services.handler",
+    "pk": 7
+},
+{
+    "fields": {
+        "name": "taxii_services.message_handlers.SubscriptionRequest10Handler",
+        "class_name": "SubscriptionRequest10Handler",
+        "date_updated": "2019-05-08T20:53:45.411Z",
+        "handler": "taxii_services.message_handlers.SubscriptionRequest10Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.193Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.0 Manage Collection Subscription Request Handler."
+    },
+    "model": "taxii_services.handler",
+    "pk": 8
+},
+{
+    "fields": {
+        "name": "taxii_services.message_handlers.PollRequest11Handler",
+        "class_name": "PollRequest11Handler",
+        "date_updated": "2019-05-08T20:53:45.376Z",
+        "handler": "taxii_services.message_handlers.PollRequest11Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.233Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 Poll Request Handler.\n\n    This handler has multiple extension points for developers\n    who want to extend and/or customize this class."
+    },
+    "model": "taxii_services.handler",
+    "pk": 9
+},
+{
+    "fields": {
+        "name": "taxii_services.message_handlers.PollRequest10Handler",
+        "class_name": "PollRequest10Handler",
+        "date_updated": "2019-05-08T20:53:45.361Z",
+        "handler": "taxii_services.message_handlers.PollRequest10Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.288Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.0 Poll Request Handler"
+    },
+    "model": "taxii_services.handler",
+    "pk": 10
+},
+{
+    "fields": {
+        "name": "taxii_services.message_handlers.InboxMessage11Handler",
+        "class_name": "InboxMessage11Handler",
+        "date_updated": "2019-05-08T20:53:45.325Z",
+        "handler": "taxii_services.message_handlers.InboxMessage11Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.372Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 Inbox Message Handler."
+    },
+    "model": "taxii_services.handler",
+    "pk": 11
+},
+{
+    "fields": {
+        "name": "taxii_services.message_handlers.InboxMessage10Handler",
+        "class_name": "InboxMessage10Handler",
+        "date_updated": "2019-05-08T20:53:45.320Z",
+        "handler": "taxii_services.message_handlers.InboxMessage10Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.402Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built in TAXII 1.0 Message Handler"
+    },
+    "model": "taxii_services.handler",
+    "pk": 12
+},
+{
+    "fields": {
+        "name": "taxii_services.message_handlers.DiscoveryRequest11Handler",
+        "class_name": "DiscoveryRequest11Handler",
+        "date_updated": "2019-05-08T20:53:45.304Z",
+        "handler": "taxii_services.message_handlers.DiscoveryRequest11Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.573Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 Discovery Request Handler."
+    },
+    "model": "taxii_services.handler",
+    "pk": 13
+},
+{
+    "fields": {
+        "name": "taxii_services.message_handlers.DiscoveryRequest10Handler",
+        "class_name": "DiscoveryRequest10Handler",
+        "date_updated": "2019-05-08T20:53:45.289Z",
+        "handler": "taxii_services.message_handlers.DiscoveryRequest10Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.684Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.0 Discovery Request Handler"
+    },
+    "model": "taxii_services.handler",
+    "pk": 14
+},
+{
+    "fields": {
+        "name": "taxii_services.message_handlers.CollectionInformationRequest11Handler",
+        "class_name": "CollectionInformationRequest11Handler",
+        "date_updated": "2019-05-08T20:53:45.257Z",
+        "handler": "taxii_services.message_handlers.CollectionInformationRequest11Handler",
+        "version": "1",
+        "date_created": "2019-05-08T20:36:01.839Z",
+        "module_name": "taxii_services.message_handlers",
+        "description": "Built-in TAXII 1.1 Collection Information Request Handler."
+    },
+    "model": "taxii_services.handler",
+    "pk": 15
+},
+{
+    "fields": {
+        "supported_message_bindings": [
+            5
+        ],
+        "name": "Default Inbox Service",
+        "date_updated": "2014-08-06T18:36:58.425Z",
+        "supported_protocol_bindings": [
+            6,
+            7
+        ],
+        "enabled": true,
+        "date_created": "2014-08-06T18:35:55.560Z",
+        "path": "/services/inbox/",
+        "description": "This is the default Inbox Service."
+    },
+    "model": "taxii_services.taxiiservice",
     "pk": 1
-  },
-  {
+},
+{
     "fields": {
-      "supported_message_bindings": [5],
-      "name": "Default Poll Service",
-      "date_updated": "2014-08-06T18:36:48.279Z",
-      "supported_protocol_bindings": [
-        6,
-        7
-      ],
-      "enabled": true,
-      "date_created": "2014-08-06T18:36:48.278Z",
-      "path": "/services/poll/",
-      "description": "This is the default Poll Service."
+        "supported_message_bindings": [
+            5
+        ],
+        "name": "Default Poll Service",
+        "date_updated": "2014-08-06T18:36:48.279Z",
+        "supported_protocol_bindings": [
+            6,
+            7
+        ],
+        "enabled": true,
+        "date_created": "2014-08-06T18:36:48.278Z",
+        "path": "/services/poll/",
+        "description": "This is the default Poll Service."
     },
-    "model": "taxii_services._taxiiservice",
+    "model": "taxii_services.taxiiservice",
     "pk": 2
-  },
-  {
+},
+{
     "fields": {
-      "supported_message_bindings": [5],
-      "name": "Default Collection Management Service",
-      "date_updated": "2014-08-06T18:37:33.787Z",
-      "supported_protocol_bindings": [
-        6,
-        7
-      ],
-      "enabled": true,
-      "date_created": "2014-08-06T18:37:33.787Z",
-      "path": "/services/collection-management/",
-      "description": "The default Collection Management Service."
+        "supported_message_bindings": [
+            5
+        ],
+        "name": "Default Collection Management Service",
+        "date_updated": "2014-08-06T18:37:33.787Z",
+        "supported_protocol_bindings": [
+            6,
+            7
+        ],
+        "enabled": true,
+        "date_created": "2014-08-06T18:37:33.787Z",
+        "path": "/services/collection-management/",
+        "description": "The default Collection Management Service."
     },
-    "model": "taxii_services._taxiiservice",
+    "model": "taxii_services.taxiiservice",
     "pk": 3
-  },
-  {
+},
+{
     "fields": {
-      "supported_message_bindings": [5],
-      "name": "Default Discovery Service",
-      "date_updated": "2014-08-06T18:37:56.708Z",
-      "supported_protocol_bindings": [
-        6,
-        7
-      ],
-      "enabled": true,
-      "date_created": "2014-08-06T18:37:56.708Z",
-      "path": "/services/discovery/",
-      "description": "The default Discovery Service."
+        "supported_message_bindings": [
+            5
+        ],
+        "name": "Default Discovery Service",
+        "date_updated": "2014-08-06T18:37:56.708Z",
+        "supported_protocol_bindings": [
+            6,
+            7
+        ],
+        "enabled": true,
+        "date_created": "2014-08-06T18:37:56.708Z",
+        "path": "/services/discovery/",
+        "description": "The default Discovery Service."
     },
-    "model": "taxii_services._taxiiservice",
+    "model": "taxii_services.taxiiservice",
     "pk": 4
-  },
-  {
+},
+{
     "fields": {
-      "collection_information_handler": 5,
-      "advertised_collections": [1],
-      "supported_queries": [],
-      "supported_message_bindings": [5],
-      "supported_protocol_bindings": [
-        6,
-        7
-      ],
-      "subscription_management_handler": 6
+        "collection_information_handler": 5,
+        "advertised_collections": [
+            1
+        ],
+        "supported_queries": [],
+        "supported_message_bindings": [
+            5
+        ],
+        "supported_protocol_bindings": [
+            6,
+            7
+        ],
+        "subscription_management_handler": 6
     },
     "model": "taxii_services.collectionmanagementservice",
     "pk": 3
-  },
-  {
-    "fields": {"validator": null},
+},
+{
+    "fields": {
+        "validator": null
+    },
     "model": "taxii_services.contentbinding",
     "pk": 1
-  },
-  {
-    "fields": {"validator": null},
+},
+{
+    "fields": {
+        "validator": null
+    },
     "model": "taxii_services.contentbinding",
     "pk": 2
-  },
-  {
-    "fields": {"validator": null},
+},
+{
+    "fields": {
+        "validator": null
+    },
     "model": "taxii_services.contentbinding",
     "pk": 3
-  },
-  {
-    "fields": {"validator": null},
+},
+{
+    "fields": {
+        "validator": null
+    },
     "model": "taxii_services.contentbinding",
     "pk": 4
-  },
-  {
+},
+{
     "fields": {
-      "name": "Indicator Profile (Fake)",
-      "parent": 3,
-      "date_updated": "2014-08-06T18:34:09.089Z",
-      "validator": null,
-      "subtype_id": "urn:stix.mitre.org:xml:1.1.1:fake_indicator_profile",
-      "date_created": "2014-08-06T18:34:09.089Z",
-      "description": ""
+        "date_updated": "2019-05-08T20:35:57.564Z",
+        "subtype": null,
+        "content_binding": 1,
+        "date_created": "2019-05-08T20:35:57.564Z"
+    },
+    "model": "taxii_services.contentbindingandsubtype",
+    "pk": 1
+},
+{
+    "fields": {
+        "date_updated": "2019-05-08T20:35:57.566Z",
+        "subtype": null,
+        "content_binding": 2,
+        "date_created": "2019-05-08T20:35:57.565Z"
+    },
+    "model": "taxii_services.contentbindingandsubtype",
+    "pk": 2
+},
+{
+    "fields": {
+        "date_updated": "2019-05-08T20:35:57.567Z",
+        "subtype": null,
+        "content_binding": 3,
+        "date_created": "2019-05-08T20:35:57.566Z"
+    },
+    "model": "taxii_services.contentbindingandsubtype",
+    "pk": 3
+},
+{
+    "fields": {
+        "date_updated": "2019-05-08T20:35:57.576Z",
+        "subtype": null,
+        "content_binding": 4,
+        "date_created": "2019-05-08T20:35:57.576Z"
+    },
+    "model": "taxii_services.contentbindingandsubtype",
+    "pk": 4
+},
+{
+    "fields": {
+        "date_updated": "2019-05-08T20:35:57.578Z",
+        "subtype": 1,
+        "content_binding": 3,
+        "date_created": "2019-05-08T20:35:57.578Z"
+    },
+    "model": "taxii_services.contentbindingandsubtype",
+    "pk": 5
+},
+{
+    "fields": {
+        "name": "Indicator Profile (Fake)",
+        "parent": 3,
+        "date_updated": "2014-08-06T18:34:09.089Z",
+        "validator": null,
+        "subtype_id": "urn:stix.mitre.org:xml:1.1.1:fake_indicator_profile",
+        "date_created": "2014-08-06T18:34:09.089Z",
+        "description": ""
     },
     "model": "taxii_services.contentbindingsubtype",
     "pk": 1
-  },
-  {
+},
+{
     "fields": {
-      "accept_all_content": true,
-      "name": "default",
-      "date_updated": "2014-08-06T18:36:08.156Z",
-      "supported_content": [],
-      "enabled": true,
-      "content_blocks": [],
-      "date_created": "2014-08-06T18:36:08.156Z",
-      "type": "DATA_FEED",
-      "description": ""
+        "accept_all_content": true,
+        "name": "default",
+        "date_updated": "2014-08-06T18:36:08.156Z",
+        "supported_content": [],
+        "enabled": true,
+        "content_blocks": [],
+        "date_created": "2014-08-06T18:36:08.156Z",
+        "type": "DATA_FEED",
+        "description": ""
     },
     "model": "taxii_services.datacollection",
     "pk": 1
-  },
-  {
+},
+{
     "fields": {
-      "advertised_collection_management_services": [3],
-      "supported_message_bindings": [5],
-      "supported_protocol_bindings": [
-        6,
-        7
-      ],
-      "advertised_inbox_services": [1],
-      "discovery_handler": 2,
-      "advertised_discovery_services": [],
-      "advertised_poll_services": [2]
+        "advertised_collection_management_services": [
+            3
+        ],
+        "supported_message_bindings": [
+            5
+        ],
+        "supported_protocol_bindings": [
+            6,
+            7
+        ],
+        "advertised_inbox_services": [
+            1
+        ],
+        "discovery_handler": 2,
+        "advertised_discovery_services": [],
+        "advertised_poll_services": [
+            2
+        ]
     },
     "model": "taxii_services.discoveryservice",
     "pk": 4
-  },
-  {
+},
+{
     "fields": {
-      "inbox_message_handler": 1,
-      "accept_all_content": true,
-      "supported_content": [],
-      "supported_message_bindings": [5],
-      "supported_protocol_bindings": [
-        6,
-        7
-      ],
-      "destination_collection_status": "OPTIONAL",
-      "destination_collections": [1]
+        "inbox_message_handler": 1,
+        "accept_all_content": true,
+        "supported_content": [],
+        "supported_message_bindings": [
+            5
+        ],
+        "supported_protocol_bindings": [
+            6,
+            7
+        ],
+        "destination_collection_status": "OPTIONAL",
+        "destination_collections": [
+            1
+        ]
     },
     "model": "taxii_services.inboxservice",
     "pk": 1
-  },
-  {
+},
+{
     "fields": {},
     "model": "taxii_services.messagebinding",
     "pk": 5
-  },
-  {
-    "fields": {"supported_messages": "[<class 'libtaxii.messages_10.FeedInformationRequest'>, <class 'libtaxii.messages_11.CollectionInformationRequest'>]"},
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_11.CollectionInformationRequest'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 15
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_10.FeedInformationRequest'>, <class 'libtaxii.messages_11.CollectionInformationRequest'>]"
+    },
     "model": "taxii_services.messagehandler",
     "pk": 5
-  },
-  {
-    "fields": {"supported_messages": "[<class 'libtaxii.messages_10.DiscoveryRequest'>, <class 'libtaxii.messages_11.DiscoveryRequest'>]"},
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_10.DiscoveryRequest'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 14
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_11.DiscoveryRequest'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 13
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_10.DiscoveryRequest'>, <class 'libtaxii.messages_11.DiscoveryRequest'>]"
+    },
     "model": "taxii_services.messagehandler",
     "pk": 2
-  },
-  {
-    "fields": {"supported_messages": "[<class 'libtaxii.messages_10.InboxMessage'>, <class 'libtaxii.messages_11.InboxMessage'>]"},
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_10.InboxMessage'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 12
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_11.InboxMessage'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 11
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_10.InboxMessage'>, <class 'libtaxii.messages_11.InboxMessage'>]"
+    },
     "model": "taxii_services.messagehandler",
     "pk": 1
-  },
-  {
-    "fields": {"supported_messages": "[<class 'libtaxii.messages_11.ManageCollectionSubscriptionRequest'>, <class 'libtaxii.messages_10.ManageFeedSubscriptionRequest'>]"},
-    "model": "taxii_services.messagehandler",
-    "pk": 6
-  },
-  {
-    "fields": {"supported_messages": "[<class 'libtaxii.messages_11.PollFulfillmentRequest'>]"},
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_11.PollFulfillmentRequest'>]"
+    },
     "model": "taxii_services.messagehandler",
     "pk": 4
-  },
-  {
-    "fields": {"supported_messages": "[<class 'libtaxii.messages_10.PollRequest'>, <class 'libtaxii.messages_11.PollRequest'>]"},
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_10.PollRequest'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 10
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_11.PollRequest'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 9
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_10.PollRequest'>, <class 'libtaxii.messages_11.PollRequest'>]"
+    },
     "model": "taxii_services.messagehandler",
     "pk": 3
-  },
-  {
+},
+{
     "fields": {
-      "supported_message_bindings": [5],
-      "data_collections": [1],
-      "supported_queries": [],
-      "supported_protocol_bindings": [
-        6,
-        7
-      ],
-      "requires_subscription": false,
-      "poll_request_handler": 3,
-      "poll_fulfillment_handler": 4,
-      "max_result_size": null
+        "supported_messages": "[<class 'libtaxii.messages_10.ManageFeedSubscriptionRequest'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 8
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_11.ManageCollectionSubscriptionRequest'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 7
+},
+{
+    "fields": {
+        "supported_messages": "[<class 'libtaxii.messages_11.ManageCollectionSubscriptionRequest'>, <class 'libtaxii.messages_10.ManageFeedSubscriptionRequest'>]"
+    },
+    "model": "taxii_services.messagehandler",
+    "pk": 6
+},
+{
+    "fields": {
+        "supported_message_bindings": [
+            5
+        ],
+        "data_collections": [
+            1
+        ],
+        "supported_queries": [],
+        "supported_protocol_bindings": [
+            6,
+            7
+        ],
+        "requires_subscription": false,
+        "poll_request_handler": 3,
+        "poll_fulfillment_handler": 4,
+        "max_result_size": null
     },
     "model": "taxii_services.pollservice",
     "pk": 2
-  },
-  {
+},
+{
     "fields": {},
     "model": "taxii_services.protocolbinding",
     "pk": 6
-  },
-  {
+},
+{
     "fields": {},
     "model": "taxii_services.protocolbinding",
     "pk": 7
-  }
+}
 ]

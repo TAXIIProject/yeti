@@ -231,7 +231,7 @@ class ProtocolTests(TestCase):
     success cases succeed.
     """
     
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     
     def test_01(self):
         """
@@ -377,7 +377,7 @@ class InboxTests(TestCase):
     # TODO: Write more involved tests
     
     #fixtures = ['inbox_test_fixture.json']
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     
     def test_01(self):
         """
@@ -521,24 +521,24 @@ class InboxTests(TestCase):
 
 class PollRequestTests11(TestCase):
 
-    fixtures = ['test_data.json']
-    
+    fixtures = ['initial_data.json']
+
     # Make sure query tests are in here
-    
+
     # These tests expect the following objects in the database:
     # /services/test_poll_1/ - (Collection: Default), max_result_size = 5; requires=Subscription = False
-    
+
     def send_poll_request(self, path, messages_vid, poll_request, status_type=None, sd_keys=None):
         #status_type=None means expect a PollResponse
         #status_type=<value> means expect a StatusMessage
         if messages_vid not in (VID_TAXII_XML_11, VID_TAXII_XML_10):
             raise ValueError("Wrong messages_vid!")
-        
+
         client = tc.HttpClient()
         client.setProxy(tc.HttpClient.NO_PROXY)
         resp = client.callTaxiiService2(HOST, path, messages_vid, poll_request.to_xml(), PORT)
         msg = t.get_message_from_http_response(resp, poll_request.message_id)
-        
+
         if not status_type: # Expect a Poll Response
             if msg.message_type != MSG_POLL_RESPONSE:
                 raise ValueError('Expected Poll Response. Got: %s.\r\n%s' % \
@@ -553,7 +553,7 @@ class PollRequestTests11(TestCase):
                         raise ValueError('Expected status detail key was not present: %s\r\n%s' % \
                                          (key, msg.to_xml(pretty_print=True)) )
         return msg
-    
+
     def test_01(self):
         """
         Test an invalid collection name
@@ -564,14 +564,14 @@ class PollRequestTests11(TestCase):
                 collection_name = 'INVALID_COLLECTION_NAME_13820198320',
                 poll_parameters = pp)
         
-        msg = make_request('/services/test_poll_1/', 
+        msg = make_request(POLL_11_PATH, 
                               pr.to_xml(), 
                               get_headers(VID_TAXII_SERVICES_11, False), 
                               MSG_STATUS_MESSAGE, 
                               st=ST_NOT_FOUND,
                               sd_keys=[SD_ITEM])
-        #msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr, status_type=ST_NOT_FOUND, sd_keys=[SD_ITEM])
-    
+        #msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr, status_type=ST_NOT_FOUND, sd_keys=[SD_ITEM])
+
     def test_02(self):
         """
         Test a begin TS later than an end TS.
@@ -586,11 +586,11 @@ class PollRequestTests11(TestCase):
                 poll_parameters = pp,
                 exclusive_begin_timestamp_label = begin_ts,
                 inclusive_end_timestamp_label = end_ts)
-        msg = make_request('/services/test_poll_1/', 
+        msg = make_request(POLL_11_PATH, 
                               pr.to_xml(), 
                               get_headers(VID_TAXII_SERVICES_11, False), 
                               ST_FAILURE)
-        #msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr, status_type=ST_FAILURE)
+        #msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr, status_type=ST_FAILURE)
     
     def test_03(self):
         """
@@ -600,13 +600,13 @@ class PollRequestTests11(TestCase):
                 message_id = generate_message_id(),
                 collection_name = 'default',
                 subscription_id = 'jdslkajdlksajdlksajld')
-        msg = make_request('/services/test_poll_1/', 
+        msg = make_request(POLL_11_PATH, 
                               pr.to_xml(), 
                               get_headers(VID_TAXII_SERVICES_11, False), 
                               MSG_STATUS_MESSAGE, 
                               st=ST_NOT_FOUND,
                               sd_keys=[SD_ITEM])
-        #msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr, status_type=ST_NOT_FOUND, sd_keys=[SD_ITEM])
+        #msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr, status_type=ST_NOT_FOUND, sd_keys=[SD_ITEM])
     
     def test_04(self):
         """
@@ -617,13 +617,13 @@ class PollRequestTests11(TestCase):
                 message_id = generate_message_id(),
                 collection_name = 'default',
                 poll_parameters = pp)
-        msg = make_request('/services/test_poll_1/', 
+        msg = make_request(POLL_11_PATH, 
                               pr.to_xml(), 
                               get_headers(VID_TAXII_SERVICES_11, False), 
                               MSG_STATUS_MESSAGE, 
                               st=ST_UNSUPPORTED_CONTENT_BINDING,
                               sd_keys=[SD_SUPPORTED_CONTENT])
-        #msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr, status_type=ST_UNSUPPORTED_CONTENT_BINDING, sd_keys=[SD_SUPPORTED_CONTENT])
+        #msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr, status_type=ST_UNSUPPORTED_CONTENT_BINDING, sd_keys=[SD_SUPPORTED_CONTENT])
     
     def test_05(self):
         """
@@ -634,13 +634,13 @@ class PollRequestTests11(TestCase):
                 message_id = generate_message_id(),
                 collection_name = 'default',
                 poll_parameters = pp)
-        msg = make_request('/services/test_poll_1/', 
+        msg = make_request(POLL_11_PATH, 
                               pr.to_xml(), 
                               get_headers(VID_TAXII_SERVICES_11, False), 
                               MSG_STATUS_MESSAGE, 
                               st=ST_UNSUPPORTED_CONTENT_BINDING,
                               sd_keys=[SD_SUPPORTED_CONTENT])
-        #msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr, status_type=ST_UNSUPPORTED_CONTENT_BINDING, sd_keys=[SD_SUPPORTED_CONTENT])
+        #msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr, status_type=ST_UNSUPPORTED_CONTENT_BINDING, sd_keys=[SD_SUPPORTED_CONTENT])
 
     # This test case currently fails and will not be able to pass until either django-taxii-services changes or libtaxii changes.
     # def test_06(self):
@@ -652,7 +652,7 @@ class PollRequestTests11(TestCase):
                 # message_id = generate_message_id(),
                 # collection_name = 'default',
                 # poll_parameters = pp)
-        # msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr, status_type=ST_UNSUPPORTED_QUERY, sd_keys=[SD_SUPPORTED_QUERY])
+        # msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr, status_type=ST_UNSUPPORTED_QUERY, sd_keys=[SD_SUPPORTED_QUERY])
     
     # This test won't be valid until Delivery Params are implemented
     # def test_07(self):
@@ -665,7 +665,7 @@ class PollRequestTests11(TestCase):
                 # message_id = generate_message_id(),
                 # collection_name = 'default',
                 # poll_parameters = pp)
-        # msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr, status_type=ST_UNSUPPORTED_PROTOCOL, sd_keys=[SD_SUPPORTED_PROTOCOL])
+        # msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr, status_type=ST_UNSUPPORTED_PROTOCOL, sd_keys=[SD_SUPPORTED_PROTOCOL])
     
     # This test won't be valid until Delivery Params are implemented
     # def test_08(self):
@@ -678,7 +678,7 @@ class PollRequestTests11(TestCase):
                 # message_id = generate_message_id(),
                 # collection_name = 'default',
                 # poll_parameters = pp)
-        # msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr, status_tpe=ST_UNSUPPORTED_MESSAGE, sd_keys=[SD_SUPPORTED_MESSAGE])
+        # msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr, status_tpe=ST_UNSUPPORTED_MESSAGE, sd_keys=[SD_SUPPORTED_MESSAGE])
         
     
     def test_09(self):
@@ -690,11 +690,11 @@ class PollRequestTests11(TestCase):
                 message_id=generate_message_id(),
                 collection_name='default',
                 poll_parameters=pp)
-        msg = make_request('/services/test_poll_1/', 
+        msg = make_request(POLL_11_PATH, 
                               pr.to_xml(), 
                               get_headers(VID_TAXII_SERVICES_11, False), 
                               MSG_POLL_RESPONSE)
-        #msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr)
+        #msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr)
         if len(msg.content_blocks) != 5:
             raise ValueError('Got %s CBs' % len(msg.content_blocks))
     
@@ -703,6 +703,8 @@ class PollRequestTests11(TestCase):
         """
         Test a query. Should match just the APT1 report.
         """
+        from django.core.urlresolvers import get_resolver
+        print(set(v[1] for k,v in get_resolver(None).reverse_dict.iteritems()))
         test = tdq.Test(capability_id = tdq.CM_CORE, relationship=R_EQUALS, parameters={P_VALUE: 'Unit 61398', P_MATCH_TYPE: 'case_sensitive_string'} )
         criterion = tdq.Criterion(target='STIX_Package/Threat_Actors/Threat_Actor/Identity/Specification/PartyName/OrganisationName/SubDivisionName', test=test)
         criteria = tdq.Criteria(OP_AND, criterion=[criterion])
@@ -712,8 +714,8 @@ class PollRequestTests11(TestCase):
                 message_id=generate_message_id(),
                 collection_name='default',
                 poll_parameters=pp)
-        #msg = self.send_poll_request('/services/test_poll_1/', VID_TAXII_XML_11, pr)
-        msg = make_request('/services/test_poll_1/', 
+        #msg = self.send_poll_request(POLL_11_PATH, VID_TAXII_XML_11, pr)
+        msg = make_request(POLL_11_PATH, 
                               pr.to_xml(), 
                               get_headers(VID_TAXII_SERVICES_11, False), 
                               MSG_POLL_RESPONSE)
@@ -721,16 +723,16 @@ class PollRequestTests11(TestCase):
             raise ValueError('Got %s CBs' % len(msg.content_blocks))
 
 class PollRequestTests10(TestCase):
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     pass
 
 class PollFulfillmentTests11(TestCase):
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     pass
 
 class CollectionInformationTests11(TestCase):
     
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     
     def test_01(self):
         """
@@ -753,7 +755,7 @@ class CollectionInformationTests11(TestCase):
 
 class FeedInformationTests10(TestCase):
     
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     
     def test_01(self):
         """
@@ -777,20 +779,20 @@ class FeedInformationTests10(TestCase):
 
 class SubscriptionTests11(TestCase):
     
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     
     # Make sure to test query in here
     pass
 
 class SubscriptionTests10(TestCase):
     
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     
     pass
 
 class DiscoveryTests11(TestCase):
     
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     
     def test_01(self):
         """
@@ -814,7 +816,7 @@ class DiscoveryTests11(TestCase):
 
 class DiscoveryTests10(TestCase):
     
-    fixtures = ['test_data.json']
+    fixtures = ['initial_data.json']
     
     def test_01(self):
         """
